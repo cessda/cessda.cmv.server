@@ -1,4 +1,4 @@
-package eu.cessda.cmv;
+package eu.cessda.cmv.server;
 
 import java.io.IOException;
 
@@ -20,7 +20,7 @@ import io.swagger.v3.oas.models.tags.Tag;
 @RestController
 public class Swagger implements WebMvcConfigurer
 {
-	public static final String TAG_GREETING = "Greeting";
+	public static final String TAG_VALIDATIONGATES = "Validation Gates";
 	public static final String TAG_ACTUATOR = "Actuator";
 
 	@Autowired
@@ -35,9 +35,9 @@ public class Swagger implements WebMvcConfigurer
 	@Bean
 	public OpenAPI openAPI()
 	{
-		Info info = new Info().title( buildProperties.getArtifact() ).version( buildProperties.getVersion() );
+		Info info = new Info().title( buildProperties.getName() ).version( buildProperties.getVersion() );
 		return new OpenAPI()
-				.addTagsItem( new Tag().name( TAG_GREETING ) )
+				.addTagsItem( new Tag().name( TAG_VALIDATIONGATES ) )
 				.addTagsItem( new Tag().name( TAG_ACTUATOR ) )
 				.info( info );
 	}

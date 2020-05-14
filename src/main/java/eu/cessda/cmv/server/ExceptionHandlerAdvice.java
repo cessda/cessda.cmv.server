@@ -1,4 +1,4 @@
-package eu.cessda.cmv;
+package eu.cessda.cmv.server;
 
 import javax.servlet.http.HttpServletRequest;
 
