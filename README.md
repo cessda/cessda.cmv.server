@@ -10,8 +10,7 @@
 ## Getting started as developer
 
 * Execute tests and run the application
-
-    ```bash    
+    ```
     # Execute all tests locally with default config
     mvn clean test
     
@@ -22,8 +21,7 @@
     ```
 
 * Create and run service environment with docker-compose
-
-    ```bash
+    ```
     # Package Java jar file and build docker image with required settings
     mvn -DskipTests clean package docker:build -Pdocker-compose
     
