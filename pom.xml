@@ -13,15 +13,14 @@
 	</parent>
 
 	<properties>
-		<docker.image.name>gesis/${project.artifactId}</docker.image.name>
+		<docker.image.name>cessda/${project.artifactId}</docker.image.name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<gesis.repository.visibility>public</gesis.repository.visibility><!-- valid values: (private|public) -->
 		<java.version>11</java.version>
 		<code-generation-comment>This file is generated, all changes will be overriden</code-generation-comment>
 		<logging.file>target/application.log</logging.file>
 		<logging.level.org.springframework>INFO</logging.level.org.springframework>
 		<server.port>8080</server.port>
-		<server.servlet.context-path></server.servlet.context-path>
+		<server.servlet.context-path>/</server.servlet.context-path>
 		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
 	</properties>
 
@@ -249,14 +248,26 @@
 			<id>docker-compose</id>
 			<properties>
 				<logging.file>application.log</logging.file>
+				<server.servlet.context-path></server.servlet.context-path><!-- necessary for HEALTHCHECK -->
 			</properties>
 		</profile>
 	</profiles>
 
 	<organization>
-		<name>GESIS – Leibniz-Institute for the Social Sciences</name>
-		<url>http://www.gesis.org</url>
+		<name>CESSDA ERIC</name>
+		<url>https://www.cessda.eu/</url>
 	</organization>
+	<scm>
+		<url>https://bitbucket.org/cessda/cessda.cmv.server</url>
+	</scm>
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>https://jenkins.cessda.eu/</url>
+	</ciManagement>
+	<issueManagement>
+		<url>https://bitbucket.org/cessda/cessda.cvm.server/issues</url>
+		<system>Bitbucket</system>
+	</issueManagement>
 
 	<repositories>
 		<repository>
@@ -265,19 +276,21 @@
 			<url>https://nexus.cessda.eu/repository/maven-releases</url>
 		</repository>
 		<repository>
-			<id>gesis-${gesis.repository.visibility}</id>
-			<url>https://maven.gesis.org/repositories/gesis-${gesis.repository.visibility}</url>
+			<id>gesis-public</id>
+			<url>https://maven.gesis.org/repositories/gesis-public</url>
 		</repository>
 	</repositories>
-
 	<distributionManagement>
 		<repository>
-			<id>gesis-${gesis.repository.visibility}-releases</id>
-			<url>https://maven.gesis.org/repositories/gesis-${gesis.repository.visibility}-releases</url>
+			<id>cessda-nexus</id>
+			<name>CESSDA Nexus Repository</name>
+			<url>https://nexus.cessda.eu/repository/maven-releases</url>
 		</repository>
 		<snapshotRepository>
-			<id>gesis-${gesis.repository.visibility}-snapshots</id>
-			<url>https://maven.gesis.org/repositories/gesis-${gesis.repository.visibility}-snapshots</url>
+			<id>cessda-nexus-snapshot</id>
+			<name>CESSDA Nexus Snapshot Repository</name>
+			<url>https://nexus.cessda.eu/repository/maven-snapshots</url>
+			<uniqueVersion>true</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
 
