@@ -45,16 +45,11 @@ public class ValidationGateController
 	@Operation(
 			responses = @ApiResponse( responseCode = "200", content = @Content( schema = @Schema( hidden = true ) ) ) )
 	public JaxbValidationReportV0 validateWithBasicValidationGate(
-			@RequestParam( required = false ) URL documentUrl,
-			@RequestParam( required = false ) URL profileUrl )
+			@RequestParam( required = true ) URL documentUrl,
+			@RequestParam( required = true ) URL profileUrl )
 			throws Exception
 	{
-		URL dUrl = new URL(
-				"https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/ukds-2000.xml" );
-		URL pUrl = new URL(
-				"https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/cdc25_profile.xml" );
-
-		return validate( new BasicValidationGate(), dUrl, pUrl );
+		return validate( new BasicValidationGate(), documentUrl, profileUrl );
 	}
 
 	@GetMapping(
@@ -63,16 +58,11 @@ public class ValidationGateController
 	@Operation(
 			responses = @ApiResponse( responseCode = "200", content = @Content( schema = @Schema( hidden = true ) ) ) )
 	public JaxbValidationReportV0 validate(
-			@RequestParam( required = false ) URL documentUrl,
-			@RequestParam( required = false ) URL profileUrl )
+			@RequestParam( required = true ) URL documentUrl,
+			@RequestParam( required = true ) URL profileUrl )
 			throws Exception
 	{
-		URL dUrl = new URL(
-				"https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/ukds-2000.xml" );
-		URL pUrl = new URL(
-				"https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/cdc25_profile.xml" );
-
-		return validate( new StandardValidationGate(), dUrl, pUrl );
+		return validate( new StandardValidationGate(), documentUrl, profileUrl );
 	}
 
 	private JaxbValidationReportV0 validate( ValidationGate.V10 validationGate, URL documentUrl, URL profileUrl )
