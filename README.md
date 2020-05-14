@@ -9,7 +9,7 @@
 
 ## Getting started as developer
 
-* Execute tests and run the application
+### Execute tests and run the application
 
 ```
 # Execute all tests locally with default config
@@ -21,7 +21,7 @@ mvn clean spring-boot:run
 # Stop the app with Ctrl+C
 ```
 
-* Create and run service environment with docker-compose
+### Create and run service environment with docker-compose
 
 ```
 # Package Java jar file and build docker image with required settings
