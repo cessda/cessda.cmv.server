@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import io.swagger.v3.oas.models.OpenAPI;
@@ -27,9 +28,15 @@ public class Swagger implements WebMvcConfigurer
 	private BuildProperties buildProperties;
 
 	@GetMapping( "/" )
-	public void redirectToSwaggerUi( HttpServletResponse response ) throws IOException
+	public void delegateToSite( HttpServletResponse response ) throws IOException
 	{
-		response.sendRedirect( "/api/swagger" );
+		response.sendRedirect( "/index.html" );
+	}
+
+	@Override
+	public void addResourceHandlers( ResourceHandlerRegistry registry )
+	{
+		registry.addResourceHandler( "/**" ).addResourceLocations( "classpath:/eu.cessda.cmv/cmv/" );
 	}
 
 	@Bean
