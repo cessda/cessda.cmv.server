@@ -25,7 +25,7 @@ public class SwaggerTest
 	{
 		mockMvc.perform( get( "/" ) )
 				.andExpect( status().is( 302 ) )
-				.andExpect( header().string( "Location", equalTo( "/api/swagger" ) ) );
+				.andExpect( header().string( "Location", equalTo( "/index.html" ) ) );
 		mockMvc.perform( get( "/api/swagger" ) )
 				.andExpect( status().is( 302 ) )
 				.andExpect( header().string( "Location", containsString( "swagger-ui/index.html" ) ) );
