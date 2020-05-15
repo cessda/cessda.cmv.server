@@ -1,4 +1,11 @@
+# Build directory
 /target/
+
+# Exclude Eclipse related files
 .project
 .classpath
 .settings/
+
+# Exclude IntelliJ IDEA related files
+.idea/
+*.iml
