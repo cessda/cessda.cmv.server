@@ -69,5 +69,11 @@ pipeline {
             }
             when { branch 'master' }
         }
+        stage('Deploy CMV Server') {
+            steps {
+                build job: 'cessda.cmv.deploy/master', parameters: [string(name: 'serverImageTag', value: "${env.BRANCH_NAME}-${env.BUILD_NUMBER}")], wait: false
+            }
+            when { branch 'master' }
+        }
     }
 }
