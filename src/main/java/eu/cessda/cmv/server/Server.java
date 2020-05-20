@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.zalando.problem.ProblemModule;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 
@@ -34,8 +32,7 @@ public class Server extends SpringBootServletInitializer
 		ProblemModule problemModule = new ProblemModule().withStackTraces( false );
 
 		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.registerModule( problemModule ).registerModule( new JaxbAnnotationModule() );
-		objectMapper.setAnnotationIntrospector( new JaxbAnnotationIntrospector() );
+		objectMapper.registerModule( problemModule );
 		return objectMapper;
 	}
 

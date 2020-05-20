@@ -47,7 +47,6 @@ public class ValidationGateController
 	public JaxbValidationReportV0 validateWithBasicValidationGate(
 			@RequestParam( required = true ) URL documentUrl,
 			@RequestParam( required = true ) URL profileUrl )
-			throws Exception
 	{
 		return validate( new BasicValidationGate(), documentUrl, profileUrl );
 	}
@@ -60,7 +59,6 @@ public class ValidationGateController
 	public JaxbValidationReportV0 validate(
 			@RequestParam( required = true ) URL documentUrl,
 			@RequestParam( required = true ) URL profileUrl )
-			throws Exception
 	{
 		return validate( new StandardValidationGate(), documentUrl, profileUrl );
 	}
