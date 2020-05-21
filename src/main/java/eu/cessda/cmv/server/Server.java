@@ -18,25 +18,21 @@ public class Server extends SpringBootServletInitializer
 
 	public static void main( String[] args )
 	{
-		validateArgs( args );
-		SpringApplication.run( Server.class, args );
+		SpringApplication.run( Server.class, validateArgs( args ) );
 	}
 
-	static void validateArgs( String... args )
+	static String[] validateArgs( String... args )
 	{
-		// TODO: Replace self-made validation by cli parser component, e.g. picoli
 		String message = "Commandline arguments not as expected - Good bye!";
 		if ( args.length > 1 )
 		{
 			throw new IllegalArgumentException( message );
 		}
-		else if ( args.length == 1 )
+		else if ( args.length == 1 && !args[0].contentEquals( ALLOWED_CLI_OPTION ) )
 		{
-			if ( !args[0].contentEquals( ALLOWED_CLI_OPTION ) )
-			{
-				throw new IllegalArgumentException( message );
-			}
+			throw new IllegalArgumentException( message );
 		}
+		return args;
 	}
 
 	@Override
