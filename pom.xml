@@ -6,6 +6,7 @@
 	<artifactId>cmv-server</artifactId>
 	<version>0.2.0-SNAPSHOT</version>
 	<name>CESSDA Metadata Validator</name>
+	<url>https://cmv-dev.cessda.eu</url>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>

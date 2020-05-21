@@ -14,17 +14,17 @@ import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 @SpringBootApplication
 public class Server extends SpringBootServletInitializer
 {
+	static final String ALLOWED_CLI_OPTION = "--spring.config.additional-location=file:./application.properties";
+
 	public static void main( String[] args )
 	{
 		validateArgs( args );
 		SpringApplication.run( Server.class, args );
 	}
 
-	private static void validateArgs( String[] args )
+	static void validateArgs( String... args )
 	{
 		// TODO: Replace self-made validation by cli parser component, e.g. picoli
-
-		String expectedArgument = "--spring.config.additional-location=file:./application.properties";
 		String message = "Commandline arguments not as expected - Good bye!";
 		if ( args.length > 1 )
 		{
@@ -32,7 +32,7 @@ public class Server extends SpringBootServletInitializer
 		}
 		else if ( args.length == 1 )
 		{
-			if ( !args[0].contentEquals( expectedArgument ) )
+			if ( !args[0].contentEquals( ALLOWED_CLI_OPTION ) )
 			{
 				throw new IllegalArgumentException( message );
 			}
