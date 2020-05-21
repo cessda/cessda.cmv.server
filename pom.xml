@@ -156,10 +156,9 @@
 							<name>${docker.registry.host}/${docker.image.name}:${docker.image.tag}</name>
 							<build>
 								<dockerFile>${project.basedir}/target/docker/context/application.Dockerfile</dockerFile>
-								<assembly>
-									<descriptorRef>artifact</descriptorRef>
-								</assembly>
+								<assembly><descriptorRef>artifact</descriptorRef></assembly>
 							</build>
+							<run><ports><port>8080:8080</port></ports></run>
 						</image>
 					</images>
 				</configuration>

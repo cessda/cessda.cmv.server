@@ -16,7 +16,27 @@ public class Server extends SpringBootServletInitializer
 {
 	public static void main( String[] args )
 	{
+		validateArgs( args );
 		SpringApplication.run( Server.class, args );
+	}
+
+	private static void validateArgs( String[] args )
+	{
+		// TODO: Replace self-made validation by cli parser component, e.g. picoli
+
+		String expectedArgument = "--spring.config.additional-location=file:./application.properties";
+		String message = "Commandline arguments not as expected - Good bye!";
+		if ( args.length > 1 )
+		{
+			throw new IllegalArgumentException( message );
+		}
+		else if ( args.length == 1 )
+		{
+			if ( !args[0].contentEquals( expectedArgument ) )
+			{
+				throw new IllegalArgumentException( message );
+			}
+		}
 	}
 
 	@Override
