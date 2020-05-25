@@ -1,7 +1,7 @@
 package eu.cessda.cmv.server;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -14,9 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import eu.cessda.cmv.core.mediatype.validationreport.v0.xml.JaxbValidationReportV0;
+import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
 
 @AutoConfigureMockMvc
 @SpringBootTest( webEnvironment = WebEnvironment.RANDOM_PORT )
@@ -36,11 +37,11 @@ public class ValidationGateControllerTest
 				.path( "/basic-validation-gate" )
 				.queryParameter( "documentUrl", documentUrl )
 				.queryParameter( "profileUrl", profileUrl );
-		System.out.println( uriBuilder.toEncodedString() );
-		String body = mockMvc.perform( get( uriBuilder.toEncodedString() ) )
+		String body = mockMvc.perform( get( uriBuilder.toEncodedString() )
+				.accept( MediaType.APPLICATION_XML ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
-		JaxbValidationReportV0 validationReport = JaxbValidationReportV0.read( body );
+		ValidationReportV0 validationReport = ValidationReportV0.read( body );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 9 ) );
 	}
 
@@ -52,11 +53,11 @@ public class ValidationGateControllerTest
 				.path( "/standard-validation-gate" )
 				.queryParameter( "documentUrl", documentUrl )
 				.queryParameter( "profileUrl", profileUrl );
-		System.out.println( uriBuilder.toEncodedString() );
-		String body = mockMvc.perform( get( uriBuilder.toEncodedString() ) )
+		String body = mockMvc.perform( get( uriBuilder.toEncodedString() )
+				.accept( MediaType.APPLICATION_XML ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
-		JaxbValidationReportV0 validationReport = JaxbValidationReportV0.read( body );
+		ValidationReportV0 validationReport = ValidationReportV0.read( body );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 21 ) );
 	}
 }

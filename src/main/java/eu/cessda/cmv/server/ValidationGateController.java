@@ -1,5 +1,6 @@
 package eu.cessda.cmv.server;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import java.net.URL;
@@ -21,11 +22,9 @@ import eu.cessda.cmv.core.Document;
 import eu.cessda.cmv.core.Profile;
 import eu.cessda.cmv.core.StandardValidationGate;
 import eu.cessda.cmv.core.ValidationGate;
-import eu.cessda.cmv.core.mediatype.validationreport.v0.xml.JaxbConstraintViolationV0;
-import eu.cessda.cmv.core.mediatype.validationreport.v0.xml.JaxbValidationReportV0;
+import eu.cessda.cmv.core.mediatype.validationreport.v0.ConstraintViolationV0;
+import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -41,10 +40,10 @@ public class ValidationGateController
 
 	@GetMapping(
 			path = "/basic-validation-gate",
-			produces = { JaxbValidationReportV0.MEDIATYPE, APPLICATION_XML_VALUE } )
+			produces = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE } )
 	@Operation(
-			responses = @ApiResponse( responseCode = "200", content = @Content( schema = @Schema( hidden = true ) ) ) )
-	public JaxbValidationReportV0 validateWithBasicValidationGate(
+			responses = @ApiResponse( responseCode = "200" ) )
+	public ValidationReportV0 validateWithBasicValidationGate(
 			@RequestParam( required = true ) URL documentUrl,
 			@RequestParam( required = true ) URL profileUrl )
 	{
@@ -53,24 +52,24 @@ public class ValidationGateController
 
 	@GetMapping(
 			path = "/standard-validation-gate",
-			produces = { JaxbValidationReportV0.MEDIATYPE, APPLICATION_XML_VALUE } )
+			produces = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE } )
 	@Operation(
-			responses = @ApiResponse( responseCode = "200", content = @Content( schema = @Schema( hidden = true ) ) ) )
-	public JaxbValidationReportV0 validate(
+			responses = @ApiResponse( responseCode = "200" ) )
+	public ValidationReportV0 validate(
 			@RequestParam( required = true ) URL documentUrl,
 			@RequestParam( required = true ) URL profileUrl )
 	{
 		return validate( new StandardValidationGate(), documentUrl, profileUrl );
 	}
 
-	private JaxbValidationReportV0 validate( ValidationGate.V10 validationGate, URL documentUrl, URL profileUrl )
+	private ValidationReportV0 validate( ValidationGate.V10 validationGate, URL documentUrl, URL profileUrl )
 	{
 		Document document = factory.newDocument( documentUrl );
 		Profile profile = factory.newProfile( profileUrl );
 		List<ConstraintViolation> constraintViolations = validationGate.validate( document, profile );
-		JaxbValidationReportV0 validationReport = new JaxbValidationReportV0();
+		ValidationReportV0 validationReport = new ValidationReportV0();
 		validationReport.setConstraintViolations( constraintViolations.stream()
-				.map( JaxbConstraintViolationV0::new )
+				.map( ConstraintViolationV0::new )
 				.collect( Collectors.toList() ) );
 		LOGGER.info( "Validation executed: {}, {}, {}",
 				validationGate.getClass().getCanonicalName(),
