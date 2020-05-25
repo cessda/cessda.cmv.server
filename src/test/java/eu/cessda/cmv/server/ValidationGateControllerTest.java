@@ -17,6 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
 
 @AutoConfigureMockMvc
@@ -26,38 +28,65 @@ public class ValidationGateControllerTest
 	@Autowired
 	private MockMvc mockMvc;
 
+	@Autowired
+	private ObjectMapper objectMaper;
+
 	private String profileUrl = "https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/cdc25_profile.xml";
 	private String documentUrl = "https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/ukds-2000.xml";
 
 	@Test
 	public void validateWithBasicValidationGate() throws Exception
 	{
+		String responseBody;
+		ValidationReportV0 validationReport;
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder( "" )
 				.path( "/api" )
 				.path( "/basic-validation-gate" )
 				.queryParameter( "documentUrl", documentUrl )
 				.queryParameter( "profileUrl", profileUrl );
-		String body = mockMvc.perform( get( uriBuilder.toEncodedString() )
+
+		// XML
+		responseBody = mockMvc.perform( get( uriBuilder.toEncodedString() )
 				.accept( MediaType.APPLICATION_XML ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
-		ValidationReportV0 validationReport = ValidationReportV0.read( body );
+		validationReport = ValidationReportV0.read( responseBody );
+		assertThat( validationReport.getConstraintViolations(), hasSize( 9 ) );
+
+		// JSON
+		responseBody = mockMvc.perform( get( uriBuilder.toEncodedString() )
+				.accept( MediaType.APPLICATION_JSON ) )
+				.andExpect( status().isOk() )
+				.andReturn().getResponse().getContentAsString();
+		validationReport = objectMaper.readValue( responseBody, ValidationReportV0.class );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 9 ) );
 	}
 
 	@Test
 	public void validateWithStandardValidationGate() throws UnsupportedEncodingException, Exception
 	{
+		String responseBody;
+		ValidationReportV0 validationReport;
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder( "" )
 				.path( "/api" )
 				.path( "/standard-validation-gate" )
 				.queryParameter( "documentUrl", documentUrl )
 				.queryParameter( "profileUrl", profileUrl );
-		String body = mockMvc.perform( get( uriBuilder.toEncodedString() )
+
+		// XML
+		responseBody = mockMvc.perform( get( uriBuilder.toEncodedString() )
 				.accept( MediaType.APPLICATION_XML ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
-		ValidationReportV0 validationReport = ValidationReportV0.read( body );
+		validationReport = ValidationReportV0.read( responseBody );
+		assertThat( validationReport.getConstraintViolations(), hasSize( 21 ) );
+
+		// JSON
+		responseBody = mockMvc.perform( get( uriBuilder.toEncodedString() )
+				.accept( MediaType.APPLICATION_JSON ) )
+				.andExpect( status().isOk() )
+				.andReturn().getResponse().getContentAsString();
+		validationReport = objectMaper.readValue( responseBody, ValidationReportV0.class );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 21 ) );
 	}
 }
