@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,9 @@ public class Swagger implements WebMvcConfigurer
 	public static final String TAG_VALIDATIONGATES = "Validation Gates";
 	public static final String TAG_ACTUATOR = "Actuator";
 
+	@Value( "${springdoc.show-actuator}" )
+	private boolean showActuator;
+
 	@GetMapping( "/" )
 	public void delegateToSite( HttpServletResponse response ) throws IOException
 	{
@@ -36,12 +40,16 @@ public class Swagger implements WebMvcConfigurer
 	}
 
 	@Bean
-	public OpenAPI openAPI(BuildProperties buildProperties)
+	public OpenAPI openAPI( BuildProperties buildProperties )
 	{
 		Info info = new Info().title( buildProperties.getName() ).version( buildProperties.getVersion() );
-		return new OpenAPI()
+		OpenAPI openAPI = new OpenAPI()
 				.addTagsItem( new Tag().name( TAG_VALIDATIONGATES ) )
-				.addTagsItem( new Tag().name( TAG_ACTUATOR ) )
 				.info( info );
+		if ( showActuator )
+		{
+			openAPI.addTagsItem( new Tag().name( TAG_ACTUATOR ) );
+		}
+		return openAPI;
 	}
 }

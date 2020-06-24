@@ -2,7 +2,7 @@ package eu.cessda.cmv.server;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.UnsupportedEncodingException;
@@ -19,11 +19,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
 
 @AutoConfigureMockMvc
 @SpringBootTest( webEnvironment = WebEnvironment.RANDOM_PORT )
-public class ValidationGateControllerTest
+public class ValidationControllerV0Test
 {
 	@Autowired
 	private MockMvc mockMvc;
@@ -40,13 +41,14 @@ public class ValidationGateControllerTest
 		String responseBody;
 		ValidationReportV0 validationReport;
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder( "" )
-				.path( "/api" )
-				.path( "/basic-validation-gate" )
+				.path( ValidationControllerV0.BASE_PATH )
+				.path( "/Validation" )
 				.queryParameter( "documentUrl", documentUrl )
-				.queryParameter( "profileUrl", profileUrl );
+				.queryParameter( "profileUrl", profileUrl )
+				.queryParameter( "validationGateName", ValidationGateName.BASIC.toString() );
 
 		// XML
-		responseBody = mockMvc.perform( get( uriBuilder.toEncodedString() )
+		responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
 				.accept( MediaType.APPLICATION_XML ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
@@ -54,7 +56,7 @@ public class ValidationGateControllerTest
 		assertThat( validationReport.getConstraintViolations(), hasSize( 9 ) );
 
 		// JSON
-		responseBody = mockMvc.perform( get( uriBuilder.toEncodedString() )
+		responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
 				.accept( MediaType.APPLICATION_JSON ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
@@ -68,13 +70,14 @@ public class ValidationGateControllerTest
 		String responseBody;
 		ValidationReportV0 validationReport;
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder( "" )
-				.path( "/api" )
-				.path( "/standard-validation-gate" )
+				.path( ValidationControllerV0.BASE_PATH )
+				.path( "/Validation" )
 				.queryParameter( "documentUrl", documentUrl )
-				.queryParameter( "profileUrl", profileUrl );
+				.queryParameter( "profileUrl", profileUrl )
+				.queryParameter( "validationGateName", ValidationGateName.STANDARD.toString() );
 
 		// XML
-		responseBody = mockMvc.perform( get( uriBuilder.toEncodedString() )
+		responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
 				.accept( MediaType.APPLICATION_XML ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
@@ -82,7 +85,7 @@ public class ValidationGateControllerTest
 		assertThat( validationReport.getConstraintViolations(), hasSize( 21 ) );
 
 		// JSON
-		responseBody = mockMvc.perform( get( uriBuilder.toEncodedString() )
+		responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
 				.accept( MediaType.APPLICATION_JSON ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
