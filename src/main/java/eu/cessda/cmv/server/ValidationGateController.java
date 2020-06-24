@@ -1,5 +1,7 @@
 package eu.cessda.cmv.server;
 
+import static eu.cessda.cmv.core.ValidationGateName.BASIC;
+import static eu.cessda.cmv.core.ValidationGateName.STANDARD;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
@@ -15,12 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import eu.cessda.cmv.core.BasicValidationGate;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.ConstraintViolation;
 import eu.cessda.cmv.core.Document;
 import eu.cessda.cmv.core.Profile;
-import eu.cessda.cmv.core.StandardValidationGate;
 import eu.cessda.cmv.core.ValidationGate;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ConstraintViolationV0;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
@@ -47,7 +47,7 @@ public class ValidationGateController
 			@RequestParam( required = true ) URL documentUrl,
 			@RequestParam( required = true ) URL profileUrl )
 	{
-		return validate( new BasicValidationGate(), documentUrl, profileUrl );
+		return validate( factory.newValidationGate( BASIC ), documentUrl, profileUrl );
 	}
 
 	@GetMapping(
@@ -59,7 +59,7 @@ public class ValidationGateController
 			@RequestParam( required = true ) URL documentUrl,
 			@RequestParam( required = true ) URL profileUrl )
 	{
-		return validate( new StandardValidationGate(), documentUrl, profileUrl );
+		return validate( factory.newValidationGate( STANDARD ), documentUrl, profileUrl );
 	}
 
 	private ValidationReportV0 validate( ValidationGate.V10 validationGate, URL documentUrl, URL profileUrl )
