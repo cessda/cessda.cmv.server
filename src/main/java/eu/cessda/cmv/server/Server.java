@@ -57,4 +57,10 @@ public class Server extends SpringBootServletInitializer
 	{
 		return new CessdaMetadataValidatorFactory();
 	}
+
+	@Bean
+	public ValidationService.V10 validationService()
+	{
+		return new JdkValidationService( cessdaMetadataValidatorFactory() );
+	}
 }
