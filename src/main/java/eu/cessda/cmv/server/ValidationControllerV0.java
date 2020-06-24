@@ -29,7 +29,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping( ValidationControllerV0.BASE_PATH )
-@Tag( name = Swagger.TAG_VALIDATIONGATES )
+@Tag( name = Swagger.TAG_VALIDATIONS )
 public class ValidationControllerV0
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger( ValidationControllerV0.class );

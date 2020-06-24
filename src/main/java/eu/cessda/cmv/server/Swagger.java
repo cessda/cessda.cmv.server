@@ -22,6 +22,7 @@ import io.swagger.v3.oas.models.tags.Tag;
 public class Swagger implements WebMvcConfigurer
 {
 	public static final String TAG_VALIDATIONGATES = "Validation Gates";
+	public static final String TAG_VALIDATIONS = "Validations";
 	public static final String TAG_ACTUATOR = "Actuator";
 
 	@Value( "${springdoc.show-actuator}" )
@@ -44,7 +45,7 @@ public class Swagger implements WebMvcConfigurer
 	{
 		Info info = new Info().title( buildProperties.getName() ).version( buildProperties.getVersion() );
 		OpenAPI openAPI = new OpenAPI()
-				.addTagsItem( new Tag().name( TAG_VALIDATIONGATES ) )
+				.addTagsItem( new Tag().name( TAG_VALIDATIONS ) )
 				.info( info );
 		if ( showActuator )
 		{
