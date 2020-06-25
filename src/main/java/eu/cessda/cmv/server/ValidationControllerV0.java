@@ -19,7 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping( ValidationControllerV0.BASE_PATH )
-@Tag( name = Swagger.TAG_VALIDATIONS )
+@Tag( name = SwaggerConfiguration.TAG_VALIDATIONS )
 public class ValidationControllerV0
 {
 	public static final String BASE_PATH = "/api/V0";

@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @AutoConfigureMockMvc
 @SpringBootTest( webEnvironment = WebEnvironment.RANDOM_PORT )
-public class SwaggerTest
+public class SwaggerConfigurationTest
 {
 	@Autowired
 	private MockMvc mockMvc;
