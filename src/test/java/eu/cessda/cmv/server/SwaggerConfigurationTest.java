@@ -29,5 +29,7 @@ public class SwaggerConfigurationTest
 		mockMvc.perform( get( "/api/swagger" ) )
 				.andExpect( status().is( 302 ) )
 				.andExpect( header().string( "Location", containsString( "swagger-ui/index.html" ) ) );
+		mockMvc.perform( get( "/ui" ) )
+				.andExpect( status().isOk() );
 	}
 }
