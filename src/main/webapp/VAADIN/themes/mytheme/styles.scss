@@ -1,0 +1,234 @@
+@import "mytheme.scss";
+@import "cessda.scss";
+@import "addons.scss";
+
+// This file prefixes all rules with the theme name to avoid causing conflicts with other themes.
+// The actual styles should be defined in mytheme.scss
+
+.mytheme {
+  @include addons;
+  @include cessda;
+  @include mytheme;
+
+}
+
+@media (min-width: 992px){
+	.header-cessda .header-content{
+		h2 {
+	      	padding-top: 30px;
+	    }
+    }
+    .search-hit-info{
+		width:250px;
+	}
+}
+@media (max-width: 992px){
+    .header-cessda .col-md-8{
+    	width:100%;
+    }
+}
+@media (min-width: 793px){
+    .discover-page .header-block{
+    	display:none !important;
+	}
+}
+	
+@media (max-width: 792px){
+	.header-cessda .primary-header{
+		text-align: right !important;
+		.col-md-6{
+	      	width: 100%;
+	    }
+	    .social{
+	    	display:none !important;
+	    }
+    }
+    .facet-filter{
+		width:100% !important;
+	}
+	
+	.side-panel{
+		width:100% !important;
+		margin:5px 0 !important;
+		padding:5px 0 !important;
+	}
+	
+	.main-container{
+		margin-left:0 !important;
+	}
+	
+	.button-responsive{
+		display:block !important;
+	}
+	.block-responsive{
+		display:none !important;
+	}
+	.col-des-4{
+		width:100% !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+  .header-cessda .header-content .logo a img {
+    width: 100%;
+  }
+  .search-hit-info{
+		width:250px;
+	}
+}
+
+@media (min-width: 992px){
+	.header-cessda .header-content h2 {
+      	padding-top: 30px;
+    }
+}
+
+@media (max-width: 767px) {
+  .header-cessda .header-content .logo a img {
+    width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .header-cessda .header-content .search {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .header-cessda .primary-header .log-in {
+    padding: 0px;
+  }
+}
+
+@media (max-width: 767px) {
+  .header-cessda .primary-header .email {
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .header-cessda .header-bg {
+    background-size: cover;
+  }
+}
+
+@media (max-width: 767px) {
+  .header-cessda .common-header {
+    padding: 10px 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .header-cessda .menu-bg .main-menu nav {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+  .header-cessda .menu-bg .main-menu nav ul li a {
+    font-size: 84%;
+  }
+}
+
+@media (max-width: 767px) {
+  .menu-btn {
+    display: block;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+  .section-footer .footer-top .line-break {
+    border-bottom: 1px solid #444;
+    position: absolute;
+    right: 0;
+    bottom: 30%;
+    width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .section-footer .footer-top .line-break {
+    border-bottom: 1px solid #444;
+    position: absolute;
+    right: 0;
+    bottom: 40%;
+    width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .section-footer .footer-top .logo-footer {
+    text-align: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .section-footer .footer-top .footer-content {
+    text-align: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .section-footer .footer-down .contact {
+    margin-top: 20px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .section-footer .footer-down .menu-footer {
+    margin-top: 20px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .section-footer .footer-down .menu-footer ul {
+    columns: 1;
+    -webkit-columns: 1;
+    -moz-columns: 1;
+  }
+}
+
+@media (max-width: 767px) {
+  .section-footer .footer-down .quick-link {
+    margin-top: 20px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .secondary-footer p {
+    text-align: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .secondary-footer .privacy div {
+    text-align: center !important;
+  }
+}
+#atlwdg-trigger{
+	color: #fff !important;
+}
+
+	.atlwdg-trigger {
+		right: 0;
+		bottom: 0;
+		background-color: rgba(43,90,155,1) !important;
+		border: 1px solid transparent;
+		color: #fff !important;
+		font-size: 15px;
+		padding: 8px 10px;
+		-webkit-box-shadow: none;
+		box-shadow: none;
+		border-radius: 2px 0 0 0;
+		font-family: "Source Sans Pro", sans-serif;
+		transition: all 0.3s;
+		z-index:999;
+	}
+
+	.atlwdg-trigger:hover {
+		background-color: rgba(43,90,155,0.85) !important;
+	}

@@ -23,7 +23,21 @@
 		<server.port>8080</server.port>
 		<server.servlet.context-path>/</server.servlet.context-path>
 		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
+		<vaadin.version>8.11.0</vaadin.version>
+		<vaadin.servlet.productionMode>false</vaadin.servlet.productionMode>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.vaadin</groupId>
+				<artifactId>vaadin-bom</artifactId>
+				<version>${vaadin.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
@@ -31,8 +45,26 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-themes</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>com.vaadin</groupId>
+		    <artifactId>vaadin-sass-compiler</artifactId>
+		    <version>0.9.13</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.vaadin</groupId>
+		    <artifactId>viritin</artifactId>
+		    <version>2.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.zalando</groupId>
@@ -148,6 +180,20 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>com.vaadin</groupId>
+				<artifactId>vaadin-maven-plugin</artifactId>
+				<version>${vaadin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+	                         <goal>resources</goal>
+	                         <goal>update-widgetset</goal>
+	                         <goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>0.33.0</version>
@@ -241,6 +287,11 @@
 				<targetPath>${project.basedir}/target/docker/context</targetPath>
 				<includes><include>**/*</include></includes>
 			</resource>
+			<resource>
+				<directory>src/main/webapp/VAADIN</directory>
+				<targetPath>${project.basedir}/target/classes/VAADIN</targetPath>
+				<includes><include>**/*</include></includes>
+			</resource>
 		</resources>
 	</build>
 
@@ -250,6 +301,7 @@
 			<properties>
 				<logging.file.name>application.log</logging.file.name>
 				<server.servlet.context-path></server.servlet.context-path><!-- necessary for HEALTHCHECK -->
+				<vaadin.servlet.productionMode>true</vaadin.servlet.productionMode>
 			</properties>
 		</profile>
 	</profiles>
