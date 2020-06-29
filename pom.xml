@@ -53,6 +53,15 @@
 		    <artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-themes</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>com.vaadin</groupId>
+		    <artifactId>vaadin-sass-compiler</artifactId>
+		    <version>0.9.13</version>
+		</dependency>
+		<dependency>
 		    <groupId>org.vaadin</groupId>
 		    <artifactId>viritin</artifactId>
 		    <version>2.4</version>
@@ -174,25 +183,12 @@
 				<groupId>com.vaadin</groupId>
 				<artifactId>vaadin-maven-plugin</artifactId>
 				<version>${vaadin.version}</version>
-				<configuration>
-					<extraJvmArgs>-Xmx1g -Xss1024k</extraJvmArgs>
-					<webappDirectory>src/main/resources/VAADIN/widgetsets</webappDirectory>
-					<hostedWebapp>src/main/resources/VAADIN/widgetsets</hostedWebapp>
-					<noServer>true</noServer>
-					<draftCompile>true</draftCompile>
-					<persistentunitcachedir>${project.build.directory}/gwtdirt</persistentunitcachedir>
-					<compileReport>false</compileReport>
-					<style>OBF</style>
-					<strict>true</strict>
-					<deploy>${project.build.directory}/gwt-deploy</deploy>
-				</configuration>
 				<executions>
 					<execution>
 						<goals>
-							<goal>clean</goal>
-							<goal>resources</goal>
-							<goal>update-widgetset</goal>
-							<goal>compile</goal>
+	                         <goal>resources</goal>
+	                         <goal>update-widgetset</goal>
+	                         <goal>compile</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -289,6 +285,11 @@
 				<directory>src/main/resources/docker</directory>
 				<filtering>true</filtering>
 				<targetPath>${project.basedir}/target/docker/context</targetPath>
+				<includes><include>**/*</include></includes>
+			</resource>
+			<resource>
+				<directory>src/main/webapp/VAADIN</directory>
+				<targetPath>${project.basedir}/target/classes/VAADIN</targetPath>
 				<includes><include>**/*</include></includes>
 			</resource>
 		</resources>
