@@ -351,5 +351,4 @@
 			<uniqueVersion>true</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
-
 </project>
