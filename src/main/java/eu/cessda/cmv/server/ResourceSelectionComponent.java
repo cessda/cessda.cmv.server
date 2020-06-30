@@ -38,7 +38,12 @@ public class ResourceSelectionComponent extends CustomComponent
 
 	public ResourceSelectionComponent()
 	{
-		resources = new ArrayList<>();
+		this( new ArrayList<>() );
+	}
+
+	public ResourceSelectionComponent( List<Resource> resources )
+	{
+		this.resources = resources;
 		Grid<Resource> grid = newGrid();
 		grid.setItems( resources );
 

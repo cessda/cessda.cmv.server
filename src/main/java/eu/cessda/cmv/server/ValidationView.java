@@ -1,7 +1,11 @@
 package eu.cessda.cmv.server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
+import org.gesis.commons.resource.Resource;
 import org.gesis.commons.resource.TextResource;
 
 import com.vaadin.navigator.View;
@@ -34,7 +38,21 @@ public class ValidationView extends VerticalLayout implements View
 	public void init()
 	{
 		setSizeFull();
+		List<Resource> documents = new ArrayList<>();
+		Button validateButton = new Button( "Validate" );
+		validateButton.addClickListener( listener ->
+		{
+			documents.forEach( resource ->
+			{
+				System.out.println( new TextResource( resource ).toString() );
+			} );
+		} );
+		addComponent( newConfigurationPanel( documents ) );
+		addComponent( validateButton );
+	}
 
+	private Panel newConfigurationPanel( List<Resource> documents )
+	{
 		ComboBox<ValidationGateName> validationGateNameComboBox = new ComboBox<>();
 		validationGateNameComboBox.setItems( ValidationGateName.values() );
 		validationGateNameComboBox.setCaption( "Validation Gate" );
@@ -43,7 +61,7 @@ public class ValidationView extends VerticalLayout implements View
 		ResourceSelectionComponent profileSelection = new ResourceSelectionComponent();
 		profileSelection.setCaption( "Profile" );
 
-		ResourceSelectionComponent documentSelection = new ResourceSelectionComponent();
+		ResourceSelectionComponent documentSelection = new ResourceSelectionComponent( documents );
 		documentSelection.setCaption( "Documents" );
 
 		FormLayout formLayout = new FormLayout();
@@ -54,17 +72,6 @@ public class ValidationView extends VerticalLayout implements View
 
 		Panel configurationPanel = new Panel( "Configuration" );
 		configurationPanel.setContent( formLayout );
-
-		Button validateButton = new Button( "Validate" );
-		validateButton.addClickListener( listener ->
-		{
-			documentSelection.getResources().forEach( resource ->
-			{
-				System.out.println( new TextResource( resource ).toString() );
-			} );
-		} );
-
-		addComponent( configurationPanel );
-		addComponent( validateButton );
+		return configurationPanel;
 	}
 }
