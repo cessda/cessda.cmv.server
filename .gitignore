@@ -1,5 +1,6 @@
 # Build directory
 /target/
+/src/main/webapp/VAADIN/widgetsets/
 
 # Exclude Eclipse related files
 .project
