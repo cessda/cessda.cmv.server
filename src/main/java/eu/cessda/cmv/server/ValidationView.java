@@ -18,6 +18,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 import eu.cessda.cmv.core.ValidationGateName;
+import eu.cessda.cmv.server.ResourceSelectionComponent.SelectionMode;
 
 @UIScope
 @SpringView( name = ValidationView.VIEW_NAME )
@@ -58,10 +59,10 @@ public class ValidationView extends VerticalLayout implements View
 		validationGateNameComboBox.setCaption( "Validation Gate" );
 		validationGateNameComboBox.setValue( ValidationGateName.BASIC );
 
-		ResourceSelectionComponent profileSelection = new ResourceSelectionComponent();
+		ResourceSelectionComponent profileSelection = new ResourceSelectionComponent( SelectionMode.SINGLE );
 		profileSelection.setCaption( "Profile" );
 
-		ResourceSelectionComponent documentSelection = new ResourceSelectionComponent( documents );
+		ResourceSelectionComponent documentSelection = new ResourceSelectionComponent( SelectionMode.MULTI, documents );
 		documentSelection.setCaption( "Documents" );
 
 		FormLayout formLayout = new FormLayout();

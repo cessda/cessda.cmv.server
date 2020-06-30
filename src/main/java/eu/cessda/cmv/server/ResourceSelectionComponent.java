@@ -2,6 +2,9 @@ package eu.cessda.cmv.server;
 
 import static com.vaadin.ui.Grid.SelectionMode.NONE;
 import static com.vaadin.ui.themes.ValoTheme.OPTIONGROUP_HORIZONTAL;
+import static eu.cessda.cmv.server.ResourceSelectionComponent.SelectionMode.MULTI;
+import static eu.cessda.cmv.server.ResourceSelectionComponent.SelectionMode.SINGLE;
+import static java.util.Objects.requireNonNull;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -29,6 +32,12 @@ public class ResourceSelectionComponent extends CustomComponent
 
 	private List<Resource> resources;
 
+	public enum SelectionMode
+	{
+		SINGLE,
+		MULTI
+	}
+
 	private enum ProvisioningOptions
 	{
 		BY_PREDEFINED,
@@ -36,25 +45,42 @@ public class ResourceSelectionComponent extends CustomComponent
 		BY_UPLOAD
 	}
 
-	public ResourceSelectionComponent()
+	public ResourceSelectionComponent( SelectionMode selectionMode )
 	{
-		this( new ArrayList<>() );
+		this( selectionMode, new ArrayList<>() );
 	}
 
-	public ResourceSelectionComponent( List<Resource> resources )
+	public ResourceSelectionComponent( SelectionMode selectionMode, List<Resource> resources )
 	{
+		requireNonNull( selectionMode );
+		requireNonNull( resources );
 		this.resources = resources;
+
+		MultiFileUpload multiFileUpload = newMultiFileUpload( selectionMode );
+		RadioButtonGroup<ProvisioningOptions> buttonGroup = newButtonGroup();
+
+		Button clearButton = new Button( "Clear" );
 		Grid<Resource> grid = newGrid();
 		grid.setItems( resources );
 
-		Button clearButton = new Button( "Clear" );
-		clearButton.setVisible( false );
+		Runnable refreshComponents = () ->
+		{
+			multiFileUpload.setVisible( buttonGroup.getValue().equals( ProvisioningOptions.BY_UPLOAD )
+					& (selectionMode.equals( MULTI ) || (selectionMode.equals( SINGLE ) & resources.isEmpty())) );
+			clearButton.setVisible( !resources.isEmpty() );
+			grid.getDataProvider().refreshAll();
+			grid.setVisible( !resources.isEmpty() );
+			if ( !resources.isEmpty() )
+			{
+				grid.setHeightByRows( resources.size() );
+			}
+		};
+
+		buttonGroup.addSelectionListener( listener -> refreshComponents.run() );
 		clearButton.addClickListener( listener ->
 		{
 			resources.clear();
-			grid.getDataProvider().refreshAll();
-			grid.setVisible( false );
-			clearButton.setVisible( false );
+			refreshComponents.run();
 		} );
 
 		UploadFinishedHandler uploadFinishedHandler = (
@@ -65,18 +91,9 @@ public class ResourceSelectionComponent extends CustomComponent
 				int filesLeftInQueue ) ->
 		{
 			resources.add( new InMemoryResource( URI.create( fileName ), inputStream ) );
-			grid.getDataProvider().refreshAll();
-			grid.setVisible( true );
-			grid.setHeightByRows( resources.size() );
-			clearButton.setVisible( true );
+			refreshComponents.run();
 		};
-		MultiFileUpload multiFileUpload = newMultiFileUpload( uploadFinishedHandler );
-
-		RadioButtonGroup<ProvisioningOptions> buttonGroup = newButtonGroup();
-		buttonGroup.addSelectionListener( listener ->
-		{
-			multiFileUpload.setVisible( listener.getValue().equals( ProvisioningOptions.BY_UPLOAD ) );
-		} );
+		multiFileUpload.getUploadStatePanel().setFinishedHandler( uploadFinishedHandler );
 
 		VerticalLayout verticalLayout = new VerticalLayout();
 		verticalLayout.setMargin( false );
@@ -86,6 +103,7 @@ public class ResourceSelectionComponent extends CustomComponent
 		verticalLayout.addComponent( clearButton );
 		setCompositionRoot( verticalLayout );
 		setSizeUndefined();
+		refreshComponents.run();
 	}
 
 	public List<Resource> getResources()
@@ -117,13 +135,16 @@ public class ResourceSelectionComponent extends CustomComponent
 		return buttonGroup;
 	}
 
-	private MultiFileUpload newMultiFileUpload( UploadFinishedHandler uploadFinishedHandler )
+	private MultiFileUpload newMultiFileUpload( SelectionMode selectionMode )
 	{
 		UploadStateWindow uploadStateWindow = new UploadStateWindow();
 		uploadStateWindow.setWindowPosition( UploadStateWindow.WindowPosition.CENTER );
 		uploadStateWindow.setOverallProgressVisible( true );
 		uploadStateWindow.setResizable( true );
-		MultiFileUpload multiFileUpload = new MultiFileUpload( uploadFinishedHandler, uploadStateWindow );
+		MultiFileUpload multiFileUpload = new MultiFileUpload(
+				null,
+				uploadStateWindow,
+				selectionMode.equals( SelectionMode.MULTI ) );
 		multiFileUpload.setMaxFileSize( 100_000_000 );
 		multiFileUpload.setSizeErrorMsgPattern( "File is too big (max = {0}): {2} ({1})" );
 		multiFileUpload.setPanelCaption( "Files" );
