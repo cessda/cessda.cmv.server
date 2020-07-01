@@ -1,5 +1,12 @@
 package eu.cessda.cmv.server;
 
+import static eu.cessda.cmv.server.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
+import static eu.cessda.cmv.server.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
+import static eu.cessda.cmv.server.ResourceSelectionComponent.ProvisioningOptions.BY_URL;
+import static eu.cessda.cmv.server.ResourceSelectionComponent.SelectionMode.MULTI;
+import static eu.cessda.cmv.server.ResourceSelectionComponent.SelectionMode.SINGLE;
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,11 +21,12 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 import eu.cessda.cmv.core.ValidationGateName;
-import eu.cessda.cmv.server.ResourceSelectionComponent.SelectionMode;
+import eu.cessda.cmv.server.ResourceSelectionComponent.ProvisioningOptions;
 
 @UIScope
 @SpringView( name = ValidationView.VIEW_NAME )
@@ -28,42 +36,42 @@ public class ValidationView extends VerticalLayout implements View
 
 	private static final long serialVersionUID = -5924926837826583950L;
 
-	enum ProvisioningOptions
-	{
-		BY_PREDEFINED,
-		BY_URL,
-		BY_UPLOAD
-	}
-
 	@PostConstruct
 	public void init()
 	{
 		setSizeFull();
+		List<Resource> profiles = new ArrayList<>();
 		List<Resource> documents = new ArrayList<>();
+		addComponent( newConfigurationPanel( profiles, documents ) );
 		Button validateButton = new Button( "Validate" );
 		validateButton.addClickListener( listener ->
 		{
-			documents.forEach( resource ->
+			Notification.show( "Validation coming soon!" );
+			profiles.forEach( resource ->
 			{
 				System.out.println( new TextResource( resource ).toString() );
 			} );
 		} );
-		addComponent( newConfigurationPanel( documents ) );
 		addComponent( validateButton );
 	}
 
-	private Panel newConfigurationPanel( List<Resource> documents )
+	private Panel newConfigurationPanel( List<Resource> profiles, List<Resource> documents )
 	{
 		ComboBox<ValidationGateName> validationGateNameComboBox = new ComboBox<>();
-		validationGateNameComboBox.setItems( ValidationGateName.values() );
 		validationGateNameComboBox.setCaption( "Validation Gate" );
+		validationGateNameComboBox.setEmptySelectionAllowed( false );
+		validationGateNameComboBox.setItems( ValidationGateName.values() );
 		validationGateNameComboBox.setValue( ValidationGateName.BASIC );
 
-		ResourceSelectionComponent profileSelection = new ResourceSelectionComponent( SelectionMode.SINGLE );
+		ResourceSelectionComponent profileSelection = new ResourceSelectionComponent(
+				SINGLE, asList( ProvisioningOptions.values() ), BY_PREDEFINED, profiles );
 		profileSelection.setCaption( "Profile" );
+		profileSelection.setWidthFull();
 
-		ResourceSelectionComponent documentSelection = new ResourceSelectionComponent( SelectionMode.MULTI, documents );
+		ResourceSelectionComponent documentSelection = new ResourceSelectionComponent(
+				MULTI, asList( BY_URL, BY_UPLOAD ), BY_UPLOAD, documents );
 		documentSelection.setCaption( "Documents" );
+		documentSelection.setWidthFull();
 
 		FormLayout formLayout = new FormLayout();
 		formLayout.setMargin( true );

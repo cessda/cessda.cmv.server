@@ -1,7 +1,11 @@
 package eu.cessda.cmv.server;
 
+import static com.vaadin.shared.ui.grid.HeightMode.ROW;
 import static com.vaadin.ui.Grid.SelectionMode.NONE;
 import static com.vaadin.ui.themes.ValoTheme.OPTIONGROUP_HORIZONTAL;
+import static eu.cessda.cmv.server.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
+import static eu.cessda.cmv.server.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
+import static eu.cessda.cmv.server.ResourceSelectionComponent.ProvisioningOptions.BY_URL;
 import static eu.cessda.cmv.server.ResourceSelectionComponent.SelectionMode.MULTI;
 import static eu.cessda.cmv.server.ResourceSelectionComponent.SelectionMode.SINGLE;
 import static java.util.Objects.requireNonNull;
@@ -16,11 +20,12 @@ import org.gesis.commons.resource.InMemoryResource;
 import org.gesis.commons.resource.Resource;
 
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.RadioButtonGroup;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;
@@ -38,26 +43,48 @@ public class ResourceSelectionComponent extends CustomComponent
 		MULTI
 	}
 
-	private enum ProvisioningOptions
+	public enum ProvisioningOptions
 	{
 		BY_PREDEFINED,
 		BY_URL,
 		BY_UPLOAD
 	}
 
-	public ResourceSelectionComponent( SelectionMode selectionMode )
+	public ResourceSelectionComponent(
+			SelectionMode selectionMode,
+			List<ProvisioningOptions> provisioningOptions,
+			ProvisioningOptions selectedProvisioningOption )
 	{
-		this( selectionMode, new ArrayList<>() );
+		this( selectionMode, provisioningOptions, selectedProvisioningOption, new ArrayList<>() );
 	}
 
-	public ResourceSelectionComponent( SelectionMode selectionMode, List<Resource> resources )
+	public ResourceSelectionComponent(
+			SelectionMode selectionMode,
+			List<ProvisioningOptions> provisioningOptions,
+			ProvisioningOptions selectedProvisioningOption,
+			List<Resource> resources )
 	{
 		requireNonNull( selectionMode );
+		requireNonNull( provisioningOptions );
 		requireNonNull( resources );
 		this.resources = resources;
 
 		MultiFileUpload multiFileUpload = newMultiFileUpload( selectionMode );
-		RadioButtonGroup<ProvisioningOptions> buttonGroup = newButtonGroup();
+		RadioButtonGroup<ProvisioningOptions> buttonGroup = newButtonGroup( provisioningOptions,
+				selectedProvisioningOption );
+
+		ComboBox<Resource> comboBox = new ComboBox<>();
+		comboBox.setPlaceholder( "Select profile" );
+		comboBox.setItemCaptionGenerator( resource -> resource.getUri().toString() );
+		comboBox.setWidth( 100, Unit.PERCENTAGE );
+		comboBox.setTextInputAllowed( false );
+		comboBox.setItems( Resource.newResource(
+				"https://bitbucket.org/cessda/cessda.cmv.core/raw/master/src/main/resources/demo-documents/ddi-v25/cdc25_profile.xml" ) );
+
+		TextField textField = new TextField();
+		textField.setWidthFull();
+		textField.setPlaceholder( "Paste url" );
+		textField.setWidth( 100, Unit.PERCENTAGE );
 
 		Button clearButton = new Button( "Clear" );
 		Grid<Resource> grid = newGrid();
@@ -65,7 +92,12 @@ public class ResourceSelectionComponent extends CustomComponent
 
 		Runnable refreshComponents = () ->
 		{
-			multiFileUpload.setVisible( buttonGroup.getValue().equals( ProvisioningOptions.BY_UPLOAD )
+			comboBox.setVisible( buttonGroup.getValue().equals( BY_PREDEFINED )
+					& (selectionMode.equals( SINGLE ) && resources.isEmpty()) );
+			textField.setVisible( buttonGroup.getValue().equals( BY_URL )
+					& (selectionMode.equals( MULTI ) || (selectionMode.equals( SINGLE ) & resources.isEmpty())) );
+			textField.clear();
+			multiFileUpload.setVisible( buttonGroup.getValue().equals( BY_UPLOAD )
 					& (selectionMode.equals( MULTI ) || (selectionMode.equals( SINGLE ) & resources.isEmpty())) );
 			clearButton.setVisible( !resources.isEmpty() );
 			grid.getDataProvider().refreshAll();
@@ -76,6 +108,32 @@ public class ResourceSelectionComponent extends CustomComponent
 			}
 		};
 
+		textField.addValueChangeListener( listener ->
+		{
+			if ( listener.getValue() != null
+					&& !listener.getValue().trim().contentEquals( "" )
+					&& listener.getValue().startsWith( "http" ) )
+			{
+				if ( selectionMode.equals( SINGLE ) )
+				{
+					resources.clear();
+				}
+				resources.add( Resource.newResource( listener.getValue() ) );
+
+				refreshComponents.run();
+			}
+		} );
+
+		comboBox.addSelectionListener( listener ->
+		{
+			listener.getSelectedItem().ifPresent( resource ->
+			{
+				resources.clear();
+				resources.add( resource );
+				refreshComponents.run();
+				comboBox.clear();
+			} );
+		} );
 		buttonGroup.addSelectionListener( listener -> refreshComponents.run() );
 		clearButton.addClickListener( listener ->
 		{
@@ -97,12 +155,15 @@ public class ResourceSelectionComponent extends CustomComponent
 
 		VerticalLayout verticalLayout = new VerticalLayout();
 		verticalLayout.setMargin( false );
+		verticalLayout.setWidth( 100, Unit.PERCENTAGE );
 		verticalLayout.addComponent( buttonGroup );
+		verticalLayout.addComponent( textField );
+		verticalLayout.addComponent( comboBox );
 		verticalLayout.addComponent( multiFileUpload );
 		verticalLayout.addComponent( grid );
 		verticalLayout.addComponent( clearButton );
 		setCompositionRoot( verticalLayout );
-		setSizeUndefined();
+		setWidthFull();
 		refreshComponents.run();
 	}
 
@@ -117,7 +178,7 @@ public class ResourceSelectionComponent extends CustomComponent
 		grid.addColumn( Resource::getUri ).setCaption( "URI" );
 		grid.setSelectionMode( NONE );
 		grid.setWidthFull();
-		grid.setHeightMode( HeightMode.ROW );
+		grid.setHeightMode( ROW );
 		grid.setVisible( false );
 		while (grid.getHeaderRowCount() > 0)
 		{
@@ -126,12 +187,14 @@ public class ResourceSelectionComponent extends CustomComponent
 		return grid;
 	}
 
-	private RadioButtonGroup<ProvisioningOptions> newButtonGroup()
+	private RadioButtonGroup<ProvisioningOptions> newButtonGroup(
+			List<ProvisioningOptions> provisioningOptions,
+			ProvisioningOptions selectedProvisioningOption )
 	{
 		RadioButtonGroup<ProvisioningOptions> buttonGroup = new RadioButtonGroup<>();
-		buttonGroup.setItems( ProvisioningOptions.BY_URL, ProvisioningOptions.BY_UPLOAD );
+		buttonGroup.setItems( provisioningOptions );
 		buttonGroup.addStyleName( OPTIONGROUP_HORIZONTAL );
-		buttonGroup.setValue( ProvisioningOptions.BY_UPLOAD );
+		buttonGroup.setValue( selectedProvisioningOption );
 		return buttonGroup;
 	}
 
@@ -141,10 +204,8 @@ public class ResourceSelectionComponent extends CustomComponent
 		uploadStateWindow.setWindowPosition( UploadStateWindow.WindowPosition.CENTER );
 		uploadStateWindow.setOverallProgressVisible( true );
 		uploadStateWindow.setResizable( true );
-		MultiFileUpload multiFileUpload = new MultiFileUpload(
-				null,
-				uploadStateWindow,
-				selectionMode.equals( SelectionMode.MULTI ) );
+		MultiFileUpload multiFileUpload = new MultiFileUpload( null, uploadStateWindow, selectionMode.equals( MULTI ) );
+		// multiFileUpload.setAcceptedMimeTypes( Arrays.asList( "xml" ) );
 		multiFileUpload.setMaxFileSize( 100_000_000 );
 		multiFileUpload.setSizeErrorMsgPattern( "File is too big (max = {0}): {2} ({1})" );
 		multiFileUpload.setPanelCaption( "Files" );
