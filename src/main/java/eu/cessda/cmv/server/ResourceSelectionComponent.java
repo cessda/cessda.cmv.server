@@ -180,10 +180,7 @@ public class ResourceSelectionComponent extends CustomComponent
 		grid.setWidthFull();
 		grid.setHeightMode( ROW );
 		grid.setVisible( false );
-		while (grid.getHeaderRowCount() > 0)
-		{
-			grid.removeHeaderRow( 0 );
-		}
+		grid.setHeaderVisible( false );
 		return grid;
 	}
 

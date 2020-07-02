@@ -13,15 +13,20 @@ import java.util.List;
 import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.vaadin.data.ValueProvider;
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.renderers.ComponentRenderer;
 
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.core.ValidationService;
@@ -41,8 +46,38 @@ public class ValidationView extends VerticalLayout implements View
 		setSizeFull();
 		List<Resource> profileResources = new ArrayList<>();
 		List<Resource> documentResources = new ArrayList<>();
+		List<ValidationReportV0> validationReports = new ArrayList<>();
+
 		addComponent( newConfigurationPanel( profileResources, documentResources ) );
+
 		Button validateButton = new Button( "Validate" );
+		addComponent( validateButton );
+
+		Grid<ValidationReportV0> grid = new Grid<>();
+		grid.setSizeFull();
+		grid.setSelectionMode( SelectionMode.SINGLE );
+		ValueProvider<ValidationReportV0, FormLayout> rowValueProvider = validationReport ->
+		{
+			FormLayout formLayout = new FormLayout();
+			Label documentLabel = new Label();
+			documentLabel.setCaption( "Document" );
+			documentLabel.setValue( "path to document" );
+			formLayout.addComponent( documentLabel );
+			validationReport.getConstraintViolations().forEach( cv ->
+			{
+				Label label = new Label();
+				label.setValue( cv.getMessage() );
+				formLayout.addComponent( label );
+			} );
+			return formLayout;
+		};
+		grid.addColumn( rowValueProvider, new ComponentRenderer() ).setSortable( false ).setHandleWidgetEvents( true );
+		grid.setHeaderVisible( false );
+		grid.setItems( validationReports );
+		grid.setRowHeight( 400 );
+
+		addComponent( grid );
+
 		validateButton.addClickListener( listener ->
 		{
 			if ( profileResources.isEmpty() )
@@ -55,20 +90,22 @@ public class ValidationView extends VerticalLayout implements View
 				Notification.show( "No documents selected!" );
 				return;
 			}
+
+			validationReports.clear();
+			grid.getDataProvider().refreshAll();
 			documentResources.forEach( documentResource ->
 			{
-				StringBuilder stringBuilder = new StringBuilder();
-				ValidationReportV0 validationReportV0 = validationService.validate( documentResource,
+				ValidationReportV0 validationReport = validationService.validate( documentResource,
 						profileResources.get( 0 ),
-						ValidationGateName.BASIC );
-				validationReportV0.getConstraintViolations().forEach( constraintViolation ->
-				{
-					stringBuilder.append( constraintViolation.getMessage() ).append( System.lineSeparator() );
-				} );
-				Notification.show( stringBuilder.toString() );
+						ValidationGateName.STRICT );
+				validationReports.add( validationReport );
 			} );
+			grid.getDataProvider().refreshAll();
+			if ( !documentResources.isEmpty() )
+			{
+				grid.setHeightByRows( documentResources.size() );
+			}
 		} );
-		addComponent( validateButton );
 	}
 
 	private Panel newConfigurationPanel( List<Resource> profiles, List<Resource> documents )
