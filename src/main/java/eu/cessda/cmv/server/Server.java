@@ -10,6 +10,7 @@ import org.zalando.problem.ProblemModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
+import eu.cessda.cmv.core.ValidationService;
 
 @SpringBootApplication
 public class Server extends SpringBootServletInitializer
@@ -61,6 +62,6 @@ public class Server extends SpringBootServletInitializer
 	@Bean
 	public ValidationService.V10 validationService()
 	{
-		return new JdkValidationService( cessdaMetadataValidatorFactory() );
+		return cessdaMetadataValidatorFactory().newValidationService();
 	}
 }

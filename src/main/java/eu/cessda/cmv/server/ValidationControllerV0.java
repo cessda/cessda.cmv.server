@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.cessda.cmv.core.ValidationGateName;
+import eu.cessda.cmv.core.ValidationService;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
