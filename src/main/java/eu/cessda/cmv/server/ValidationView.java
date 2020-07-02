@@ -10,10 +10,8 @@ import static java.util.Arrays.asList;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.gesis.commons.resource.Resource;
-import org.gesis.commons.resource.TextResource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringView;
@@ -26,6 +24,8 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 import eu.cessda.cmv.core.ValidationGateName;
+import eu.cessda.cmv.core.ValidationService;
+import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
 import eu.cessda.cmv.server.ResourceSelectionComponent.ProvisioningOptions;
 
 @UIScope
@@ -36,20 +36,36 @@ public class ValidationView extends VerticalLayout implements View
 
 	private static final long serialVersionUID = -5924926837826583950L;
 
-	@PostConstruct
-	public void init()
+	public ValidationView( @Autowired ValidationService.V10 validationService )
 	{
 		setSizeFull();
-		List<Resource> profiles = new ArrayList<>();
-		List<Resource> documents = new ArrayList<>();
-		addComponent( newConfigurationPanel( profiles, documents ) );
+		List<Resource> profileResources = new ArrayList<>();
+		List<Resource> documentResources = new ArrayList<>();
+		addComponent( newConfigurationPanel( profileResources, documentResources ) );
 		Button validateButton = new Button( "Validate" );
 		validateButton.addClickListener( listener ->
 		{
-			Notification.show( "Validation coming soon!" );
-			profiles.forEach( resource ->
+			if ( profileResources.isEmpty() )
 			{
-				System.out.println( new TextResource( resource ).toString() );
+				Notification.show( "No profile selected!" );
+				return;
+			}
+			if ( documentResources.isEmpty() )
+			{
+				Notification.show( "No documents selected!" );
+				return;
+			}
+			documentResources.forEach( documentResource ->
+			{
+				StringBuilder stringBuilder = new StringBuilder();
+				ValidationReportV0 validationReportV0 = validationService.validate( documentResource,
+						profileResources.get( 0 ),
+						ValidationGateName.BASIC );
+				validationReportV0.getConstraintViolations().forEach( constraintViolation ->
+				{
+					stringBuilder.append( constraintViolation.getMessage() ).append( System.lineSeparator() );
+				} );
+				Notification.show( stringBuilder.toString() );
 			} );
 		} );
 		addComponent( validateButton );
