@@ -27,6 +27,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ComponentRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.core.ValidationService;
@@ -54,8 +55,14 @@ public class ValidationView extends VerticalLayout implements View
 		addComponent( validateButton );
 
 		Grid<ValidationReportV0> grid = new Grid<>();
+		addComponent( grid );
+		grid.setHeaderVisible( false );
+		grid.setStyleName( ValoTheme.TABLE_BORDERLESS );
 		grid.setSizeFull();
-		grid.setSelectionMode( SelectionMode.SINGLE );
+		grid.setSelectionMode( SelectionMode.NONE );
+		grid.setRowHeight( 500 );
+		grid.setItems( validationReports );
+
 		ValueProvider<ValidationReportV0, FormLayout> rowValueProvider = validationReport ->
 		{
 			FormLayout formLayout = new FormLayout();
@@ -71,12 +78,8 @@ public class ValidationView extends VerticalLayout implements View
 			} );
 			return formLayout;
 		};
-		grid.addColumn( rowValueProvider, new ComponentRenderer() ).setSortable( false ).setHandleWidgetEvents( true );
-		grid.setHeaderVisible( false );
-		grid.setItems( validationReports );
-		grid.setRowHeight( 400 );
-
-		addComponent( grid );
+		grid.addColumn( rowValueProvider, new ComponentRenderer() )
+				.setSortable( false ).setHandleWidgetEvents( true );
 
 		validateButton.addClickListener( listener ->
 		{
