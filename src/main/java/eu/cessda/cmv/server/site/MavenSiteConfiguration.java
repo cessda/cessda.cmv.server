@@ -1,4 +1,4 @@
-package eu.cessda.cmv.server;
+package eu.cessda.cmv.server.site;
 
 import java.util.List;
 
@@ -17,6 +17,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExc
 import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 import org.springframework.web.servlet.resource.ResourceResolverChain;
+
+import eu.cessda.cmv.server.api.ResourceNotFoundException;
 
 @Configuration
 public class MavenSiteConfiguration implements WebMvcConfigurer

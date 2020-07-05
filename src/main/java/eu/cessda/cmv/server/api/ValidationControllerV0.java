@@ -1,4 +1,4 @@
-package eu.cessda.cmv.server;
+package eu.cessda.cmv.server.api;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;

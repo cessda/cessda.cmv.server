@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
+import eu.cessda.cmv.server.api.ValidationControllerV0;
 
 @AutoConfigureMockMvc
 @SpringBootTest( webEnvironment = WebEnvironment.RANDOM_PORT )

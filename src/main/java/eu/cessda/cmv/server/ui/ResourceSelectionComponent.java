@@ -1,13 +1,13 @@
-package eu.cessda.cmv.server;
+package eu.cessda.cmv.server.ui;
 
 import static com.vaadin.shared.ui.grid.HeightMode.ROW;
 import static com.vaadin.ui.Grid.SelectionMode.NONE;
 import static com.vaadin.ui.themes.ValoTheme.OPTIONGROUP_HORIZONTAL;
-import static eu.cessda.cmv.server.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
-import static eu.cessda.cmv.server.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
-import static eu.cessda.cmv.server.ResourceSelectionComponent.ProvisioningOptions.BY_URL;
-import static eu.cessda.cmv.server.ResourceSelectionComponent.SelectionMode.MULTI;
-import static eu.cessda.cmv.server.ResourceSelectionComponent.SelectionMode.SINGLE;
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_URL;
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.MULTI;
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.SINGLE;
 import static java.util.Objects.requireNonNull;
 
 import java.io.InputStream;

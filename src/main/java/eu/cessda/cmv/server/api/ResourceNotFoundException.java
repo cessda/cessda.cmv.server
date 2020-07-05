@@ -1,4 +1,4 @@
-package eu.cessda.cmv.server;
+package eu.cessda.cmv.server.api;
 
 import static java.lang.String.format;
 

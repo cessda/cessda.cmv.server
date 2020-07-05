@@ -1,10 +1,10 @@
-package eu.cessda.cmv.server;
+package eu.cessda.cmv.server.ui;
 
-import static eu.cessda.cmv.server.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
-import static eu.cessda.cmv.server.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
-import static eu.cessda.cmv.server.ResourceSelectionComponent.ProvisioningOptions.BY_URL;
-import static eu.cessda.cmv.server.ResourceSelectionComponent.SelectionMode.MULTI;
-import static eu.cessda.cmv.server.ResourceSelectionComponent.SelectionMode.SINGLE;
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_URL;
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.MULTI;
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.SINGLE;
 import static java.util.Arrays.asList;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.core.ValidationService;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
-import eu.cessda.cmv.server.ResourceSelectionComponent.ProvisioningOptions;
+import eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions;
 
 @UIScope
 @SpringView( name = ValidationView.VIEW_NAME )

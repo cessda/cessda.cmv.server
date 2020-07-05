@@ -1,4 +1,4 @@
-package eu.cessda.cmv.server;
+package eu.cessda.cmv.server.api;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.info.BuildProperties;

@@ -1,4 +1,4 @@
-package eu.cessda.cmv.server;
+package eu.cessda.cmv.server.api;
 
 import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;

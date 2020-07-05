@@ -1,4 +1,4 @@
-package eu.cessda.cmv.server;
+package eu.cessda.cmv.server.ui;
 
 import com.vaadin.data.ValueProvider;
 import com.vaadin.server.Sizeable.Unit;
