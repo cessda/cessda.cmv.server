@@ -86,7 +86,7 @@ public class ValidationView extends VerticalLayout implements View
 			{
 				ValidationReportV0 validationReport = validationService.validate( documentResource,
 						profileResources.get( 0 ),
-						ValidationGateName.STRICT );
+						validationGateNameComboBox.getSelectedItem().get() );
 				validationReports.add( validationReport );
 			} );
 			validationReportGrid.getDataProvider().refreshAll();
