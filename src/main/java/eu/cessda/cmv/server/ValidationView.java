@@ -42,28 +42,31 @@ public class ValidationView extends VerticalLayout implements View
 
 	public ValidationView( @Autowired ValidationService.V10 validationService )
 	{
-		setSizeFull();
 		List<Resource> profileResources = new ArrayList<>();
 		List<Resource> documentResources = new ArrayList<>();
 		List<ValidationReportV0> validationReports = new ArrayList<>();
 
-		addComponent( newConfigurationPanel( profileResources, documentResources ) );
+		ComboBox<ValidationGateName> validationGateNameComboBox = new ComboBox<>();
+		validationGateNameComboBox.setCaption( "Validation Gate" );
+		validationGateNameComboBox.setEmptySelectionAllowed( false );
+		validationGateNameComboBox.setItems( ValidationGateName.values() );
+		validationGateNameComboBox.setValue( ValidationGateName.BASIC );
 
-		Button validateButton = new Button( "Validate" );
-		addComponent( validateButton );
-
-		Grid<ValidationReportV0> grid = new Grid<>();
-		addComponent( grid );
-		grid.setHeaderVisible( false );
-		grid.setStyleName( ValoTheme.TABLE_BORDERLESS );
-		grid.setSizeFull();
-		grid.setSelectionMode( SelectionMode.NONE );
-		grid.setRowHeight( 500 );
-		grid.setItems( validationReports );
-		grid.addColumn( new ValidationReportGridValueProvider(), new ComponentRenderer() )
+		Grid<ValidationReportV0> validationReportGrid = new Grid<>();
+		validationReportGrid.setHeaderVisible( false );
+		validationReportGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
+		validationReportGrid.setSizeFull();
+		validationReportGrid.setSelectionMode( SelectionMode.NONE );
+		validationReportGrid.setRowHeight( 500 );
+		validationReportGrid.setItems( validationReports );
+		validationReportGrid.addColumn( new ValidationReportGridValueProvider(), new ComponentRenderer() )
 				.setSortable( false )
 				.setHandleWidgetEvents( true );
 
+		Panel reportPanel = new Panel( "Reports" );
+		reportPanel.setContent( validationReportGrid );
+
+		Button validateButton = new Button( "Validate" );
 		validateButton.addClickListener( listener ->
 		{
 			if ( profileResources.isEmpty() )
@@ -78,7 +81,7 @@ public class ValidationView extends VerticalLayout implements View
 			}
 
 			validationReports.clear();
-			grid.getDataProvider().refreshAll();
+			validationReportGrid.getDataProvider().refreshAll();
 			documentResources.forEach( documentResource ->
 			{
 				ValidationReportV0 validationReport = validationService.validate( documentResource,
@@ -86,40 +89,52 @@ public class ValidationView extends VerticalLayout implements View
 						ValidationGateName.STRICT );
 				validationReports.add( validationReport );
 			} );
-			grid.getDataProvider().refreshAll();
+			validationReportGrid.getDataProvider().refreshAll();
 			if ( !documentResources.isEmpty() )
 			{
-				grid.setHeightByRows( documentResources.size() );
+				validationReportGrid.setHeightByRows( documentResources.size() );
 			}
+			reportPanel.setVisible( true );
 		} );
-	}
 
-	private Panel newConfigurationPanel( List<Resource> profiles, List<Resource> documents )
-	{
-		ComboBox<ValidationGateName> validationGateNameComboBox = new ComboBox<>();
-		validationGateNameComboBox.setCaption( "Validation Gate" );
-		validationGateNameComboBox.setEmptySelectionAllowed( false );
-		validationGateNameComboBox.setItems( ValidationGateName.values() );
-		validationGateNameComboBox.setValue( ValidationGateName.BASIC );
+		Runnable refreshReportPanel = () ->
+		{
+			validationReports.clear();
+			validationReportGrid.getDataProvider().refreshAll();
+			reportPanel.setVisible( false );
+		};
+
+		validationGateNameComboBox.addSelectionListener( listener -> refreshReportPanel.run() );
 
 		ResourceSelectionComponent profileSelection = new ResourceSelectionComponent(
-				SINGLE, asList( ProvisioningOptions.values() ), BY_PREDEFINED, profiles );
+				SINGLE,
+				asList( ProvisioningOptions.values() ),
+				BY_PREDEFINED,
+				profileResources,
+				refreshReportPanel );
 		profileSelection.setCaption( "Profile" );
 		profileSelection.setWidthFull();
 
 		ResourceSelectionComponent documentSelection = new ResourceSelectionComponent(
-				MULTI, asList( BY_URL, BY_UPLOAD ), BY_UPLOAD, documents );
+				MULTI,
+				asList( BY_URL, BY_UPLOAD ),
+				BY_UPLOAD,
+				documentResources,
+				refreshReportPanel );
 		documentSelection.setCaption( "Documents" );
 		documentSelection.setWidthFull();
 
-		FormLayout formLayout = new FormLayout();
-		formLayout.setMargin( true );
-		formLayout.addComponent( validationGateNameComboBox );
-		formLayout.addComponent( profileSelection );
-		formLayout.addComponent( documentSelection );
-
+		FormLayout configurationFormLayout = new FormLayout();
+		configurationFormLayout.setMargin( true );
+		configurationFormLayout.addComponent( validationGateNameComboBox );
+		configurationFormLayout.addComponent( profileSelection );
+		configurationFormLayout.addComponent( documentSelection );
 		Panel configurationPanel = new Panel( "Configuration" );
-		configurationPanel.setContent( formLayout );
-		return configurationPanel;
+		configurationPanel.setContent( configurationFormLayout );
+
+		setSizeFull();
+		addComponent( configurationPanel );
+		addComponent( validateButton );
+		addComponent( reportPanel );
 	}
 }

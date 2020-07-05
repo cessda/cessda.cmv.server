@@ -55,14 +55,21 @@ public class ResourceSelectionComponent extends CustomComponent
 			List<ProvisioningOptions> provisioningOptions,
 			ProvisioningOptions selectedProvisioningOption )
 	{
-		this( selectionMode, provisioningOptions, selectedProvisioningOption, new ArrayList<>() );
+		this( selectionMode,
+				provisioningOptions,
+				selectedProvisioningOption,
+				new ArrayList<>(),
+				() ->
+				{
+				} );
 	}
 
 	public ResourceSelectionComponent(
 			SelectionMode selectionMode,
 			List<ProvisioningOptions> provisioningOptions,
 			ProvisioningOptions selectedProvisioningOption,
-			List<Resource> resources )
+			List<Resource> resources,
+			Runnable refreshEvent )
 	{
 		requireNonNull( selectionMode );
 		requireNonNull( provisioningOptions );
@@ -106,6 +113,7 @@ public class ResourceSelectionComponent extends CustomComponent
 			{
 				grid.setHeightByRows( resources.size() );
 			}
+			refreshEvent.run();
 		};
 
 		textField.addValueChangeListener( listener ->
