@@ -13,7 +13,6 @@ import java.util.List;
 import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.vaadin.data.ValueProvider;
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
@@ -22,7 +21,6 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
@@ -62,24 +60,9 @@ public class ValidationView extends VerticalLayout implements View
 		grid.setSelectionMode( SelectionMode.NONE );
 		grid.setRowHeight( 500 );
 		grid.setItems( validationReports );
-
-		ValueProvider<ValidationReportV0, FormLayout> rowValueProvider = validationReport ->
-		{
-			FormLayout formLayout = new FormLayout();
-			Label documentLabel = new Label();
-			documentLabel.setCaption( "Document" );
-			documentLabel.setValue( "path to document" );
-			formLayout.addComponent( documentLabel );
-			validationReport.getConstraintViolations().forEach( cv ->
-			{
-				Label label = new Label();
-				label.setValue( cv.getMessage() );
-				formLayout.addComponent( label );
-			} );
-			return formLayout;
-		};
-		grid.addColumn( rowValueProvider, new ComponentRenderer() )
-				.setSortable( false ).setHandleWidgetEvents( true );
+		grid.addColumn( new ValidationReportGridValueProvider(), new ComponentRenderer() )
+				.setSortable( false )
+				.setHandleWidgetEvents( true );
 
 		validateButton.addClickListener( listener ->
 		{
