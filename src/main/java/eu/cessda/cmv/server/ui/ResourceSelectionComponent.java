@@ -35,7 +35,7 @@ public class ResourceSelectionComponent extends CustomComponent
 {
 	private static final long serialVersionUID = 8381371322203425719L;
 
-	private List<Resource> resources;
+	private List<Resource> selectedResources;
 
 	public enum SelectionMode
 	{
@@ -59,6 +59,7 @@ public class ResourceSelectionComponent extends CustomComponent
 				provisioningOptions,
 				selectedProvisioningOption,
 				new ArrayList<>(),
+				new ArrayList<>(),
 				() ->
 				{
 				} );
@@ -68,25 +69,30 @@ public class ResourceSelectionComponent extends CustomComponent
 			SelectionMode selectionMode,
 			List<ProvisioningOptions> provisioningOptions,
 			ProvisioningOptions selectedProvisioningOption,
-			List<Resource> resources,
+			List<Resource> predefinedResources,
+			List<Resource> selectedResources,
 			Runnable refreshEvent )
 	{
 		requireNonNull( selectionMode );
 		requireNonNull( provisioningOptions );
-		requireNonNull( resources );
-		this.resources = resources;
+		requireNonNull( predefinedResources );
+		requireNonNull( selectedResources );
+		this.selectedResources = selectedResources;
 
 		MultiFileUpload multiFileUpload = newMultiFileUpload( selectionMode );
 		RadioButtonGroup<ProvisioningOptions> buttonGroup = newButtonGroup( provisioningOptions,
 				selectedProvisioningOption );
 
 		ComboBox<Resource> comboBox = new ComboBox<>();
-		comboBox.setPlaceholder( "Select profile" );
-		comboBox.setItemCaptionGenerator( resource -> resource.getUri().toString() );
+		comboBox.setPlaceholder( "Select resource" );
+		comboBox.setItemCaptionGenerator( resource ->
+		{
+			String uri = resource.getUri().toString();
+			return uri.substring( uri.lastIndexOf( '/' ) + 1 );
+		} );
 		comboBox.setWidth( 100, Unit.PERCENTAGE );
 		comboBox.setTextInputAllowed( false );
-		comboBox.setItems( Resource.newResource(
-				"https://bitbucket.org/cessda/cessda.cmv.core/raw/master/src/main/resources/demo-documents/ddi-v25/cdc25_profile.xml" ) );
+		comboBox.setItems( predefinedResources );
 
 		TextField textField = new TextField();
 		textField.setWidthFull();
@@ -95,23 +101,26 @@ public class ResourceSelectionComponent extends CustomComponent
 
 		Button clearButton = new Button( "Clear" );
 		Grid<Resource> grid = newGrid();
-		grid.setItems( resources );
+		grid.setItems( selectedResources );
 
 		Runnable refreshComponents = () ->
 		{
 			comboBox.setVisible( buttonGroup.getValue().equals( BY_PREDEFINED )
-					& (selectionMode.equals( SINGLE ) && resources.isEmpty()) );
+					& (selectionMode.equals( MULTI )
+							|| (selectionMode.equals( SINGLE ) & selectedResources.isEmpty())) );
 			textField.setVisible( buttonGroup.getValue().equals( BY_URL )
-					& (selectionMode.equals( MULTI ) || (selectionMode.equals( SINGLE ) & resources.isEmpty())) );
+					& (selectionMode.equals( MULTI )
+							|| (selectionMode.equals( SINGLE ) & selectedResources.isEmpty())) );
 			textField.clear();
 			multiFileUpload.setVisible( buttonGroup.getValue().equals( BY_UPLOAD )
-					& (selectionMode.equals( MULTI ) || (selectionMode.equals( SINGLE ) & resources.isEmpty())) );
-			clearButton.setVisible( !resources.isEmpty() );
+					& (selectionMode.equals( MULTI )
+							|| (selectionMode.equals( SINGLE ) & selectedResources.isEmpty())) );
+			clearButton.setVisible( !selectedResources.isEmpty() );
 			grid.getDataProvider().refreshAll();
-			grid.setVisible( !resources.isEmpty() );
-			if ( !resources.isEmpty() )
+			grid.setVisible( !selectedResources.isEmpty() );
+			if ( !selectedResources.isEmpty() )
 			{
-				grid.setHeightByRows( resources.size() );
+				grid.setHeightByRows( selectedResources.size() );
 			}
 			refreshEvent.run();
 		};
@@ -124,10 +133,9 @@ public class ResourceSelectionComponent extends CustomComponent
 			{
 				if ( selectionMode.equals( SINGLE ) )
 				{
-					resources.clear();
+					selectedResources.clear();
 				}
-				resources.add( Resource.newResource( listener.getValue() ) );
-
+				selectedResources.add( Resource.newResource( listener.getValue() ) );
 				refreshComponents.run();
 			}
 		} );
@@ -136,16 +144,19 @@ public class ResourceSelectionComponent extends CustomComponent
 		{
 			listener.getSelectedItem().ifPresent( resource ->
 			{
-				resources.clear();
-				resources.add( resource );
-				refreshComponents.run();
+				if ( selectionMode.equals( SINGLE ) )
+				{
+					selectedResources.clear();
+				}
+				selectedResources.add( resource );
 				comboBox.clear();
+				refreshComponents.run();
 			} );
 		} );
 		buttonGroup.addSelectionListener( listener -> refreshComponents.run() );
 		clearButton.addClickListener( listener ->
 		{
-			resources.clear();
+			selectedResources.clear();
 			refreshComponents.run();
 		} );
 
@@ -156,7 +167,7 @@ public class ResourceSelectionComponent extends CustomComponent
 				long length,
 				int filesLeftInQueue ) ->
 		{
-			resources.add( new InMemoryResource( URI.create( fileName ), inputStream ) );
+			selectedResources.add( new InMemoryResource( URI.create( fileName ), inputStream ) );
 			refreshComponents.run();
 		};
 		multiFileUpload.getUploadStatePanel().setFinishedHandler( uploadFinishedHandler );
@@ -177,7 +188,7 @@ public class ResourceSelectionComponent extends CustomComponent
 
 	public List<Resource> getResources()
 	{
-		return Collections.unmodifiableList( resources );
+		return Collections.unmodifiableList( selectedResources );
 	}
 
 	private Grid<Resource> newGrid()

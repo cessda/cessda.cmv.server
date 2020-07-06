@@ -1,5 +1,10 @@
 package eu.cessda.cmv.server;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.gesis.commons.resource.ClasspathResourceRepository;
+import org.gesis.commons.resource.Resource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -63,5 +68,26 @@ public class Server extends SpringBootServletInitializer
 	public ValidationService.V10 validationService()
 	{
 		return cessdaMetadataValidatorFactory().newValidationService();
+	}
+
+	@Bean
+	public List<Resource> demoProfiles()
+	{
+		return ClasspathResourceRepository.newBuilder()
+				.includeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*profile.xml" )
+				.build()
+				.findAll()
+				.collect( Collectors.toList() );
+	}
+
+	@Bean
+	public List<Resource> demoDocuments()
+	{
+		return ClasspathResourceRepository.newBuilder()
+				.includeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*.xml" )
+				.excludeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*profile*.xml" )
+				.build()
+				.findAll()
+				.collect( Collectors.toList() );
 	}
 }

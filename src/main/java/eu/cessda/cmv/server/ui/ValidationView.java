@@ -2,7 +2,6 @@ package eu.cessda.cmv.server.ui;
 
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
-import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_URL;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.MULTI;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.SINGLE;
 import static java.util.Arrays.asList;
@@ -40,7 +39,9 @@ public class ValidationView extends VerticalLayout implements View
 
 	private static final long serialVersionUID = -5924926837826583950L;
 
-	public ValidationView( @Autowired ValidationService.V10 validationService )
+	public ValidationView( @Autowired ValidationService.V10 validationService,
+			@Autowired List<Resource> demoDocuments,
+			@Autowired List<Resource> demoProfiles )
 	{
 		List<Resource> profileResources = new ArrayList<>();
 		List<Resource> documentResources = new ArrayList<>();
@@ -110,15 +111,18 @@ public class ValidationView extends VerticalLayout implements View
 				SINGLE,
 				asList( ProvisioningOptions.values() ),
 				BY_PREDEFINED,
+				demoProfiles,
 				profileResources,
 				refreshReportPanel );
 		profileSelection.setCaption( "Profile" );
 		profileSelection.setWidthFull();
 
+		System.out.println( demoDocuments.size() );
 		ResourceSelectionComponent documentSelection = new ResourceSelectionComponent(
 				MULTI,
-				asList( BY_URL, BY_UPLOAD ),
+				asList( ProvisioningOptions.values() ),
 				BY_UPLOAD,
+				demoDocuments,
 				documentResources,
 				refreshReportPanel );
 		documentSelection.setCaption( "Documents" );
