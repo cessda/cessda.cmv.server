@@ -22,7 +22,7 @@ public class ValidationReportGridValueProvider
 	{
 		Label documentLabel = new Label();
 		documentLabel.setCaption( "Document" );
-		documentLabel.setValue( "path to document" );
+		documentLabel.setValue( validationReport.getDocumentUri().toString() );
 
 		Grid<ConstraintViolationV0> constraintViolationGrid = new Grid<>();
 		constraintViolationGrid.setCaption( "Constraint Violations" );

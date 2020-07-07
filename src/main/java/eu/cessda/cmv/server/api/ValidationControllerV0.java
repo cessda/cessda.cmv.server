@@ -3,7 +3,7 @@ package eu.cessda.cmv.server.api;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
-import java.net.URL;
+import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,10 +34,10 @@ public class ValidationControllerV0
 	@Operation(
 			responses = @ApiResponse( responseCode = "200" ) )
 	public ValidationReportV0 validate(
-			@RequestParam( required = true ) URL documentUrl,
-			@RequestParam( required = true ) URL profileUrl,
+			@RequestParam( required = true ) URI documentUri,
+			@RequestParam( required = true ) URI profileUri,
 			@RequestParam( required = true ) ValidationGateName validationGateName )
 	{
-		return validationService.validate( documentUrl, profileUrl, validationGateName );
+		return validationService.validate( documentUri, profileUri, validationGateName );
 	}
 }

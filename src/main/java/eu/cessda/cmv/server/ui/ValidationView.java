@@ -117,7 +117,6 @@ public class ValidationView extends VerticalLayout implements View
 		profileSelection.setCaption( "Profile" );
 		profileSelection.setWidthFull();
 
-		System.out.println( demoDocuments.size() );
 		ResourceSelectionComponent documentSelection = new ResourceSelectionComponent(
 				MULTI,
 				asList( ProvisioningOptions.values() ),

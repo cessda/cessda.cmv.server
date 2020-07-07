@@ -1,6 +1,7 @@
 package eu.cessda.cmv.server;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,8 +34,8 @@ public class ValidationControllerV0Test
 	@Autowired
 	private ObjectMapper objectMaper;
 
-	private String profileUrl = "https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/cdc25_profile.xml";
-	private String documentUrl = "https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/ukds-2000.xml";
+	private String profileUri = "https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/cdc25_profile.xml";
+	private String documentUri = "https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/ukds-2000.xml";
 
 	@Test
 	public void validateWithBasicValidationGate() throws Exception
@@ -44,8 +45,8 @@ public class ValidationControllerV0Test
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder( "" )
 				.path( ValidationControllerV0.BASE_PATH )
 				.path( "/Validation" )
-				.queryParameter( "documentUrl", documentUrl )
-				.queryParameter( "profileUrl", profileUrl )
+				.queryParameter( "documentUri", documentUri )
+				.queryParameter( "profileUri", profileUri )
 				.queryParameter( "validationGateName", ValidationGateName.BASIC.toString() );
 
 		// XML
@@ -73,8 +74,8 @@ public class ValidationControllerV0Test
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder( "" )
 				.path( ValidationControllerV0.BASE_PATH )
 				.path( "/Validation" )
-				.queryParameter( "documentUrl", documentUrl )
-				.queryParameter( "profileUrl", profileUrl )
+				.queryParameter( "documentUri", documentUri )
+				.queryParameter( "profileUri", profileUri )
 				.queryParameter( "validationGateName", ValidationGateName.STANDARD.toString() );
 
 		// XML
@@ -84,6 +85,7 @@ public class ValidationControllerV0Test
 				.andReturn().getResponse().getContentAsString();
 		validationReport = ValidationReportV0.read( responseBody );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 21 ) );
+		assertThat( validationReport.getDocumentUri().toString(), equalTo( documentUri ) );
 
 		// JSON
 		responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
@@ -92,5 +94,6 @@ public class ValidationControllerV0Test
 				.andReturn().getResponse().getContentAsString();
 		validationReport = objectMaper.readValue( responseBody, ValidationReportV0.class );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 21 ) );
+		assertThat( validationReport.getDocumentUri().toString(), equalTo( documentUri ) );
 	}
 }
