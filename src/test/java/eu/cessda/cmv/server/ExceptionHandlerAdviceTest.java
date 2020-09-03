@@ -15,13 +15,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @AutoConfigureMockMvc
 @SpringBootTest( webEnvironment = WebEnvironment.RANDOM_PORT )
-public class ExceptionHandlerAdviceTest
+class ExceptionHandlerAdviceTest
 {
 	@Autowired
 	private MockMvc mockMvc;
 
 	@Test
-	public void testEndpoints() throws Exception
+	void testEndpoints() throws Exception
 	{
 		mockMvc.perform( get( "/" )
 				.accept( MediaType.TEXT_HTML ) )

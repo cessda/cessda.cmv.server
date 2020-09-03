@@ -15,13 +15,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @AutoConfigureMockMvc
 @SpringBootTest( webEnvironment = WebEnvironment.RANDOM_PORT )
-public class SwaggerConfigurationTest
+class SwaggerConfigurationTest
 {
 	@Autowired
 	private MockMvc mockMvc;
 
 	@Test
-	public void swagger() throws Exception
+	void swagger() throws Exception
 	{
 		mockMvc.perform( get( "/" ) )
 				.andExpect( status().is( 302 ) )

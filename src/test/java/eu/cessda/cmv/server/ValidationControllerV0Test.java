@@ -26,7 +26,7 @@ import eu.cessda.cmv.server.api.ValidationControllerV0;
 
 @AutoConfigureMockMvc
 @SpringBootTest( webEnvironment = WebEnvironment.RANDOM_PORT )
-public class ValidationControllerV0Test
+class ValidationControllerV0Test
 {
 	@Autowired
 	private MockMvc mockMvc;
@@ -38,7 +38,7 @@ public class ValidationControllerV0Test
 	private String documentUri = "https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/ukds-2000.xml";
 
 	@Test
-	public void validateWithBasicValidationGate() throws Exception
+	void validateWithBasicValidationGate() throws Exception
 	{
 		String responseBody;
 		ValidationReportV0 validationReport;
@@ -67,7 +67,7 @@ public class ValidationControllerV0Test
 	}
 
 	@Test
-	public void validateWithStandardValidationGate() throws UnsupportedEncodingException, Exception
+	void validateWithStandardValidationGate() throws UnsupportedEncodingException, Exception
 	{
 		String responseBody;
 		ValidationReportV0 validationReport;
