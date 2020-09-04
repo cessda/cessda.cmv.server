@@ -55,7 +55,7 @@ class ValidationControllerV0Test
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
 		validationReport = ValidationReportV0.read( responseBody );
-		assertThat( validationReport.getConstraintViolations(), hasSize( 9 ) );
+		assertThat( validationReport.getConstraintViolations(), hasSize( 7 ) );
 
 		// JSON
 		responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
@@ -63,7 +63,7 @@ class ValidationControllerV0Test
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
 		validationReport = objectMaper.readValue( responseBody, ValidationReportV0.class );
-		assertThat( validationReport.getConstraintViolations(), hasSize( 9 ) );
+		assertThat( validationReport.getConstraintViolations(), hasSize( 7 ) );
 	}
 
 	@Test
@@ -84,7 +84,7 @@ class ValidationControllerV0Test
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
 		validationReport = ValidationReportV0.read( responseBody );
-		assertThat( validationReport.getConstraintViolations(), hasSize( 21 ) );
+		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
 		assertThat( validationReport.getDocumentUri().toString(), equalTo( documentUri ) );
 
 		// JSON
@@ -93,7 +93,7 @@ class ValidationControllerV0Test
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
 		validationReport = objectMaper.readValue( responseBody, ValidationReportV0.class );
-		assertThat( validationReport.getConstraintViolations(), hasSize( 21 ) );
+		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
 		assertThat( validationReport.getDocumentUri().toString(), equalTo( documentUri ) );
 	}
 }
