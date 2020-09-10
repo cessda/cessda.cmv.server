@@ -25,19 +25,28 @@ class ExceptionHandlerAdviceTest
 	{
 		mockMvc.perform( get( "/" )
 				.accept( MediaType.TEXT_HTML ) )
+				.andExpect( status().isOk() );
+
+		mockMvc.perform( get( "/not-found" )
+				.accept( MediaType.APPLICATION_JSON ) )
+				.andExpect( status().isNotFound() )
+				.andExpect( jsonPath( "$.title" ).value( "Not Found" ) );
+
+		mockMvc.perform( get( "/documentation" )
+				.accept( MediaType.TEXT_HTML ) )
 				.andExpect( status().is( 302 ) )
-				.andExpect( header().string( "Location", "/index.html" ) );
+				.andExpect( header().string( "Location", "/documentation/index.html" ) );
+
+		mockMvc.perform( get( "/documentation/not-found" )
+				.accept( MediaType.APPLICATION_JSON ) )
+				.andExpect( status().isNotFound() )
+				.andExpect( jsonPath( "$.title" ).value( "Not Found" ) );
 
 		mockMvc.perform( get( "/api/swagger" )
 				.accept( MediaType.TEXT_HTML ) )
 				.andExpect( status().is( 302 ) )
 				.andExpect( header().string( "Location",
 						"/api/swagger-ui/index.html?configUrl=/api/oas3/swagger-config" ) );
-
-		mockMvc.perform( get( "/not-found" )
-				.accept( MediaType.APPLICATION_JSON ) )
-				.andExpect( status().isNotFound() )
-				.andExpect( jsonPath( "$.title" ).value( "Not Found" ) );
 
 		mockMvc.perform( get( "/api/V0/not-found" )
 				.accept( MediaType.APPLICATION_JSON ) )

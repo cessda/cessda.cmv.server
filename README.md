@@ -1,9 +1,9 @@
 # cessda.cmv.server
 
 ## Endpoints
- * [Documentation](https://cmv-dev.cessda.eu)
- * [User Interface](https://cmv-dev.cessda.eu/ui)
+ * [User Interface](https://cmv-dev.cessda.eu)
  * [REST API](https://cmv-dev.cessda.eu/api/swagger)
+ * [Documentation](https://cmv-dev.cessda.eu/documentation)
 
 ## Getting started as developer
 

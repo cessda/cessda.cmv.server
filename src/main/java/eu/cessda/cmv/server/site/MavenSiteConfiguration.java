@@ -26,27 +26,31 @@ public class MavenSiteConfiguration implements WebMvcConfigurer
 	@Override
 	public void addResourceHandlers( ResourceHandlerRegistry registry )
 	{
+		PathResourceResolver pathResourceResolver = new PathResourceResolver()
+		{
+			// https://github.com/spring-projects/spring-framework/issues/22619#issue-423373838
+			@Override
+			public Resource resolveResource(
+					HttpServletRequest request,
+					String requestPath,
+					List<? extends Resource> locations,
+					ResourceResolverChain chain )
+			{
+				Resource resource = super.resolveResource( request, requestPath, locations, chain );
+				if ( resource == null )
+				{
+					throw new ResourceNotFoundException( request.getMethod(), requestPath );
+				}
+				return resource;
+			}
+		};
 		registry.addResourceHandler( "/documentation/**" )
 				.addResourceLocations( "classpath:/eu.cessda.cmv/cmv/" )
 				.resourceChain( false )
-				.addResolver( new PathResourceResolver()
-				{
-					// https://github.com/spring-projects/spring-framework/issues/22619#issue-423373838
-					@Override
-					public Resource resolveResource(
-							HttpServletRequest request,
-							String requestPath,
-							List<? extends Resource> locations,
-							ResourceResolverChain chain )
-					{
-						Resource resource = super.resolveResource( request, requestPath, locations, chain );
-						if ( resource == null )
-						{
-							throw new ResourceNotFoundException( request.getMethod(), requestPath );
-						}
-						return resource;
-					}
-				} );
+				.addResolver( pathResourceResolver );
+		registry.addResourceHandler( "/**" )
+				.resourceChain( false )
+				.addResolver( pathResourceResolver );
 	}
 
 	@Override
