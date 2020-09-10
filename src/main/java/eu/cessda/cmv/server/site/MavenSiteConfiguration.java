@@ -26,7 +26,7 @@ public class MavenSiteConfiguration implements WebMvcConfigurer
 	@Override
 	public void addResourceHandlers( ResourceHandlerRegistry registry )
 	{
-		registry.addResourceHandler( "/**" )
+		registry.addResourceHandler( "/documentation/**" )
 				.addResourceLocations( "classpath:/eu.cessda.cmv/cmv/" )
 				.resourceChain( false )
 				.addResolver( new PathResourceResolver()
@@ -52,7 +52,8 @@ public class MavenSiteConfiguration implements WebMvcConfigurer
 	@Override
 	public void addViewControllers( ViewControllerRegistry registry )
 	{
-		registry.addRedirectViewController( "/", "/index.html" );
+		registry.addRedirectViewController( "/documentation", "/documentation/index.html" );
+		registry.addRedirectViewController( "/documentation/", "/documentation" );
 	}
 
 	@Override

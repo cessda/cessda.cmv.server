@@ -11,6 +11,7 @@ import org.vaadin.viritin.layouts.MVerticalLayout;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
+import com.vaadin.navigator.NavigationStateManager;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewProvider;
 import com.vaadin.server.ThemeResource;
@@ -28,7 +29,7 @@ import com.vaadin.ui.themes.ValoTheme;
 @Title( "CESSDA Metadata Validator" )
 @StyleSheet( { "https://fonts.googleapis.com/css?family=Source+Sans+Pro:100,200,300,400,500,600,700,800,900" } )
 @Theme( "mytheme" )
-@SpringUI( path = "/ui" )
+@SpringUI( path = "/" )
 public class UiView extends UI
 {
 	private static final long serialVersionUID = 5352286420346188519L;
@@ -43,9 +44,10 @@ public class UiView extends UI
 	protected void init( VaadinRequest request )
 	{
 		Navigator navigator = new Navigator( this, newViewContainer() );
-		// navigator.setErrorView( ErrorView.class );
 		navigator.addProvider( viewProvider );
-		navigator.navigateTo( ValidationView.VIEW_NAME );
+		this.setNavigator( navigator );
+		NavigationStateManager stateManager = new Navigator.UriFragmentManager( getPage() );
+		stateManager.setState( ValidationView.VIEW_NAME );
 	}
 
 	private VerticalLayout newViewContainer()
