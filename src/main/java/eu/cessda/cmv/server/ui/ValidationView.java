@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gesis.commons.resource.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.navigator.View;
@@ -21,6 +23,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ComponentRenderer;
@@ -38,6 +41,7 @@ public class ValidationView extends VerticalLayout implements View
 	public static final String VIEW_NAME = "validation";
 
 	private static final long serialVersionUID = -5924926837826583950L;
+	private static final Logger LOGGER = LoggerFactory.getLogger( ValidationView.class );
 
 	public ValidationView( @Autowired ValidationService.V10 validationService,
 			@Autowired List<Resource> demoDocuments,
@@ -85,10 +89,18 @@ public class ValidationView extends VerticalLayout implements View
 			validationReportGrid.getDataProvider().refreshAll();
 			documentResources.forEach( documentResource ->
 			{
-				ValidationReportV0 validationReport = validationService.validate( documentResource,
-						profileResources.get( 0 ),
-						validationGateNameComboBox.getSelectedItem().get() );
-				validationReports.add( validationReport );
+				try
+				{
+					ValidationReportV0 validationReport = validationService.validate( documentResource,
+							profileResources.get( 0 ),
+							validationGateNameComboBox.getSelectedItem().get() );
+					validationReports.add( validationReport );
+				}
+				catch (Exception e)
+				{
+					Notification.show( e.getMessage(), Type.ERROR_MESSAGE );
+					LOGGER.error( e.getMessage(), e );
+				}
 			} );
 			validationReportGrid.getDataProvider().refreshAll();
 			if ( !documentResources.isEmpty() )
