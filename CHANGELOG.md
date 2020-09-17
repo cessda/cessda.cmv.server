@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Included [CDC profiles v1.0](https://bitbucket.org/cessda/cessda.metadata.profiles/src/v1.0)
-- Upgrade to [eu.cessda.cmv:cmv-core:0.3.0](https://bitbucket.org/cessda/cessda.cmv.core/src/v0.3.0)
+- Upgrade to [eu.cessda.cmv:cmv-core:0.3.0](https://bitbucket.org/cessda/cessda.cmv.core/src/v0.3.0) and [eu.cessda.cmv:cmv:0.3.0](https://bitbucket.org/cessda/cessda.cmv/src/v0.3.0)
 
 ### Fixed
 - Show notification if DDI document recognition fails (#19)
