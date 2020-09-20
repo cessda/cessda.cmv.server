@@ -24,7 +24,8 @@ import java.util.function.Consumer;
 
 import org.gesis.commons.resource.InMemoryResource;
 import org.gesis.commons.resource.Resource;
-import org.gesis.commons.xml.ddi.DdiInputStream;
+import org.gesis.commons.resource.io.DdiInputStream;
+import org.gesis.commons.resource.io.NotDdiInputStreamException;
 
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
@@ -243,16 +244,13 @@ public class ResourceSelectionComponent extends CustomComponent
 		requireNonNull( resource );
 		try ( DdiInputStream inputStream = new DdiInputStream( resource.readInputStream() ) )
 		{
-			if ( inputStream.check() )
-			{
-				return Optional.of( resource );
-			}
-			else
-			{
-				String message = format( "%s is not recognized as DDI document", resource.getUri() );
-				Notification.show( message, WARNING_MESSAGE );
-				return Optional.empty();
-			}
+			return Optional.of( resource );
+		}
+		catch (NotDdiInputStreamException e)
+		{
+			String message = format( "%s is not recognized as DDI document", resource.getUri() );
+			Notification.show( message, WARNING_MESSAGE );
+			return Optional.empty();
 		}
 		catch (IOException e)
 		{
