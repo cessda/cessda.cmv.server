@@ -26,6 +26,8 @@ import org.gesis.commons.resource.InMemoryResource;
 import org.gesis.commons.resource.Resource;
 import org.gesis.commons.resource.io.DdiInputStream;
 import org.gesis.commons.resource.io.NotDdiInputStreamException;
+import org.gesis.commons.xml.XercesXalanDocument;
+import org.gesis.commons.xml.XmlNotWellformedException;
 
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
@@ -244,11 +246,19 @@ public class ResourceSelectionComponent extends CustomComponent
 		requireNonNull( resource );
 		try ( DdiInputStream inputStream = new DdiInputStream( resource.readInputStream() ) )
 		{
+			// TODO Do well-formed check with SAX only more efficiently
+			XercesXalanDocument.newBuilder().ofInputStream( inputStream ).build();
 			return Optional.of( resource );
 		}
 		catch (NotDdiInputStreamException e)
 		{
 			String message = format( "%s is not recognized as DDI document", resource.getUri() );
+			Notification.show( message, WARNING_MESSAGE );
+			return Optional.empty();
+		}
+		catch (XmlNotWellformedException e)
+		{
+			String message = format( "%s is not well-formed XML: %s", resource.getUri(), e.getMessage() );
 			Notification.show( message, WARNING_MESSAGE );
 			return Optional.empty();
 		}
