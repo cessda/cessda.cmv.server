@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *- Fixed (for any bug fixes)*  
 *- Security (in case of vulnerabilities)*
 
+## [0.3.1] - 2020-09-23
+
+### Changed
+- Display exception message in better readable dialog window (#22)
+
+### Fixed
+- org.gesis.commons.xml.ddi.DdiInputStream corrupts UTF-16LE encoded xml documents
+
 ## [0.3.0] - 2020-09-17
 
 ### Changed
@@ -22,4 +30,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Show notification if DDI document recognition fails (#19)
 - Change endpoints urls to be consistent with other CESSDA products (#18)
 
+[0.3.1]: https://bitbucket.org/cessda/cessda.cmv.server/src/v0.3.1
 [0.3.0]: https://bitbucket.org/cessda/cessda.cmv.server/src/v0.3.0
