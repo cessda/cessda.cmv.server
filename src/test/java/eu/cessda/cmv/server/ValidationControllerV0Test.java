@@ -1,15 +1,22 @@
 package eu.cessda.cmv.server;
 
+import static org.assertj.core.api.Assertions.fail;
+import static org.gesis.commons.resource.Resource.newResource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import org.gesis.commons.resource.SpringUriBuilder;
 import org.gesis.commons.resource.UriBuilder;
+import org.gesis.commons.resource.io.DdiInputStream;
+import org.gesis.commons.xml.XercesXalanDocument;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -95,5 +102,32 @@ class ValidationControllerV0Test
 		validationReport = objectMaper.readValue( responseBody, ValidationReportV0.class );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
 		assertThat( validationReport.getDocumentUri().toString(), equalTo( documentUri ) );
+	}
+
+	@Test
+	void loadDdiInputStreams()
+	{
+		// https://bitbucket.org/cessda/cessda.cmv.server/issues/24/sometimes-validationcontrollerv0test-fails
+
+		loadDdiInputStream( profileUri );
+		loadDdiInputStream( documentUri );
+	}
+
+	private void loadDdiInputStream( String uri )
+	{
+		assertDoesNotThrow( () ->
+		{
+			try ( InputStream inputStream = new DdiInputStream( newResource( uri ).readInputStream() ) )
+			{
+				System.out.println( XercesXalanDocument.newBuilder()
+						.ofInputStream( inputStream )
+						.build()
+						.getContent() );
+			}
+			catch (IOException e)
+			{
+				fail( e.getMessage() );
+			}
+		} );
 	}
 }
