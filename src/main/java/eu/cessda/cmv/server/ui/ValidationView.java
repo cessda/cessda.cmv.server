@@ -13,6 +13,7 @@ import org.gesis.commons.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.AsyncListenableTaskExecutor;
 
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringView;
@@ -44,7 +45,8 @@ public class ValidationView extends VerticalLayout implements View
 
 	public ValidationView( @Autowired ValidationService.V10 validationService,
 			@Autowired List<Resource.V10> demoDocuments,
-			@Autowired List<Resource.V10> demoProfiles )
+			@Autowired List<Resource.V10> demoProfiles,
+			@Autowired AsyncListenableTaskExecutor taskExecutor )
 	{
 		List<Resource.V10> profileResources = new ArrayList<>();
 		List<Resource.V10> documentResources = new ArrayList<>();
@@ -74,6 +76,7 @@ public class ValidationView extends VerticalLayout implements View
 		Button validateButton = new Button( "Validate" );
 		validateButton.addClickListener( listener ->
 		{
+
 			if ( profileResources.isEmpty() )
 			{
 				Notification.show( "No profile selected!" );
@@ -87,19 +90,25 @@ public class ValidationView extends VerticalLayout implements View
 
 			validationReports.clear();
 			validationReportGrid.getDataProvider().refreshAll();
-			documentResources.forEach( documentResource ->
-			{
-				ValidationReportV0 validationReport = validationService.validate( documentResource,
-						profileResources.get( 0 ),
-						validationGateNameComboBox.getSelectedItem().get() );
-				validationReports.add( validationReport );
-			} );
-			validationReportGrid.getDataProvider().refreshAll();
-			if ( !documentResources.isEmpty() )
-			{
-				validationReportGrid.setHeightByRows( documentResources.size() );
-			}
-			reportPanel.setVisible( true );
+			documentResources.forEach( documentResource -> taskExecutor
+					.submitListenable(
+							() -> validationService.validate( documentResource, profileResources.get( 0 ),
+									validationGateNameComboBox.getSelectedItem().get() ) )
+					.addCallback( result ->
+					{
+						ValidationReportV0 validationReport = (ValidationReportV0) result;
+						validationReports.add( validationReport );
+						validationReportGrid.getDataProvider().refreshAll();
+						if ( !documentResources.isEmpty() )
+						{
+							validationReportGrid.setHeightByRows( validationReports.size() );
+						}
+						reportPanel.setVisible( !validationReports.isEmpty() );
+					}, exception ->
+					{
+						exception.printStackTrace();
+						throw new IllegalArgumentException( exception );
+					} ) );
 		} );
 
 		Runnable refreshReportPanel = () ->
