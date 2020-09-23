@@ -117,6 +117,7 @@ class ValidationControllerV0Test
 	{
 		assertDoesNotThrow( () ->
 		{
+			System.out.println( uri );
 			try ( InputStream inputStream = new DdiInputStream( newResource( uri ).readInputStream() ) )
 			{
 				System.out.println( XercesXalanDocument.newBuilder()
