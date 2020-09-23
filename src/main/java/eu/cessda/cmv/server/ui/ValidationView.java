@@ -44,11 +44,11 @@ public class ValidationView extends VerticalLayout implements View
 	private static final Logger LOGGER = LoggerFactory.getLogger( ValidationView.class );
 
 	public ValidationView( @Autowired ValidationService.V10 validationService,
-			@Autowired List<Resource> demoDocuments,
-			@Autowired List<Resource> demoProfiles )
+			@Autowired List<Resource.V10> demoDocuments,
+			@Autowired List<Resource.V10> demoProfiles )
 	{
-		List<Resource> profileResources = new ArrayList<>();
-		List<Resource> documentResources = new ArrayList<>();
+		List<Resource.V10> profileResources = new ArrayList<>();
+		List<Resource.V10> documentResources = new ArrayList<>();
 		List<ValidationReportV0> validationReports = new ArrayList<>();
 
 		ComboBox<ValidationGateName> validationGateNameComboBox = new ComboBox<>();
@@ -64,7 +64,8 @@ public class ValidationView extends VerticalLayout implements View
 		validationReportGrid.setSelectionMode( SelectionMode.NONE );
 		validationReportGrid.setRowHeight( 500 );
 		validationReportGrid.setItems( validationReports );
-		validationReportGrid.addColumn( new ValidationReportGridValueProvider(), new ComponentRenderer() )
+		validationReportGrid
+				.addColumn( new ValidationReportGridValueProvider( documentResources ), new ComponentRenderer() )
 				.setSortable( false )
 				.setHandleWidgetEvents( true );
 
@@ -116,7 +117,6 @@ public class ValidationView extends VerticalLayout implements View
 			validationReportGrid.getDataProvider().refreshAll();
 			reportPanel.setVisible( false );
 		};
-
 		validationGateNameComboBox.addSelectionListener( listener -> refreshReportPanel.run() );
 
 		ResourceSelectionComponent profileSelection = new ResourceSelectionComponent(

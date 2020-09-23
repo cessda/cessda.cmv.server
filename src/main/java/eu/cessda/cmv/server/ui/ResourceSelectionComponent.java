@@ -15,14 +15,11 @@ import static org.gesis.commons.resource.Resource.newResource;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.gesis.commons.resource.InMemoryResource;
 import org.gesis.commons.resource.Resource;
 import org.gesis.commons.resource.io.DdiInputStream;
 import org.gesis.commons.resource.io.NotDdiInputStreamException;
@@ -46,7 +43,7 @@ public class ResourceSelectionComponent extends CustomComponent
 {
 	private static final long serialVersionUID = 8381371322203425719L;
 
-	private List<Resource> selectedResources;
+	private List<Resource.V10> selectedResources;
 
 	public enum SelectionMode
 	{
@@ -64,24 +61,9 @@ public class ResourceSelectionComponent extends CustomComponent
 	public ResourceSelectionComponent(
 			SelectionMode selectionMode,
 			List<ProvisioningOptions> provisioningOptions,
-			ProvisioningOptions selectedProvisioningOption )
-	{
-		this( selectionMode,
-				provisioningOptions,
-				selectedProvisioningOption,
-				new ArrayList<>(),
-				new ArrayList<>(),
-				() ->
-				{
-				} );
-	}
-
-	public ResourceSelectionComponent(
-			SelectionMode selectionMode,
-			List<ProvisioningOptions> provisioningOptions,
 			ProvisioningOptions selectedProvisioningOption,
-			List<Resource> predefinedResources,
-			List<Resource> selectedResources,
+			List<Resource.V10> predefinedResources,
+			List<Resource.V10> selectedResources,
 			Runnable refreshEvent )
 	{
 		requireNonNull( selectionMode );
@@ -94,7 +76,7 @@ public class ResourceSelectionComponent extends CustomComponent
 		RadioButtonGroup<ProvisioningOptions> buttonGroup = newButtonGroup( provisioningOptions,
 				selectedProvisioningOption );
 
-		ComboBox<Resource> comboBox = new ComboBox<>();
+		ComboBox<Resource.V10> comboBox = new ComboBox<>();
 		comboBox.setPlaceholder( "Select resource" );
 		comboBox.setItemCaptionGenerator( resource ->
 		{
@@ -111,7 +93,7 @@ public class ResourceSelectionComponent extends CustomComponent
 		textField.setWidth( 100, Unit.PERCENTAGE );
 
 		Button clearButton = new Button( "Clear" );
-		Grid<Resource> grid = newGrid();
+		Grid<Resource.V10> grid = newGrid();
 		grid.setItems( selectedResources );
 
 		Runnable refreshComponents = () ->
@@ -136,7 +118,7 @@ public class ResourceSelectionComponent extends CustomComponent
 			}
 			refreshEvent.run();
 		};
-		Consumer<Resource> selectResource = resource ->
+		Consumer<Resource.V10> selectResource = resource ->
 		{
 			if ( selectionMode.equals( SINGLE ) )
 			{
@@ -169,7 +151,7 @@ public class ResourceSelectionComponent extends CustomComponent
 				long length,
 				int filesLeftInQueue ) ->
 		{
-			Resource uploadedResource = new InMemoryResource( URI.create( fileName ), inputStream );
+			Resource.V10 uploadedResource = newResource( inputStream, fileName );
 			recognizeDdiDocument( uploadedResource ).ifPresent( selectResource );
 			refreshComponents.run();
 		};
@@ -201,10 +183,10 @@ public class ResourceSelectionComponent extends CustomComponent
 		return Collections.unmodifiableList( selectedResources );
 	}
 
-	private Grid<Resource> newGrid()
+	private Grid<Resource.V10> newGrid()
 	{
-		Grid<Resource> grid = new Grid<>();
-		grid.addColumn( Resource::getUri ).setCaption( "URI" );
+		Grid<Resource.V10> grid = new Grid<>();
+		grid.addColumn( Resource.V10::getLabel ).setCaption( "Label" );
 		grid.setSelectionMode( NONE );
 		grid.setWidthFull();
 		grid.setHeightMode( ROW );
@@ -241,7 +223,7 @@ public class ResourceSelectionComponent extends CustomComponent
 		return multiFileUpload;
 	}
 
-	private Optional<Resource> recognizeDdiDocument( Resource resource )
+	private Optional<Resource.V10> recognizeDdiDocument( Resource.V10 resource )
 	{
 		requireNonNull( resource );
 		try ( DdiInputStream inputStream = new DdiInputStream( resource.readInputStream() ) )

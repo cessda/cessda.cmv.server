@@ -71,23 +71,25 @@ public class Server extends SpringBootServletInitializer
 	}
 
 	@Bean
-	public List<Resource> demoProfiles()
+	public List<Resource.V10> demoProfiles()
 	{
 		return ClasspathResourceRepository.newBuilder()
 				.includeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*profile.xml" )
 				.build()
 				.findAll()
+				.map( Resource.V10.class::cast )
 				.collect( Collectors.toList() );
 	}
 
 	@Bean
-	public List<Resource> demoDocuments()
+	public List<Resource.V10> demoDocuments()
 	{
 		return ClasspathResourceRepository.newBuilder()
 				.includeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*.xml" )
 				.excludeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*profile*.xml" )
 				.build()
 				.findAll()
+				.map( Resource.V10.class::cast )
 				.collect( Collectors.toList() );
 	}
 }
