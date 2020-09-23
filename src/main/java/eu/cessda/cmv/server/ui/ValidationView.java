@@ -23,7 +23,6 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ComponentRenderer;
@@ -90,18 +89,10 @@ public class ValidationView extends VerticalLayout implements View
 			validationReportGrid.getDataProvider().refreshAll();
 			documentResources.forEach( documentResource ->
 			{
-				try
-				{
-					ValidationReportV0 validationReport = validationService.validate( documentResource,
-							profileResources.get( 0 ),
-							validationGateNameComboBox.getSelectedItem().get() );
-					validationReports.add( validationReport );
-				}
-				catch (Exception e)
-				{
-					Notification.show( e.getMessage(), Type.ERROR_MESSAGE );
-					LOGGER.error( e.getMessage(), e );
-				}
+				ValidationReportV0 validationReport = validationService.validate( documentResource,
+						profileResources.get( 0 ),
+						validationGateNameComboBox.getSelectedItem().get() );
+				validationReports.add( validationReport );
 			} );
 			validationReportGrid.getDataProvider().refreshAll();
 			if ( !documentResources.isEmpty() )
