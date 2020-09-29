@@ -16,9 +16,9 @@ import java.io.UnsupportedEncodingException;
 import org.gesis.commons.resource.SpringUriBuilder;
 import org.gesis.commons.resource.UriBuilder;
 import org.gesis.commons.resource.io.DdiInputStream;
-import org.gesis.commons.xml.XercesXalanDocument;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,6 +36,8 @@ import eu.cessda.cmv.server.api.ValidationControllerV0;
 @SpringBootTest( webEnvironment = WebEnvironment.RANDOM_PORT )
 class ValidationControllerV0Test
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger( ValidationControllerV0Test.class );
+
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -106,7 +108,6 @@ class ValidationControllerV0Test
 	}
 
 	@Test
-	@Disabled
 	void loadDdiInputStreams()
 	{
 		// https://bitbucket.org/cessda/cessda.cmv.server/issues/24/sometimes-validationcontrollerv0test-fails
@@ -119,13 +120,10 @@ class ValidationControllerV0Test
 	{
 		assertDoesNotThrow( () ->
 		{
-			System.out.println( uri );
+			LOGGER.trace( "Instantiate inputStream " + uri );
 			try ( InputStream inputStream = new DdiInputStream( newResource( uri ).readInputStream() ) )
 			{
-				System.out.println( XercesXalanDocument.newBuilder()
-						.ofInputStream( inputStream )
-						.build()
-						.getContent() );
+				LOGGER.trace( "Read " + uri );
 			}
 			catch (IOException e)
 			{

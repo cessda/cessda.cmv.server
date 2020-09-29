@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/base.xml" />
+	<logger name="org.springframework" level="error" />
+	<logger name="com.vaadin" level="error" />
+	<logger name="org.apache" level="error" />
+	<logger name="org.gesis.commons.resource.io.DdiInputStream" level="trace" />
+	<logger name="eu.cessda.cmv.server.ValidationControllerV0Test" level="trace" />
+</configuration>
