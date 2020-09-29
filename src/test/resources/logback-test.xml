@@ -5,5 +5,6 @@
 	<logger name="com.vaadin" level="error" />
 	<logger name="org.apache" level="error" />
 	<logger name="org.gesis.commons.resource.io.DdiInputStream" level="trace" />
+	<logger name="org.gesis.commons.resource.io.StartExtractingInputStream" level="trace" />
 	<logger name="eu.cessda.cmv.server.ValidationControllerV0Test" level="trace" />
 </configuration>
