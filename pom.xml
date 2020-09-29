@@ -4,7 +4,7 @@
 
 	<groupId>eu.cessda.cmv</groupId>
 	<artifactId>cmv-server</artifactId>
-	<version>0.3.1</version>
+	<version>0.3.2-SNAPSHOT</version>
 	<name>CESSDA Metadata Validator</name>
 	<url>https://cmv-dev.cessda.eu</url>
 	<parent>
@@ -90,12 +90,12 @@
 		<dependency>
 			<groupId>eu.cessda.cmv</groupId>
 			<artifactId>cmv</artifactId>
-			<version>0.3.1</version>
+			<version>0.3.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.cessda.cmv</groupId>
 			<artifactId>cmv-core</artifactId>
-			<version>0.3.1</version>
+			<version>0.3.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.gesis.commons</groupId>
