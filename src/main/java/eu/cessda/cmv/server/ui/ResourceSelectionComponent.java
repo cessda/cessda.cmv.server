@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.apache.commons.validator.routines.UrlValidator;
 import org.gesis.commons.resource.Resource;
 import org.gesis.commons.resource.io.DdiInputStream;
 import org.gesis.commons.resource.io.NotDdiInputStreamException;
@@ -32,6 +33,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -91,6 +93,7 @@ public class ResourceSelectionComponent extends CustomComponent
 		textField.setWidthFull();
 		textField.setPlaceholder( "Paste url" );
 		textField.setWidth( 100, Unit.PERCENTAGE );
+		// TODO https://vaadin.com/forum/thread/15426235/vaadin8-field-validation-without-binders
 
 		Button clearButton = new Button( "Clear" );
 		Grid<Resource.V10> grid = newGrid();
@@ -126,15 +129,23 @@ public class ResourceSelectionComponent extends CustomComponent
 			}
 			selectedResources.add( resource );
 		};
-		textField.addValueChangeListener( listener ->
+		textField.addBlurListener( listener ->
 		{
-			if ( listener.getValue() != null
-					&& !listener.getValue().trim().contentEquals( "" )
-					&& listener.getValue().startsWith( "http" ) )
+			// See https://bitbucket.org/cessda/cessda.cmv/issues/89
+			textField.getOptionalValue().ifPresent( value ->
 			{
-				recognizeDdiDocument( newResource( listener.getValue() ) ).ifPresent( selectResource );
-				refreshComponents.run();
-			}
+				UrlValidator urlValidator = UrlValidator.getInstance();
+				if ( urlValidator.isValid( value ) )
+				{
+					recognizeDdiDocument( newResource( value ) ).ifPresent( selectResource );
+					refreshComponents.run();
+				}
+				else
+				{
+					Notification.show( "Input is not a valid url", Type.WARNING_MESSAGE );
+					textField.clear();
+				}
+			} );
 		} );
 		comboBox.addSelectionListener( listener ->
 		{
