@@ -3,7 +3,7 @@
 #
 FROM openjdk:11-jre-slim
 
-RUN apt-get -y update && apt-get -y upgrade && apt-get install -y wget
+RUN apt-get -y update && apt-get install -y wget && rm -rf /var/lib/apt/lists
 RUN adduser user
 WORKDIR /@project.artifactId@
 
