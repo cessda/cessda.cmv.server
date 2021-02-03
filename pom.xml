@@ -289,6 +289,31 @@
 					<failBuildOnCVSS>10</failBuildOnCVSS>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>2.0.0</version>
+				<configuration>
+					<organizationName>CESSDA ERIC</organizationName>
+					<inceptionYear>2020</inceptionYear>
+					<licenseName>apache_v2</licenseName>
+					<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+					<failOnMissingHeader>true</failOnMissingHeader>
+					<failOnNotUptodateHeader>true</failOnNotUptodateHeader>
+					<roots>
+						<root>src/main/java</root>
+						<root>src/test/java</root>
+					</roots>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>check-file-header</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<finalName>${project.artifactId}</finalName>
 		<resources>
