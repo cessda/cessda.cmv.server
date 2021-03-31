@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package eu.cessda.cmv.server.site;
+package eu.cessda.cmv.server;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ import org.springframework.web.servlet.resource.ResourceResolverChain;
 import eu.cessda.cmv.server.api.ResourceNotFoundException;
 
 @Configuration
-public class MavenSiteConfiguration implements WebMvcConfigurer
+public class DocumentationConfiguration implements WebMvcConfigurer
 {
 	@Override
 	public void addResourceHandlers( ResourceHandlerRegistry registry )
@@ -64,7 +64,7 @@ public class MavenSiteConfiguration implements WebMvcConfigurer
 			}
 		};
 		registry.addResourceHandler( "/documentation/**" )
-				.addResourceLocations( "classpath:/eu.cessda.cmv/cmv/" )
+				.addResourceLocations( "classpath:/cmv-documentation/" )
 				.resourceChain( false )
 				.addResolver( pathResourceResolver );
 		registry.addResourceHandler( "/**" )
