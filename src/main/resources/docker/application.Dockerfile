@@ -19,6 +19,6 @@ RUN chown -R user:user ./
 USER user:user
 
 HEALTHCHECK CMD exit $(echo $(echo $(wget http://localhost:@server.port@@server.servlet.context-path@/actuator/health -q -O -) | grep -cv UP))
-ENV JAVA_OPTS=""
+ENV JAVA_OPTS="-Xms1G -Xmx1G"
 ENTRYPOINT ["/bin/sh", "./entrypoint.sh"]
 EXPOSE @server.port@
