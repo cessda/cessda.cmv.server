@@ -115,7 +115,7 @@
 		<dependency>
 			<groupId>org.gesis.commons</groupId>
 			<artifactId>commons-test</artifactId>
-			<version>0.7.0</version>
+			<version>0.8.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
