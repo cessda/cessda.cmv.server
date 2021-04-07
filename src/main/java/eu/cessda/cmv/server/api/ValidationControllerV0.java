@@ -24,8 +24,10 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import java.net.URI;
 
+import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.core.ValidationService;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
+import eu.cessda.cmv.core.mediatype.validationrequest.v0.ValidationRequestV0;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -58,5 +61,15 @@ public class ValidationControllerV0
 			@RequestParam( required = true ) ValidationGateName validationGateName )
 	{
 		return validationService.validate( documentUri, profileUri, validationGateName );
+	}
+
+	@PostMapping( path = "/ValidationRequests", produces = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE } )
+	@Operation( responses = @ApiResponse( responseCode = "200" ) )
+	public ValidationReportV0 validate( @RequestBody ValidationRequestV0 validationRequest )
+	{
+		Resource document = validationRequest.getDocument().toResource();
+		Resource profile = validationRequest.getProfile().toResource();
+		ValidationGateName validationGateName = validationRequest.getValidationGateName();
+		return validationService.validate( document, profile, validationGateName );
 	}
 }
