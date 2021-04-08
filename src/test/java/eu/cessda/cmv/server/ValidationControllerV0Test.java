@@ -19,7 +19,6 @@
  */
 package eu.cessda.cmv.server;
 
-import static org.gesis.commons.resource.Resource.newResource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -27,10 +26,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 
 import org.gesis.commons.resource.SpringUriBuilder;
-import org.gesis.commons.resource.TextResource;
 import org.gesis.commons.resource.UriBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +41,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
-import eu.cessda.cmv.core.mediatype.validationrequest.v0.ValidationRequestV0;
 import eu.cessda.cmv.server.api.ValidationControllerV0;
 
 @AutoConfigureMockMvc
@@ -116,30 +112,6 @@ class ValidationControllerV0Test
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
 		validationReport = objectMaper.readValue( responseBody, ValidationReportV0.class );
-		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
-		assertThat( validationReport.getDocumentUri().toString(), equalTo( documentUri ) );
-	}
-
-	@Test
-	void validateWithStandardValidationGateByValidationRequestV0() throws Exception
-	{
-		String responseBody;
-		ValidationReportV0 validationReport;
-		UriBuilder.V10 uriBuilder = new SpringUriBuilder( "" )
-				.path( ValidationControllerV0.BASE_PATH )
-				.path( "/ValidationRequests" );
-		ValidationRequestV0 validationRequest = new ValidationRequestV0();
-		validationRequest.setDocument( URI.create( documentUri ) );
-		validationRequest.setProfile( new TextResource( newResource( profileUri ) ).toString() );
-		validationRequest.setValidationGateName( ValidationGateName.STANDARD );
-		MediaType mediaType = MediaType.APPLICATION_XML;
-		responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
-				.accept( mediaType )
-				.contentType( mediaType )
-				.content( validationRequest.toString() ) )
-				.andExpect( status().isOk() )
-				.andReturn().getResponse().getContentAsString();
-		validationReport = ValidationReportV0.read( responseBody );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
 		assertThat( validationReport.getDocumentUri().toString(), equalTo( documentUri ) );
 	}
