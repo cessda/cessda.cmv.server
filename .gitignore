@@ -9,3 +9,7 @@
 # Exclude IntelliJ IDEA related files
 .idea/
 *.iml
+
+# Vaadin
+src/main/webapp/VAADIN/themes/*/styles.css
+src/main/webapp/VAADIN/themes/*/styles.scss.cache
