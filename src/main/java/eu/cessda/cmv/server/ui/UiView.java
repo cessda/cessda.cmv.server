@@ -47,6 +47,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 @Title( "CESSDA Metadata Validator" )
 @StyleSheet( { "https://fonts.googleapis.com/css?family=Source+Sans+Pro:100,200,300,400,500,600,700,800,900" } )
+//@StyleSheet( { "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" } )
 @Theme( "mytheme" )
 @SpringUI( path = "/" )
 public class UiView extends UI
@@ -94,36 +95,40 @@ public class UiView extends UI
 		embeddedLogo.setWidth( "100%" );
 		MCssLayout headerMiddleContent = new MCssLayout()
 				.withStyleName( "row header-content" )
-				.withFullWidth()
-				.add( new MCssLayout().withStyleName( "col-md-4 logo" ).add( embeddedLogo ) );
+				.withFullWidth();
+				//.add( new MCssLayout().withStyleName( "col-md-4 logo" ).add( embeddedLogo ) );
 		MCssLayout headerTop = new MCssLayout()
 				.withFullWidth()
 				.withStyleName( "primary-header" )
 				.add( new MCssLayout().withStyleName( CONTAINER ).add( headerTopContainer ) );
 		MCssLayout headerMiddle = new MCssLayout()
 				.withFullWidth()
-				.withStyleName( "common-header header-bg" )
+				.withStyleName( "common-header" )
 				.add( new MCssLayout().withStyleName( CONTAINER ).add( headerMiddleContent ) );
 		MButton validationButton = new MButton( "Validation" )
 				.withStyleName( ValoTheme.BUTTON_LINK + PULL_LEFT );
 		MCssLayout headerBottom = new MCssLayout()
 				.withFullWidth()
-				.withStyleName( "menu-bg" )
-				.add( new MCssLayout().withStyleName( CONTAINER ).add( validationButton ) );
+				.withStyleName( "invis" )
+				.add( new MCssLayout().withStyleName( CONTAINER ) );
 		MCssLayout headerBar = new MCssLayout()
 				.withResponsive( true )
 				.withStyleName( "header-cessda" )
-				.add( headerTop, headerMiddle, headerBottom );
+				.add( headerMiddle, headerBottom );
+		CustomLayout header = new CustomLayout( "header" );
+				header.setStyleName( "header" );
+				header.setWidth( 100, Unit.PERCENTAGE );
 		CustomLayout footer = new CustomLayout( "footer" );
 		footer.setStyleName( "footer" );
 		footer.setWidth( 100, Unit.PERCENTAGE );
 		MVerticalLayout viewContainer = new MVerticalLayout()
 				.withFullWidth()
 				.withMargin( false )
+				.withId( "viewcont" )
 				.withStyleName( "content" );
 		MVerticalLayout root = new MVerticalLayout()
 				.withResponsive( true )
-				.with( headerBar, viewContainer, footer )
+				.with( header, headerBar, viewContainer, footer )
 				.withFullWidth()
 				.withMargin( false )
 				.withSpacing( false )

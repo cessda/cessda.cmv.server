@@ -1,3 +1,4 @@
+
 @import "mytheme.scss";
 @import "cessda.scss";
 @import "addons.scss";
@@ -6,6 +7,7 @@
 // The actual styles should be defined in mytheme.scss
 
 .mytheme {
+  
   @include addons;
   @include cessda;
   @include mytheme;
@@ -13,13 +15,13 @@
 }
 
 @media (min-width: 992px){
-	.header-cessda .header-content{
+	.header-cessda .header-content{ 
 		h2 {
 	      	padding-top: 30px;
 	    }
     }
     .search-hit-info{
-		width:250px;
+		width:250px; 
 	}
 }
 @media (max-width: 992px){
@@ -39,9 +41,7 @@
 		.col-md-6{
 	      	width: 100%;
 	    }
-	    .social{
-	    	display:none !important;
-	    }
+
     }
     .facet-filter{
 		width:100% !important;

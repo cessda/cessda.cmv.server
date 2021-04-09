@@ -79,6 +79,14 @@ $v-selection-item-border-radius: 0;
 	  font-size: 19px;
     }
     
+#viewcont > .v-slot {
+	margin-left:-15px;
+	margin-right:-15px;
+}
+.gwt-FileUpload {
+
+font-size:17px;
+}
     label {
 	    font-weight: 500;
 	}
@@ -94,6 +102,10 @@ $v-selection-item-border-radius: 0;
  	.v-window-signin {
 		width: 50%;
 	}
+	.invis, .v-csslayout-header-cessda {
+		height:0;
+		
+			  }
 
 	.v-tabsheet-mainSheet{
 		.v-tabsheet-tabitemcell{
@@ -537,7 +549,13 @@ $v-selection-item-border-radius: 0;
 		}
 
 	}
-
+	.v-panel-caption {
+		color:white;
+		background: #4e4d56;
+			box-shadow:none;
+			text-shadow:none;
+			border-radius:none;
+			}
 	.v-csslayout-uploadformlayout {
 		 padding: 10px;
 	}
@@ -1541,11 +1559,7 @@ $v-selection-item-border-radius: 0;
     	letter-spacing: 0;
     	margin-top: 16px !important;
    	}
-   path{
-   	    stroke: transparent;
-    	stroke-width: 10px;
-    	fill: #6b6b6b;
-	}
+ 
 
 	.tags ul {
 	    padding: 0px;
@@ -1941,11 +1955,11 @@ $v-selection-item-border-radius: 0;
 		padding: 5px 0 0px 5px;
 		font-size:180%;
 	}
-	.container {
-	    text-align:unset;
-	}
+
 	.menu-bg{
-		height: 60px;
+		height: 46px;
+		line-height: 46px;
+		font-size:17px;
 		.v-button-link{
 			font-family: "Source Sans Pro",sans-serif;
 		    font-size: 110%;
@@ -2616,11 +2630,14 @@ $v-selection-item-border-radius: 0;
 		border:1px solid #eee;
    }
 	.secondary-footer .privacy {
-		text-align: left;
-		padding-bottom: 10px;
-		div .cont-privacy {
-			color: #ccc;
-			padding-bottom:10px;
-		}
+		
+		font-size:15px;
+		line-height:60px;
 	}
+	
+	.secondary-footer .privacy a {
+	color:white;
+	}
+	
+
 }

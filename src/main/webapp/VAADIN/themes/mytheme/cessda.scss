@@ -1,5 +1,10 @@
 @mixin cessda {
 	.header-cessda {
+		.logo {
+
+			max-width:300px;
+			height:auto;
+		}
 	  .header-content {
 	    padding: 0;
 	    h2 {
@@ -38,7 +43,7 @@
 	  .primary-header {
 	    background-color: #4e4d56;
     	height: 36px;
-	    text-align:center;
+	
 	    .log-in .login {
 	      	background-color: #4e4d56;
     		height: 36px;
@@ -88,9 +93,10 @@
 	    z-index: 99;
 	    text-align: center;
 	  }
+	 
 	  .menu-bg {
 	    background-color: #2b5a9b;
-	    text-align:center;
+	  
 	    .main-menu {
 	      width: 100%;
 	      nav {
@@ -341,8 +347,8 @@
 	}
 	
 	.section-footer {
-	  background: #f8f8f8;
-	  padding-top: 20px;
+
+
 	  .footer-top {
 		    position: relative;
 		    display:flex;
@@ -462,24 +468,22 @@
 	    }
 	  }
 	}
-	
+
 	.secondary-footer {
-	  background: #222;
-	  padding: 20px 0px 10px 0px;
+	  background: #4e4d56;
+	  padding: 10px 0;
 	  p {
 	    color: #666;
 	    svg {
 	      color: red;
 	    }
 	  }
-	  .privacy {
-	    text-align: right;
-	    div a {
-	      text-decoration: none;
-	    }
-	  }
+
 	}
-	
+	#footerlogo {
+max-height:40px;
+width:auto;
+	}
 	.text-left {
 	  text-align: left;
 	}
