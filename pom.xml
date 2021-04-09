@@ -202,17 +202,18 @@
 				<configuration>
 					<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
 					<webappDirectory>${basedir}/target/classes/VAADIN/widgetsets</webappDirectory>
-					<noServer>true</noServer>
-					<persistentunitcachedir>${basedir}/target/tmp/gwt-unitCache</persistentunitcachedir>
-					<compileReport>true</compileReport>
-					<strict>true</strict>
+					<warSourceDirectory>${basedir}/src/main/webapp</warSourceDirectory>
+					<draftCompile>false</draftCompile>
+					<compileReport>false</compileReport>
+					<style>OBF</style>
 				</configuration>
 				<executions>
 					<execution>
 						<goals>
-	                         <goal>resources</goal>
-	                         <goal>update-widgetset</goal>
-	                         <goal>compile</goal>
+							<goal>update-theme</goal>
+							<goal>update-widgetset</goal>
+							<goal>compile</goal>
+							<goal>compile-theme</goal>
 						</goals>
 					</execution>
 				</executions>
