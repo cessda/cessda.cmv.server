@@ -63,7 +63,9 @@ public class ValidationControllerV0
 		return validationService.validate( documentUri, profileUri, validationGateName );
 	}
 
-	@PostMapping( path = "/ValidationRequests", produces = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE } )
+	@PostMapping(
+			path = "/ValidationRequests",
+			produces = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE } )
 	@Operation( responses = @ApiResponse( responseCode = "200" ) )
 	public ValidationReportV0 validate( @RequestBody ValidationRequestV0 validationRequest )
 	{

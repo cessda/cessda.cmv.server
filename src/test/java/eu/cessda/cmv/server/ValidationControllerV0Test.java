@@ -55,7 +55,7 @@ class ValidationControllerV0Test
 	private MockMvc mockMvc;
 
 	@Autowired
-	private ObjectMapper objectMaper;
+	private ObjectMapper objectMapper;
 
 	private String profileUri = "https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/cdc25_profile.xml";
 	private String documentUri = "https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/ukds-2000.xml";
@@ -85,7 +85,7 @@ class ValidationControllerV0Test
 				.accept( MediaType.APPLICATION_JSON ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
-		validationReport = objectMaper.readValue( responseBody, ValidationReportV0.class );
+		validationReport = objectMapper.readValue( responseBody, ValidationReportV0.class );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 7 ) );
 	}
 
@@ -115,7 +115,7 @@ class ValidationControllerV0Test
 				.accept( MediaType.APPLICATION_JSON ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
-		validationReport = objectMaper.readValue( responseBody, ValidationReportV0.class );
+		validationReport = objectMapper.readValue( responseBody, ValidationReportV0.class );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
 		assertThat( validationReport.getDocumentUri().toString(), equalTo( documentUri ) );
 	}
@@ -124,6 +124,7 @@ class ValidationControllerV0Test
 	void validateWithStandardValidationGateByValidationRequestV0() throws Exception
 	{
 		String responseBody;
+		MediaType mediaType;
 		ValidationReportV0 validationReport;
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder( "" )
 				.path( ValidationControllerV0.BASE_PATH )
@@ -132,7 +133,19 @@ class ValidationControllerV0Test
 		validationRequest.setDocument( URI.create( documentUri ) );
 		validationRequest.setProfile( new TextResource( newResource( profileUri ) ).toString() );
 		validationRequest.setValidationGateName( ValidationGateName.STANDARD );
-		MediaType mediaType = MediaType.APPLICATION_XML;
+
+		mediaType = MediaType.APPLICATION_JSON;
+		responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
+				.accept( mediaType )
+				.contentType( mediaType )
+				.content( objectMapper.writeValueAsString( validationRequest ) ) )
+				.andExpect( status().isOk() )
+				.andReturn().getResponse().getContentAsString();
+		validationReport = objectMapper.readValue( responseBody, ValidationReportV0.class );
+		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
+		assertThat( validationReport.getDocumentUri().toString(), equalTo( documentUri ) );
+
+		mediaType = MediaType.APPLICATION_XML;
 		responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
 				.accept( mediaType )
 				.contentType( mediaType )
