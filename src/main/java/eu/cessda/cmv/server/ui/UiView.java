@@ -48,7 +48,7 @@ import com.vaadin.ui.themes.ValoTheme;
 @Title( "CESSDA Metadata Validator" )
 @StyleSheet( { "https://fonts.googleapis.com/css?family=Source+Sans+Pro:100,200,300,400,500,600,700,800,900" } )
 //@StyleSheet( { "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" } )
-@Theme( "mytheme" )
+@Theme( "cmv" )
 @SpringUI( path = "/" )
 public class UiView extends UI
 {
