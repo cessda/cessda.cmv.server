@@ -24,6 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,7 +38,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.zalando.problem.Problem;
@@ -50,7 +50,7 @@ import eu.cessda.cmv.core.mediatype.validationrequest.v0.ValidationRequestV0;
 import eu.cessda.cmv.server.api.ValidationControllerV0;
 
 @AutoConfigureMockMvc
-@SpringBootTest( webEnvironment = WebEnvironment.RANDOM_PORT )
+@SpringBootTest( webEnvironment = RANDOM_PORT )
 class ValidationControllerV0Test
 {
 	@Autowired
