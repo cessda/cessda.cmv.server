@@ -54,6 +54,7 @@ public class ValidationControllerV0
 
 	@PostMapping(
 			path = "/Validation",
+			consumes = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE },
 			produces = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE } )
 	@Operation(
 			operationId = "validate",
