@@ -29,6 +29,7 @@
 		<management.endpoints.enabled-by-default>true</management.endpoints.enabled-by-default>
 		<management.endpoints.web.exposure.include>*</management.endpoints.web.exposure.include>
 		<management.endpoint.logfile.enabled>true</management.endpoint.logfile.enabled>
+		<management.info.git.mode>full</management.info.git.mode>
 	</properties>
 
 	<dependencyManagement>
@@ -361,6 +362,7 @@
 				<vaadin.servlet.productionMode>true</vaadin.servlet.productionMode>
 				<management.endpoints.web.exposure.include>health</management.endpoints.web.exposure.include>
 				<management.endpoint.logfile.enabled>false</management.endpoint.logfile.enabled>
+				<management.info.git.mode>simple</management.info.git.mode>
 			</properties>
 		</profile>
 	</profiles>
