@@ -21,6 +21,7 @@ package eu.cessda.cmv.server;
 
 import static org.gesis.commons.resource.Resource.newResource;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -39,6 +40,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.zalando.problem.Problem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -128,7 +130,7 @@ class ValidationControllerV0Test
 		ValidationReportV0 validationReport;
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder( "" )
 				.path( ValidationControllerV0.BASE_PATH )
-				.path( "/ValidationRequests" );
+				.path( "/Validation" );
 		ValidationRequestV0 validationRequest = new ValidationRequestV0();
 		validationRequest.setDocument( URI.create( documentUri ) );
 		validationRequest.setProfile( new TextResource( newResource( profileUri ) ).toString() );
@@ -155,5 +157,27 @@ class ValidationControllerV0Test
 		validationReport = ValidationReportV0.read( responseBody );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
 		assertThat( validationReport.getDocumentUri().toString(), equalTo( documentUri ) );
+	}
+
+	@Test
+	void invalidRequest() throws Exception
+	{
+		// Use either the query parameters or the request body!
+		UriBuilder.V10 uriBuilder = new SpringUriBuilder( "" )
+				.path( ValidationControllerV0.BASE_PATH )
+				.path( "/Validation" )
+				.queryParameter( "validationGateName", ValidationGateName.STANDARD.toString() );
+		ValidationRequestV0 validationRequest = new ValidationRequestV0();
+		validationRequest.setDocument( URI.create( documentUri ) );
+		validationRequest.setProfile( new TextResource( newResource( profileUri ) ).toString() );
+		validationRequest.setValidationGateName( ValidationGateName.STANDARD );
+		MediaType mediaType = MediaType.APPLICATION_JSON;
+		String responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
+				.accept( mediaType ).contentType( mediaType )
+				.content( objectMapper.writeValueAsString( validationRequest ) ) )
+				.andExpect( status().is( 400 ) )
+				.andReturn().getResponse().getContentAsString();
+		Problem problem = objectMapper.readValue( responseBody, Problem.class );
+		assertThat( problem.getDetail(), containsString( "Invalid request" ) );
 	}
 }

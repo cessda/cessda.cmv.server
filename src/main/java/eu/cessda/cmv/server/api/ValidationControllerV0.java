@@ -56,22 +56,28 @@ public class ValidationControllerV0
 	@Operation(
 			responses = @ApiResponse( responseCode = "200" ) )
 	public ValidationReportV0 validate(
-			@RequestParam( required = true ) URI documentUri,
-			@RequestParam( required = true ) URI profileUri,
-			@RequestParam( required = true ) ValidationGateName validationGateName )
+			@RequestParam( required = false ) URI documentUri,
+			@RequestParam( required = false ) URI profileUri,
+			@RequestParam( required = false ) ValidationGateName validationGateName,
+			@RequestBody( required = false ) ValidationRequestV0 validationRequest )
 	{
-		return validationService.validate( documentUri, profileUri, validationGateName );
-	}
+		boolean hasRequestParams = documentUri != null || profileUri != null || validationGateName != null;
+		boolean hasRequestBody = validationRequest != null;
 
-	@PostMapping(
-			path = "/ValidationRequests",
-			produces = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE } )
-	@Operation( responses = @ApiResponse( responseCode = "200" ) )
-	public ValidationReportV0 validate( @RequestBody ValidationRequestV0 validationRequest )
-	{
-		Resource document = validationRequest.getDocument().toResource();
-		Resource profile = validationRequest.getProfile().toResource();
-		ValidationGateName validationGateName = validationRequest.getValidationGateName();
-		return validationService.validate( document, profile, validationGateName );
+		if ( hasRequestParams && !hasRequestBody )
+		{
+			return validationService.validate( documentUri, profileUri, validationGateName );
+		}
+		if ( !hasRequestParams && hasRequestBody )
+		{
+			Resource document = validationRequest.getDocument().toResource();
+			Resource profile = validationRequest.getProfile().toResource();
+			validationGateName = validationRequest.getValidationGateName();
+			return validationService.validate( document, profile, validationGateName );
+		}
+		else
+		{
+			throw new IllegalArgumentException( "Invalid request: Use either the query parameters or the request body!" );
+		}
 	}
 }
