@@ -19,13 +19,16 @@
  */
 package eu.cessda.cmv.server.api;
 
+import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import java.net.URI;
 
+import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +36,9 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.core.ValidationService;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
+import eu.cessda.cmv.core.mediatype.validationrequest.v0.ValidationRequestV0;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -51,12 +56,37 @@ public class ValidationControllerV0
 			path = "/Validation",
 			produces = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE } )
 	@Operation(
+			operationId = "validate",
+			description = "Use either the query parameters or the request body, query parameters are deprecated",
+			parameters = {
+					@Parameter( in = QUERY, name = "documentUri", deprecated = true ),
+					@Parameter( in = QUERY, name = "profileUri", deprecated = true ),
+					@Parameter( in = QUERY, name = "validationGateName", deprecated = true )
+			},
 			responses = @ApiResponse( responseCode = "200" ) )
 	public ValidationReportV0 validate(
-			@RequestParam( required = true ) URI documentUri,
-			@RequestParam( required = true ) URI profileUri,
-			@RequestParam( required = true ) ValidationGateName validationGateName )
+			@RequestParam( required = false ) URI documentUri,
+			@RequestParam( required = false ) URI profileUri,
+			@RequestParam( required = false ) ValidationGateName validationGateName,
+			@RequestBody( required = false ) ValidationRequestV0 validationRequest )
 	{
-		return validationService.validate( documentUri, profileUri, validationGateName );
+		boolean hasRequestParams = documentUri != null || profileUri != null || validationGateName != null;
+		boolean hasRequestBody = validationRequest != null;
+
+		if ( hasRequestParams && !hasRequestBody )
+		{
+			return validationService.validate( documentUri, profileUri, validationGateName );
+		}
+		if ( !hasRequestParams && hasRequestBody )
+		{
+			Resource document = validationRequest.getDocument().toResource();
+			Resource profile = validationRequest.getProfile().toResource();
+			validationGateName = validationRequest.getValidationGateName();
+			return validationService.validate( document, profile, validationGateName );
+		}
+		else
+		{
+			throw new IllegalArgumentException( "Invalid request: Use either the query parameters or the request body!" );
+		}
 	}
 }

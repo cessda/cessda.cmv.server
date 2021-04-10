@@ -22,8 +22,11 @@ package eu.cessda.cmv.server;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.gesis.commons.resource.ClasspathResourceRepository;
 import org.gesis.commons.resource.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -31,7 +34,11 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.zalando.problem.ProblemModule;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.ValidationService;
@@ -40,6 +47,9 @@ import eu.cessda.cmv.core.ValidationService;
 public class Server extends SpringBootServletInitializer
 {
 	static final String ALLOWED_CLI_OPTION = "--spring.config.additional-location=file:./application.properties";
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	public static void main( String[] args )
 	{
@@ -66,15 +76,14 @@ public class Server extends SpringBootServletInitializer
 		return application.sources( Server.class );
 	}
 
-	@Bean
-	public ObjectMapper objectMapper()
+	@PostConstruct
+	public void postConstruct()
 	{
-		// See https://github.com/zalando/problem-spring-web/tree/master/problem-spring-web
-		ProblemModule problemModule = new ProblemModule().withStackTraces( false );
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.registerModule( problemModule );
-		return objectMapper;
+		objectMapper.configure( MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true );
+		objectMapper.configure( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false );
+		objectMapper.registerModule( new ProblemModule().withStackTraces( false ) );
+		objectMapper.registerModule( new JaxbAnnotationModule() );
+		objectMapper.enable( SerializationFeature.INDENT_OUTPUT );
 	}
 
 	@Bean
