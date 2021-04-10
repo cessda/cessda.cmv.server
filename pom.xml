@@ -4,7 +4,7 @@
 
 	<groupId>eu.cessda.cmv</groupId>
 	<artifactId>cmv-server</artifactId>
-	<version>0.3.2-SNAPSHOT</version>
+	<version>0.4.0-SNAPSHOT</version>
 	<name>CESSDA Metadata Validator</name>
 	<url>https://cmv-dev.cessda.eu</url>
 	<parent>
