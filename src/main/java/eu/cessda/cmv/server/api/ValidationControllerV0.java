@@ -19,6 +19,7 @@
  */
 package eu.cessda.cmv.server.api;
 
+import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
@@ -37,6 +38,7 @@ import eu.cessda.cmv.core.ValidationService;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
 import eu.cessda.cmv.core.mediatype.validationrequest.v0.ValidationRequestV0;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -54,6 +56,13 @@ public class ValidationControllerV0
 			path = "/Validation",
 			produces = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE } )
 	@Operation(
+			operationId = "validate",
+			description = "Use either the query parameters or the request body, query parameters are deprecated",
+			parameters = {
+					@Parameter( in = QUERY, name = "documentUri", deprecated = true ),
+					@Parameter( in = QUERY, name = "profileUri", deprecated = true ),
+					@Parameter( in = QUERY, name = "validationGateName", deprecated = true )
+			},
 			responses = @ApiResponse( responseCode = "200" ) )
 	public ValidationReportV0 validate(
 			@RequestParam( required = false ) URI documentUri,
