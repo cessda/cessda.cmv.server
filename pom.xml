@@ -26,6 +26,9 @@
 		<vaadin.version>8.12.4</vaadin.version>
 		<vaadin.servlet.productionMode>false</vaadin.servlet.productionMode>
 		<sonar.exclusions>src/main/java/eu/cessda/cmv/server/ui/**/*.java</sonar.exclusions>
+		<management.endpoints.enabled-by-default>true</management.endpoints.enabled-by-default>
+		<management.endpoints.web.exposure.include>*</management.endpoints.web.exposure.include>
+		<management.endpoint.logfile.enabled>true</management.endpoint.logfile.enabled>
 	</properties>
 
 	<dependencyManagement>
@@ -356,6 +359,8 @@
 				<logging.file.name>application.log</logging.file.name>
 				<server.servlet.context-path></server.servlet.context-path><!-- necessary for HEALTHCHECK -->
 				<vaadin.servlet.productionMode>true</vaadin.servlet.productionMode>
+				<management.endpoints.web.exposure.include>health</management.endpoints.web.exposure.include>
+				<management.endpoint.logfile.enabled>false</management.endpoint.logfile.enabled>
 			</properties>
 		</profile>
 	</profiles>
