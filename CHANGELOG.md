@@ -4,20 +4,19 @@ All notable changes to the CESSDA Metadata Validator Server component will be do
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-*For each release, use the following sub-sections:*
-*- Added (for new features)*
-*- Changed (for changes in existing functionality)*
-*- Deprecated (for soon-to-be removed features)*
-*- Removed (for now removed features)*
-*- Fixed (for any bug fixes)*
+*For each release, use the following sub-sections:*  
+*- Added (for new features)*  
+*- Changed (for changes in existing functionality)*  
+*- Deprecated (for soon-to-be removed features)*  
+*- Removed (for now removed features)*  
+*- Fixed (for any bug fixes)*  
 *- Security (in case of vulnerabilities)*
-
 
 ## [0.4.0-SNAPSHOT] - 2021-04-12
 
 ### Added
-- Validate url input field in ResourceSelectionComponent Feedback (#26)
-- Post documents by REST API for validation Feedback (#25)
+- Validate url input field in ResourceSelectionComponent (#26)
+- Post documents by REST API for validation (#25)
 
 ### Changed
 - Align user interface layout to CESSDA guidelines  (#42)
