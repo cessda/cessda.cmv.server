@@ -19,13 +19,18 @@
  */
 package eu.cessda.cmv.server;
 
+import static java.util.Arrays.asList;
+import static org.gesis.commons.resource.Resource.newResource;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
 import org.gesis.commons.resource.ClasspathResourceRepository;
+import org.gesis.commons.resource.FileNameResourceLabelProvider;
 import org.gesis.commons.resource.Resource;
+import org.gesis.commons.resource.ResourceLabelProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -41,6 +46,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
+import eu.cessda.cmv.core.ProfileResourceLabelProvider;
 import eu.cessda.cmv.core.ValidationService;
 
 @SpringBootApplication
@@ -101,12 +107,15 @@ public class Server extends SpringBootServletInitializer
 	@Bean
 	public List<Resource.V10> demoProfiles()
 	{
-		return ClasspathResourceRepository.newBuilder()
-				.includeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*profile.xml" )
-				.build()
-				.findAll()
-				.map( Resource.V10.class::cast )
-				.collect( Collectors.toList() );
+		String baseUrl = "https://bitbucket.org/cessda/cessda.metadata.profiles/raw/4390b0437dbdeac8902b65627a1d443875c797a1/";
+		ResourceLabelProvider labelProvider = new ProfileResourceLabelProvider();
+		return asList( "CDC%201.2.2%20PROFILE/cdc_122_profile.xml",
+				"CDC%201.2.2%20PROFILE/cdc_122_profile_mono.xml",
+				"CDC%202.5%20PROFILE/cdc25_profile.xml",
+				"CDC%202.5%20PROFILE/cdc25_profile_mono.xml" ).stream()
+						.map( uri -> newResource( baseUrl + uri, labelProvider ) )
+						.map( Resource.V10.class::cast )
+						.collect( Collectors.toList() );
 	}
 
 	@Bean
@@ -117,7 +126,10 @@ public class Server extends SpringBootServletInitializer
 				.excludeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*profile*.xml" )
 				.build()
 				.findAll()
+				.map( Resource::getUri )
+				.map( uri -> newResource( uri, new FileNameResourceLabelProvider() ) )
 				.map( Resource.V10.class::cast )
+				.sorted( ( r1, r2 ) -> r1.getLabel().compareTo( r2.getLabel() ) )
 				.collect( Collectors.toList() );
 	}
 }

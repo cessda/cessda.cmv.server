@@ -46,16 +46,20 @@ import org.gesis.commons.resource.io.NotDdiInputStreamException;
 import org.gesis.commons.xml.XercesXalanDocument;
 import org.gesis.commons.xml.XmlNotWellformedException;
 
+import com.vaadin.data.ValueProvider;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStateWindow;
@@ -99,11 +103,7 @@ public class ResourceSelectionComponent extends CustomComponent
 
 		ComboBox<Resource.V10> comboBox = new ComboBox<>();
 		comboBox.setPlaceholder( "Select resource" );
-		comboBox.setItemCaptionGenerator( resource ->
-		{
-			String uri = resource.getUri().toString();
-			return uri.substring( uri.lastIndexOf( '/' ) + 1 );
-		} );
+		comboBox.setItemCaptionGenerator( Resource.V10::getLabel );
 		comboBox.setWidth( 100, Unit.PERCENTAGE );
 		comboBox.setTextInputAllowed( false );
 		comboBox.setItems( predefinedResources );
@@ -213,10 +213,26 @@ public class ResourceSelectionComponent extends CustomComponent
 		return Collections.unmodifiableList( selectedResources );
 	}
 
+	private ValueProvider<Resource.V10, Label> resourceValueProvider = resource ->
+	{
+		Label label = new Label();
+		label.setSizeFull();
+		if ( resource.getUri().getScheme().startsWith( "http" ) )
+		{
+			label.setContentMode( ContentMode.HTML );
+			label.setValue( "<a href='" + resource.getUri().toString() + "' target='_blank'>" + resource.getLabel() + "</a>" );
+		}
+		else
+		{
+			label.setValue( resource.getLabel() );
+		}
+		return label;
+	};
+
 	private Grid<Resource.V10> newGrid()
 	{
 		Grid<Resource.V10> grid = new Grid<>();
-		grid.addColumn( Resource.V10::getLabel ).setCaption( "Label" );
+		grid.addColumn( resourceValueProvider, new ComponentRenderer() ).setCaption( "Label" );
 		grid.setSelectionMode( NONE );
 		grid.setWidthFull();
 		grid.setHeightMode( ROW );

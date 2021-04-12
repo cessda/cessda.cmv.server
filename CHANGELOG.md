@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [0.4.0-SNAPSHOT] - 2021-04-12
 
 ### Added
+- Provide links to pre-defined profiles in user interface (#28)
 - Validate url input field in ResourceSelectionComponent (#26)
 - Post documents by REST API for validation (#25)
 
