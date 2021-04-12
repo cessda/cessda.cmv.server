@@ -25,6 +25,8 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,7 +71,7 @@ public class ValidationControllerV0
 			@RequestParam( required = false ) URI documentUri,
 			@RequestParam( required = false ) URI profileUri,
 			@RequestParam( required = false ) ValidationGateName validationGateName,
-			@RequestBody( required = false ) ValidationRequestV0 validationRequest )
+			@RequestBody( required = false ) @Valid ValidationRequestV0 validationRequest )
 	{
 		boolean hasRequestParams = documentUri != null || profileUri != null || validationGateName != null;
 		boolean hasRequestBody = validationRequest != null;

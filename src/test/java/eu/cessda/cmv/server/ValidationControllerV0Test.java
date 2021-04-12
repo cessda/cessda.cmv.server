@@ -180,4 +180,26 @@ class ValidationControllerV0Test
 		Problem problem = objectMapper.readValue( responseBody, Problem.class );
 		assertThat( problem.getDetail(), containsString( "Invalid request" ) );
 	}
+
+	@Test
+	void invalidValidationRequestObject() throws Exception
+	{
+		UriBuilder.V10 uriBuilder = new SpringUriBuilder( "" )
+				.path( ValidationControllerV0.BASE_PATH )
+				.path( "/Validation" );
+		String content = null; // violates @NotNull
+		ValidationRequestV0 validationRequest = new ValidationRequestV0();
+		validationRequest.setDocument( content );
+		validationRequest.setProfile( new TextResource( newResource( profileUri ) ).toString() );
+		validationRequest.setValidationGateName( ValidationGateName.STANDARD );
+		MediaType mediaType = MediaType.APPLICATION_JSON;
+		String responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
+				.accept( mediaType ).contentType( mediaType )
+				.content( objectMapper.writeValueAsString( validationRequest ) ) )
+				.andExpect( status().is( 400 ) )
+				.andReturn().getResponse().getContentAsString();
+		Problem problem = objectMapper.readValue( responseBody, Problem.class );
+		assertThat( problem.getTitle(), containsString( "Constraint Violation" ) );
+		assertThat( responseBody, containsString( "must not be null" ) );
+	}
 }
