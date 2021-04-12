@@ -9,10 +9,6 @@
 [![Vulnerabilities](https://sonarqube.cessda.eu/api/project_badges/measure?project=eu.cessda.cmv%3Acmv-server&metric=vulnerabilities)](https://sonarqube.cessda.eu/dashboard?id=eu.cessda.cmv%3Acmv-server)
 [![Bugs](https://sonarqube.cessda.eu/api/project_badges/measure?project=eu.cessda.cmv%3Acmv-server&metric=bugs)](https://sonarqube.cessda.eu/dashboard?id=eu.cessda.cmv%3Acmv-server)
 
-## Endpoints
- * [User Interface](https://cmv-dev.cessda.eu)
- * [REST API](https://cmv-dev.cessda.eu/api/swagger)
- * [Documentation](https://cmv-dev.cessda.eu/documentation)
 
 ## Getting started as developer
 

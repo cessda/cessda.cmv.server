@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *- Fixed (for any bug fixes)*  
 *- Security (in case of vulnerabilities)*
 
-## [0.4.0-SNAPSHOT] - 2021-04-12
+## [0.4.0] - 2021-04-12
 
 ### Added
 - Provide links to pre-defined profiles in user interface (#28)
