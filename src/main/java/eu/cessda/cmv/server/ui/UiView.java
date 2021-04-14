@@ -22,8 +22,6 @@ package eu.cessda.cmv.server.ui;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.viritin.button.MButton;
-import org.vaadin.viritin.label.MLabel;
 import org.vaadin.viritin.layouts.MCssLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 
@@ -35,7 +33,6 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewProvider;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComboBox;
@@ -43,11 +40,9 @@ import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.ValoTheme;
 
 @Title( "CESSDA Metadata Validator" )
 @StyleSheet( { "https://fonts.googleapis.com/css?family=Source+Sans+Pro:100,200,300,400,500,600,700,800,900" } )
-//@StyleSheet( { "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" } )
 @Theme( "cmv" )
 @SpringUI( path = "/" )
 public class UiView extends UI
@@ -80,33 +75,18 @@ public class UiView extends UI
 		countryBox.setStyleName( "language-option" );
 		countryBox.setValue( "English" );
 		countryBox.setWidth( "100px" );
-		countryBox.addValueChangeListener( e -> setLocale( new Locale( e.getValue().toString() ) ) );
+		countryBox.addValueChangeListener( e -> setLocale( new Locale( e.getValue() ) ) );
 		countryBox.setItemCaptionGenerator( item -> item.substring( 0, 1 ) + item.substring( 1 ).toLowerCase() );
 		countryBox.setVisible( false );
-		MCssLayout headerTopContainer = new MCssLayout()
-				.withStyleName( "row" ).withFullWidth()
-				.add( new MLabel().withContentMode( ContentMode.HTML ).withStyleName( "col-md-6 social" )
-						.withValue(
-								"<div class=\"email\"><span>"
-										+ "<a id=\"cessdahome\" href=\"https://www.cessda.eu/\" target=\"_blank\">Consortium of European Social Science Data Archives</a>"
-										+ "</span></div>" ),
-						new MCssLayout().withStyleName( "col-md-6 log-in pull-right" ).add( countryBox ) );
 		Embedded embeddedLogo = new Embedded( null, new ThemeResource( "img/logo/cessda_logo_cmv.svg" ) );
 		embeddedLogo.setWidth( "100%" );
 		MCssLayout headerMiddleContent = new MCssLayout()
 				.withStyleName( "row header-content" )
 				.withFullWidth();
-				//.add( new MCssLayout().withStyleName( "col-md-4 logo" ).add( embeddedLogo ) );
-		MCssLayout headerTop = new MCssLayout()
-				.withFullWidth()
-				.withStyleName( "primary-header" )
-				.add( new MCssLayout().withStyleName( CONTAINER ).add( headerTopContainer ) );
 		MCssLayout headerMiddle = new MCssLayout()
 				.withFullWidth()
 				.withStyleName( "common-header" )
 				.add( new MCssLayout().withStyleName( CONTAINER ).add( headerMiddleContent ) );
-		MButton validationButton = new MButton( "Validation" )
-				.withStyleName( ValoTheme.BUTTON_LINK + PULL_LEFT );
 		MCssLayout headerBottom = new MCssLayout()
 				.withFullWidth()
 				.withStyleName( "invis" )
@@ -116,8 +96,8 @@ public class UiView extends UI
 				.withStyleName( "header-cessda" )
 				.add( headerMiddle, headerBottom );
 		CustomLayout header = new CustomLayout( "header" );
-				header.setStyleName( "header" );
-				header.setWidth( 100, Unit.PERCENTAGE );
+		header.setStyleName( "header" );
+		header.setWidth( 100, Unit.PERCENTAGE );
 		CustomLayout footer = new CustomLayout( "footer" );
 		footer.setStyleName( "footer" );
 		footer.setWidth( 100, Unit.PERCENTAGE );
