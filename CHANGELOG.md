@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *- Fixed (for any bug fixes)*  
 *- Security (in case of vulnerabilities)*
 
+## [0.4.1-SNAPSHOT] - unreleased
+
+### Added
+- Embed JIRA issue collector code (#48)
+
 ## [0.4.0] - 2021-04-12
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4681201.svg)](https://doi.org/10.5281/zenodo.4681201)
 
