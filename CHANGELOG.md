@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - Embed JIRA issue collector code (#48)
+- Embed Matomo tracking code (#47)
 
 ## [0.4.0] - 2021-04-12
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4681201.svg)](https://doi.org/10.5281/zenodo.4681201)
