@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *- Fixed (for any bug fixes)*  
 *- Security (in case of vulnerabilities)*
 
-## [0.4.1-SNAPSHOT] - unreleased
+## [0.4.1] - 2021-04-15
 
 ### Added
 - Embed JIRA issue collector code (#48)
