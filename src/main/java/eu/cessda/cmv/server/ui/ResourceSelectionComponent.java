@@ -21,18 +21,15 @@ package eu.cessda.cmv.server.ui;
 
 import static com.vaadin.shared.ui.grid.HeightMode.ROW;
 import static com.vaadin.ui.Grid.SelectionMode.NONE;
-import static com.vaadin.ui.Notification.Type.WARNING_MESSAGE;
 import static com.vaadin.ui.themes.ValoTheme.OPTIONGROUP_HORIZONTAL;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_URL;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.MULTI;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.SINGLE;
-import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static org.gesis.commons.resource.Resource.newResource;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
@@ -41,10 +38,6 @@ import java.util.function.Consumer;
 
 import org.apache.commons.validator.routines.UrlValidator;
 import org.gesis.commons.resource.Resource;
-import org.gesis.commons.resource.io.DdiInputStream;
-import org.gesis.commons.resource.io.NotDdiInputStreamException;
-import org.gesis.commons.xml.XercesXalanDocument;
-import org.gesis.commons.xml.XmlNotWellformedException;
 
 import com.vaadin.data.ValueProvider;
 import com.vaadin.icons.VaadinIcons;
@@ -63,6 +56,8 @@ import com.vaadin.ui.renderers.ComponentRenderer;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStateWindow;
+
+import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 
 public class ResourceSelectionComponent extends CustomComponent
 {
@@ -89,7 +84,8 @@ public class ResourceSelectionComponent extends CustomComponent
 			ProvisioningOptions selectedProvisioningOption,
 			List<Resource.V10> predefinedResources,
 			List<Resource.V10> selectedResources,
-			Runnable refreshEvent )
+			Runnable refreshEvent,
+			CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory )
 	{
 		requireNonNull( selectionMode );
 		requireNonNull( provisioningOptions );
@@ -156,7 +152,7 @@ public class ResourceSelectionComponent extends CustomComponent
 				UrlValidator urlValidator = UrlValidator.getInstance();
 				if ( urlValidator.isValid( value ) )
 				{
-					recognizeDdiDocument( newResource( value ) ).ifPresent( selectResource );
+					recognizeDdiDocument( cessdaMetadataValidatorFactory, newResource( value ) ).ifPresent( selectResource );
 					refreshComponents.run();
 				}
 				else
@@ -170,7 +166,7 @@ public class ResourceSelectionComponent extends CustomComponent
 		{
 			listener.getSelectedItem().ifPresent( selectedItem ->
 			{
-				recognizeDdiDocument( selectedItem ).ifPresent( selectResource );
+				recognizeDdiDocument( cessdaMetadataValidatorFactory, selectedItem ).ifPresent( selectResource );
 				refreshComponents.run();
 			} );
 		} );
@@ -182,7 +178,7 @@ public class ResourceSelectionComponent extends CustomComponent
 				int filesLeftInQueue ) ->
 		{
 			Resource.V10 uploadedResource = newResource( inputStream, fileName );
-			recognizeDdiDocument( uploadedResource ).ifPresent( selectResource );
+			recognizeDdiDocument( cessdaMetadataValidatorFactory, uploadedResource ).ifPresent( selectResource );
 			refreshComponents.run();
 		};
 		multiFileUpload.getUploadStatePanel().setFinishedHandler( uploadFinishedHandler );
@@ -269,30 +265,20 @@ public class ResourceSelectionComponent extends CustomComponent
 		return multiFileUpload;
 	}
 
-	private Optional<Resource.V10> recognizeDdiDocument( Resource.V10 resource )
+	private Optional<Resource.V10> recognizeDdiDocument(
+			CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory,
+			Resource.V10 resource )
 	{
-		requireNonNull( resource );
-		try ( DdiInputStream inputStream = new DdiInputStream( resource.readInputStream() ) )
+		try
 		{
-			// TODO Do well-formed check with SAX only more efficiently
-			XercesXalanDocument.newBuilder().ofInputStream( inputStream ).build();
+			// TODO Avoid inefficiency of calling newDocument only to check if document is accepted
+			cessdaMetadataValidatorFactory.newDocument( resource );
 			return Optional.of( resource );
 		}
-		catch (NotDdiInputStreamException e)
+		catch (Exception e)
 		{
-			String message = format( "%s is not recognized as DDI document", resource.getUri() );
-			Notification.show( message, WARNING_MESSAGE );
+			Notification.show( e.getMessage(), Type.WARNING_MESSAGE );
 			return Optional.empty();
-		}
-		catch (XmlNotWellformedException e)
-		{
-			String message = format( "%s is not well-formed XML: %s", resource.getUri(), e.getMessage() );
-			Notification.show( message, WARNING_MESSAGE );
-			return Optional.empty();
-		}
-		catch (IOException e)
-		{
-			throw new IllegalArgumentException( e );
 		}
 	}
 }

@@ -47,6 +47,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
+import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.core.ValidationService;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
@@ -63,7 +64,8 @@ public class ValidationView extends VerticalLayout implements View
 
 	public ValidationView( @Autowired ValidationService.V10 validationService,
 			@Autowired List<Resource.V10> demoDocuments,
-			@Autowired List<Resource.V10> demoProfiles )
+			@Autowired List<Resource.V10> demoProfiles,
+			@Autowired CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory )
 	{
 		List<Resource.V10> profileResources = new ArrayList<>();
 		List<Resource.V10> documentResources = new ArrayList<>();
@@ -135,7 +137,8 @@ public class ValidationView extends VerticalLayout implements View
 				BY_PREDEFINED,
 				demoProfiles,
 				profileResources,
-				refreshReportPanel );
+				refreshReportPanel,
+				cessdaMetadataValidatorFactory );
 		profileSelection.setCaption( "Profile" );
 		profileSelection.setWidthFull();
 
@@ -145,7 +148,8 @@ public class ValidationView extends VerticalLayout implements View
 				BY_UPLOAD,
 				demoDocuments,
 				documentResources,
-				refreshReportPanel );
+				refreshReportPanel,
+				cessdaMetadataValidatorFactory );
 		documentSelection.setCaption( "Documents" );
 		documentSelection.setWidthFull();
 
