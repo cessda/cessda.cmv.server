@@ -23,7 +23,7 @@
 		<server.port>8080</server.port>
 		<server.servlet.context-path>/</server.servlet.context-path>
 		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
-		<vaadin.version>8.12.4</vaadin.version>
+		<vaadin.version>8.13.0</vaadin.version>
 		<vaadin.servlet.productionMode>false</vaadin.servlet.productionMode>
 		<sonar.exclusions>src/main/java/eu/cessda/cmv/server/ui/**/*.java</sonar.exclusions>
 		<management.endpoints.enabled-by-default>true</management.endpoints.enabled-by-default>
