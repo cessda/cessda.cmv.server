@@ -19,10 +19,6 @@
  */
 package eu.cessda.cmv.server.ui;
 
-import java.util.List;
-
-import org.gesis.commons.resource.Resource;
-
 import com.vaadin.data.ValueProvider;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.CustomComponent;
@@ -31,16 +27,18 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
-
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ConstraintViolationV0;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
+import org.gesis.commons.resource.Resource;
+
+import java.util.List;
 
 public class ValidationReportGridValueProvider
 		implements ValueProvider<ValidationReportV0, CustomComponent>
 {
 	private static final long serialVersionUID = 5087782841088695356L;
 
-	private List<Resource.V10> documentResources;
+	private final List<Resource.V10> documentResources;
 
 	public ValidationReportGridValueProvider( List<Resource.V10> documentResources )
 	{

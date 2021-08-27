@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,12 +18,6 @@
  * #L%
  */
 package eu.cessda.cmv.server.ui;
-
-import java.util.Locale;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.viritin.layouts.MCssLayout;
-import org.vaadin.viritin.layouts.MVerticalLayout;
 
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
@@ -35,24 +29,24 @@ import com.vaadin.navigator.ViewProvider;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.viritin.layouts.MCssLayout;
+import org.vaadin.viritin.layouts.MVerticalLayout;
+
+import java.util.Locale;
 
 @Title( "CESSDA Metadata Validator" )
 @StyleSheet( { "https://fonts.googleapis.com/css?family=Source+Sans+Pro:100,200,300,400,500,600,700,800,900" } )
 @JavaScript( "https://cessda.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/sb53l8/b/24/a44af77267a987a660377e5c46e0fb64/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-GB&collectorId=0dd601e4" )
 @Theme( "cmv" )
 @SpringUI( path = "/" )
+@SuppressWarnings( "java:S2160" )
 public class UiView extends UI
 {
 	private static final long serialVersionUID = 5352286420346188519L;
 
 	public static final String CONTAINER = "container";
-	public static final String PULL_LEFT = " pull-left";
 
 	@Autowired
 	private ViewProvider viewProvider;
@@ -78,7 +72,7 @@ public class UiView extends UI
 		countryBox.setValue( "English" );
 		countryBox.setWidth( "100px" );
 		countryBox.addValueChangeListener( e -> setLocale( new Locale( e.getValue() ) ) );
-		countryBox.setItemCaptionGenerator( item -> item.substring( 0, 1 ) + item.substring( 1 ).toLowerCase() );
+		countryBox.setItemCaptionGenerator( item -> item.charAt( 0 ) + item.substring( 1 ).toLowerCase() );
 		countryBox.setVisible( false );
 		Embedded embeddedLogo = new Embedded( null, new ThemeResource( "img/logo/cessda_logo_cmv.svg" ) );
 		embeddedLogo.setWidth( "100%" );

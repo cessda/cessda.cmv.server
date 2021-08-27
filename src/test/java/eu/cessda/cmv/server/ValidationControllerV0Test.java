@@ -19,18 +19,11 @@
  */
 package eu.cessda.cmv.server;
 
-import static org.gesis.commons.resource.Resource.newResource;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.cessda.cmv.core.ValidationGateName;
+import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
+import eu.cessda.cmv.core.mediatype.validationrequest.v0.ValidationRequestV0;
+import eu.cessda.cmv.server.api.ValidationControllerV0;
 import org.gesis.commons.resource.SpringUriBuilder;
 import org.gesis.commons.resource.TextResource;
 import org.gesis.commons.resource.UriBuilder;
@@ -42,12 +35,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.zalando.problem.Problem;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URI;
 
-import eu.cessda.cmv.core.ValidationGateName;
-import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
-import eu.cessda.cmv.core.mediatype.validationrequest.v0.ValidationRequestV0;
-import eu.cessda.cmv.server.api.ValidationControllerV0;
+import static org.gesis.commons.resource.Resource.newResource;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 @SpringBootTest( webEnvironment = RANDOM_PORT )
@@ -59,19 +54,19 @@ class ValidationControllerV0Test
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	private String profileUri = "https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/cdc25_profile.xml";
-	private String documentUri = "https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/ukds-2000.xml";
+	private static final String PROFILE_URI = "https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/cdc25_profile.xml";
+	private static final String DOCUMENT_URI = "https://bitbucket.org/cessda/cessda.cmv.core/raw/ad7e3ffd847ecb9c35faea329fbc7cfe14bfb7a6/src/main/resources/demo-documents/ddi-v25/ukds-2000.xml";
 
 	@Test
-	void validateWithBasicValidationGate() throws Exception
+	void validateWithBasicValidationGate() throws Exception, java.io.UnsupportedEncodingException, com.fasterxml.jackson.core.JsonProcessingException, com.fasterxml.jackson.databind.JsonMappingException
 	{
 		String responseBody;
 		ValidationReportV0 validationReport;
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder( "" )
 				.path( ValidationControllerV0.BASE_PATH )
 				.path( "/Validation" )
-				.queryParameter( "documentUri", documentUri )
-				.queryParameter( "profileUri", profileUri )
+				.queryParameter( "documentUri", DOCUMENT_URI )
+				.queryParameter( "profileUri", PROFILE_URI )
 				.queryParameter( "validationGateName", ValidationGateName.BASIC.toString() );
 
 		// XML
@@ -92,15 +87,15 @@ class ValidationControllerV0Test
 	}
 
 	@Test
-	void validateWithStandardValidationGate() throws UnsupportedEncodingException, Exception
+	void validateWithStandardValidationGate() throws Exception, java.io.UnsupportedEncodingException, com.fasterxml.jackson.core.JsonProcessingException, com.fasterxml.jackson.databind.JsonMappingException
 	{
 		String responseBody;
 		ValidationReportV0 validationReport;
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder( "" )
 				.path( ValidationControllerV0.BASE_PATH )
 				.path( "/Validation" )
-				.queryParameter( "documentUri", documentUri )
-				.queryParameter( "profileUri", profileUri )
+				.queryParameter( "documentUri", DOCUMENT_URI )
+				.queryParameter( "profileUri", PROFILE_URI )
 				.queryParameter( "validationGateName", ValidationGateName.STANDARD.toString() );
 
 		// XML
@@ -110,7 +105,7 @@ class ValidationControllerV0Test
 				.andReturn().getResponse().getContentAsString();
 		validationReport = ValidationReportV0.read( responseBody );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
-		assertThat( validationReport.getDocumentUri().toString(), equalTo( documentUri ) );
+		assertThat( validationReport.getDocumentUri().toString(), equalTo( DOCUMENT_URI ) );
 
 		// JSON
 		responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
@@ -119,11 +114,11 @@ class ValidationControllerV0Test
 				.andReturn().getResponse().getContentAsString();
 		validationReport = objectMapper.readValue( responseBody, ValidationReportV0.class );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
-		assertThat( validationReport.getDocumentUri().toString(), equalTo( documentUri ) );
+		assertThat( validationReport.getDocumentUri().toString(), equalTo( DOCUMENT_URI ) );
 	}
 
 	@Test
-	void validateWithStandardValidationGateByValidationRequestV0() throws Exception
+	void validateWithStandardValidationGateByValidationRequestV0() throws Exception, java.io.UnsupportedEncodingException, com.fasterxml.jackson.core.JsonProcessingException, com.fasterxml.jackson.databind.JsonMappingException
 	{
 		String responseBody;
 		MediaType mediaType;
@@ -132,20 +127,20 @@ class ValidationControllerV0Test
 				.path( ValidationControllerV0.BASE_PATH )
 				.path( "/Validation" );
 		ValidationRequestV0 validationRequest = new ValidationRequestV0();
-		validationRequest.setDocument( URI.create( documentUri ) );
-		validationRequest.setProfile( new TextResource( newResource( profileUri ) ).toString() );
+		validationRequest.setDocument( URI.create( DOCUMENT_URI ) );
+		validationRequest.setProfile( new TextResource( newResource( PROFILE_URI ) ).toString() );
 		validationRequest.setValidationGateName( ValidationGateName.STANDARD );
 
 		mediaType = MediaType.APPLICATION_JSON;
 		responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
-				.accept( mediaType )
-				.contentType( mediaType )
-				.content( objectMapper.writeValueAsString( validationRequest ) ) )
+						.accept( mediaType )
+						.contentType( mediaType )
+						.content( objectMapper.writeValueAsString( validationRequest ) ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
 		validationReport = objectMapper.readValue( responseBody, ValidationReportV0.class );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
-		assertThat( validationReport.getDocumentUri().toString(), equalTo( documentUri ) );
+		assertThat( validationReport.getDocumentUri().toString(), equalTo( DOCUMENT_URI ) );
 
 		mediaType = MediaType.APPLICATION_XML;
 		responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
@@ -156,11 +151,11 @@ class ValidationControllerV0Test
 				.andReturn().getResponse().getContentAsString();
 		validationReport = ValidationReportV0.read( responseBody );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
-		assertThat( validationReport.getDocumentUri().toString(), equalTo( documentUri ) );
+		assertThat( validationReport.getDocumentUri().toString(), equalTo( DOCUMENT_URI ) );
 	}
 
 	@Test
-	void invalidRequest() throws Exception
+	void invalidRequest() throws Exception, java.io.UnsupportedEncodingException, com.fasterxml.jackson.core.JsonProcessingException, com.fasterxml.jackson.databind.JsonMappingException
 	{
 		// Use either the query parameters or the request body!
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder( "" )
@@ -168,13 +163,13 @@ class ValidationControllerV0Test
 				.path( "/Validation" )
 				.queryParameter( "validationGateName", ValidationGateName.STANDARD.toString() );
 		ValidationRequestV0 validationRequest = new ValidationRequestV0();
-		validationRequest.setDocument( URI.create( documentUri ) );
-		validationRequest.setProfile( new TextResource( newResource( profileUri ) ).toString() );
+		validationRequest.setDocument( URI.create( DOCUMENT_URI ) );
+		validationRequest.setProfile( new TextResource( newResource( PROFILE_URI ) ).toString() );
 		validationRequest.setValidationGateName( ValidationGateName.STANDARD );
 		MediaType mediaType = MediaType.APPLICATION_JSON;
 		String responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
-				.accept( mediaType ).contentType( mediaType )
-				.content( objectMapper.writeValueAsString( validationRequest ) ) )
+						.accept( mediaType ).contentType( mediaType )
+						.content( objectMapper.writeValueAsString( validationRequest ) ) )
 				.andExpect( status().is( 400 ) )
 				.andReturn().getResponse().getContentAsString();
 		Problem problem = objectMapper.readValue( responseBody, Problem.class );
@@ -182,7 +177,7 @@ class ValidationControllerV0Test
 	}
 
 	@Test
-	void invalidValidationRequestObject() throws Exception
+	void invalidValidationRequestObject() throws Exception, java.io.UnsupportedEncodingException, com.fasterxml.jackson.core.JsonProcessingException, com.fasterxml.jackson.databind.JsonMappingException
 	{
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder( "" )
 				.path( ValidationControllerV0.BASE_PATH )
@@ -190,7 +185,7 @@ class ValidationControllerV0Test
 		String content = null; // violates @NotNull
 		ValidationRequestV0 validationRequest = new ValidationRequestV0();
 		validationRequest.setDocument( content );
-		validationRequest.setProfile( new TextResource( newResource( profileUri ) ).toString() );
+		validationRequest.setProfile( new TextResource( newResource( PROFILE_URI ) ).toString() );
 		validationRequest.setValidationGateName( ValidationGateName.STANDARD );
 		MediaType mediaType = MediaType.APPLICATION_JSON;
 		String responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )

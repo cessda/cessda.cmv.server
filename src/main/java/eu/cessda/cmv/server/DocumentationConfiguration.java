@@ -19,14 +19,9 @@
  */
 package eu.cessda.cmv.server;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import eu.cessda.cmv.server.api.ResourceNotFoundException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -37,7 +32,9 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 import org.springframework.web.servlet.resource.ResourceResolverChain;
 
-import eu.cessda.cmv.server.api.ResourceNotFoundException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Configuration
 public class DocumentationConfiguration implements WebMvcConfigurer
@@ -67,9 +64,6 @@ public class DocumentationConfiguration implements WebMvcConfigurer
 				.addResourceLocations( "classpath:/cmv-documentation/" )
 				.resourceChain( false )
 				.addResolver( pathResourceResolver );
-		registry.addResourceHandler( "/**" )
-				.resourceChain( false )
-				.addResolver( pathResourceResolver );
 	}
 
 	@Override
@@ -83,7 +77,7 @@ public class DocumentationConfiguration implements WebMvcConfigurer
 	public void extendHandlerExceptionResolvers( List<HandlerExceptionResolver> resolvers )
 	{
 		ExceptionHandlerExceptionResolver defaultResolver = (ExceptionHandlerExceptionResolver) resolvers.stream()
-				.filter( resolver -> resolver instanceof ExceptionHandlerExceptionResolver ).findAny()
+				.filter( ExceptionHandlerExceptionResolver.class::isInstance ).findAny()
 				.orElseThrow( () -> new IllegalStateException(
 						"No registered " + ExceptionHandlerExceptionResolver.class.getSimpleName() + " found." ) );
 
@@ -98,7 +92,7 @@ public class DocumentationConfiguration implements WebMvcConfigurer
 			{
 				if ( handler instanceof ResourceHttpRequestHandler )
 				{
-					return doResolveException( request, response, (HandlerMethod) null, ex );
+					return doResolveException( request, response, null, ex );
 				}
 				return null;
 			}

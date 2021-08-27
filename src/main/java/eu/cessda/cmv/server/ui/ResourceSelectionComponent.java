@@ -19,16 +19,17 @@
  */
 package eu.cessda.cmv.server.ui;
 
-import static com.vaadin.shared.ui.grid.HeightMode.ROW;
-import static com.vaadin.ui.Grid.SelectionMode.NONE;
-import static com.vaadin.ui.themes.ValoTheme.OPTIONGROUP_HORIZONTAL;
-import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
-import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
-import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_URL;
-import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.MULTI;
-import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.SINGLE;
-import static java.util.Objects.requireNonNull;
-import static org.gesis.commons.resource.Resource.newResource;
+import com.vaadin.icons.VaadinIcons;
+import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.renderers.ComponentRenderer;
+import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
+import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;
+import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStateWindow;
+import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
+import org.apache.commons.validator.routines.UrlValidator;
+import org.gesis.commons.resource.Resource;
 
 import java.io.InputStream;
 import java.util.Collections;
@@ -36,34 +37,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.apache.commons.validator.routines.UrlValidator;
-import org.gesis.commons.resource.Resource;
+import static com.vaadin.shared.ui.grid.HeightMode.ROW;
+import static com.vaadin.ui.Grid.SelectionMode.NONE;
+import static com.vaadin.ui.themes.ValoTheme.OPTIONGROUP_HORIZONTAL;
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.*;
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.MULTI;
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.SINGLE;
+import static java.util.Objects.requireNonNull;
+import static org.gesis.commons.resource.Resource.newResource;
 
-import com.vaadin.data.ValueProvider;
-import com.vaadin.icons.VaadinIcons;
-import com.vaadin.shared.ui.ContentMode;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.RadioButtonGroup;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.renderers.ComponentRenderer;
-import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
-import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;
-import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStateWindow;
-
-import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
-
+@SuppressWarnings( "java:S2160" )
 public class ResourceSelectionComponent extends CustomComponent
 {
 	private static final long serialVersionUID = 8381371322203425719L;
 
-	private List<Resource.V10> selectedResources;
+	private final List<Resource.V10> selectedResources;
 
 	public enum SelectionMode
 	{
@@ -117,16 +105,16 @@ public class ResourceSelectionComponent extends CustomComponent
 		Runnable refreshComponents = () ->
 		{
 			comboBox.setVisible( buttonGroup.getValue().equals( BY_PREDEFINED )
-					& (selectionMode.equals( MULTI )
-							|| (selectionMode.equals( SINGLE ) & selectedResources.isEmpty())) );
+					&& ( selectionMode.equals( MULTI )
+					|| ( selectionMode.equals( SINGLE ) && selectedResources.isEmpty() ) ) );
 			comboBox.clear();
 			textField.setVisible( buttonGroup.getValue().equals( BY_URL )
-					& (selectionMode.equals( MULTI )
-							|| (selectionMode.equals( SINGLE ) & selectedResources.isEmpty())) );
+					&& ( selectionMode.equals( MULTI )
+					|| ( selectionMode.equals( SINGLE ) && selectedResources.isEmpty() ) ) );
 			textField.clear();
 			multiFileUpload.setVisible( buttonGroup.getValue().equals( BY_UPLOAD )
-					& (selectionMode.equals( MULTI )
-							|| (selectionMode.equals( SINGLE ) & selectedResources.isEmpty())) );
+					&& ( selectionMode.equals( MULTI )
+					|| ( selectionMode.equals( SINGLE ) && selectedResources.isEmpty() ) ) );
 			clearButton.setVisible( !selectedResources.isEmpty() );
 			grid.getDataProvider().refreshAll();
 			grid.setVisible( !selectedResources.isEmpty() );
@@ -145,31 +133,29 @@ public class ResourceSelectionComponent extends CustomComponent
 			selectedResources.add( resource );
 		};
 		textField.addBlurListener( listener ->
-		{
-			// See https://bitbucket.org/cessda/cessda.cmv/issues/89
-			textField.getOptionalValue().ifPresent( value ->
-			{
-				UrlValidator urlValidator = UrlValidator.getInstance();
-				if ( urlValidator.isValid( value ) )
+				// See https://bitbucket.org/cessda/cessda.cmv/issues/89
+				textField.getOptionalValue().ifPresent( value ->
 				{
-					recognizeDdiDocument( cessdaMetadataValidatorFactory, newResource( value ) ).ifPresent( selectResource );
-					refreshComponents.run();
-				}
-				else
-				{
-					Notification.show( "Input is not a valid url", Type.WARNING_MESSAGE );
-					textField.clear();
-				}
-			} );
-		} );
+					UrlValidator urlValidator = UrlValidator.getInstance();
+					if ( urlValidator.isValid( value ) )
+					{
+						recognizeDdiDocument( cessdaMetadataValidatorFactory, newResource( value ) ).ifPresent( selectResource );
+						refreshComponents.run();
+					}
+					else
+					{
+						Notification.show( "Input is not a valid url", Type.WARNING_MESSAGE );
+						textField.clear();
+					}
+				} )
+		);
 		comboBox.addSelectionListener( listener ->
-		{
-			listener.getSelectedItem().ifPresent( selectedItem ->
-			{
-				recognizeDdiDocument( cessdaMetadataValidatorFactory, selectedItem ).ifPresent( selectResource );
-				refreshComponents.run();
-			} );
-		} );
+				listener.getSelectedItem().ifPresent( selectedItem ->
+				{
+					recognizeDdiDocument( cessdaMetadataValidatorFactory, selectedItem ).ifPresent( selectResource );
+					refreshComponents.run();
+				} )
+		);
 		UploadFinishedHandler uploadFinishedHandler = (
 				InputStream inputStream,
 				String fileName,
@@ -209,26 +195,26 @@ public class ResourceSelectionComponent extends CustomComponent
 		return Collections.unmodifiableList( selectedResources );
 	}
 
-	private ValueProvider<Resource.V10, Label> resourceValueProvider = resource ->
-	{
-		Label label = new Label();
-		label.setSizeFull();
-		if ( resource.getUri().getScheme().startsWith( "http" ) )
-		{
-			label.setContentMode( ContentMode.HTML );
-			label.setValue( "<a href='" + resource.getUri().toString() + "' target='_blank'>" + resource.getLabel() + "</a>" );
-		}
-		else
-		{
-			label.setValue( resource.getLabel() );
-		}
-		return label;
-	};
-
 	private Grid<Resource.V10> newGrid()
 	{
 		Grid<Resource.V10> grid = new Grid<>();
-		grid.addColumn( resourceValueProvider, new ComponentRenderer() ).setCaption( "Label" );
+		grid.addColumn( resource ->
+		{
+			Label label = new Label();
+			label.setSizeFull();
+			if ( resource.getUri().getScheme().startsWith( "http" ) )
+			{
+				label.setContentMode( ContentMode.HTML );
+				label.setValue(
+						"<a href='" + resource.getUri().toString() + "' target='_blank'>" + resource.getLabel() +
+								"</a>" );
+			}
+			else
+			{
+				label.setValue( resource.getLabel() );
+			}
+			return label;
+		}, new ComponentRenderer() ).setCaption( "Label" );
 		grid.setSelectionMode( NONE );
 		grid.setWidthFull();
 		grid.setHeightMode( ROW );
@@ -255,7 +241,6 @@ public class ResourceSelectionComponent extends CustomComponent
 		uploadStateWindow.setOverallProgressVisible( true );
 		uploadStateWindow.setResizable( true );
 		MultiFileUpload multiFileUpload = new MultiFileUpload( null, uploadStateWindow, selectionMode.equals( MULTI ) );
-		// multiFileUpload.setAcceptedMimeTypes( Arrays.asList( "xml" ) );
 		multiFileUpload.setMaxFileSize( 100_000_000 );
 		multiFileUpload.setSizeErrorMsgPattern( "File is too big (max = {0}): {2} ({1})" );
 		multiFileUpload.setPanelCaption( "Files" );

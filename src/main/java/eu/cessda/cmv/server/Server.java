@@ -19,14 +19,14 @@
  */
 package eu.cessda.cmv.server;
 
-import static java.util.Arrays.asList;
-import static org.gesis.commons.resource.Resource.newResource;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
-
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
+import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
+import eu.cessda.cmv.core.ProfileResourceLabelProvider;
+import eu.cessda.cmv.core.ValidationService;
 import org.gesis.commons.resource.ClasspathResourceRepository;
 import org.gesis.commons.resource.FileNameResourceLabelProvider;
 import org.gesis.commons.resource.Resource;
@@ -39,15 +39,13 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.zalando.problem.ProblemModule;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
+import javax.annotation.PostConstruct;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
-import eu.cessda.cmv.core.ProfileResourceLabelProvider;
-import eu.cessda.cmv.core.ValidationService;
+import static org.gesis.commons.resource.Resource.newResource;
 
 @SpringBootApplication
 public class Server extends SpringBootServletInitializer
@@ -65,11 +63,7 @@ public class Server extends SpringBootServletInitializer
 	static String[] validateArgs( String... args )
 	{
 		String message = "Commandline arguments not as expected - Good bye!";
-		if ( args.length > 1 )
-		{
-			throw new IllegalArgumentException( message );
-		}
-		else if ( args.length == 1 && !args[0].contentEquals( ALLOWED_CLI_OPTION ) )
+		if ( args.length > 1 || args.length == 1 && !args[0].contentEquals( ALLOWED_CLI_OPTION ) )
 		{
 			throw new IllegalArgumentException( message );
 		}
@@ -109,13 +103,13 @@ public class Server extends SpringBootServletInitializer
 	{
 		String baseUrl = "https://bitbucket.org/cessda/cessda.metadata.profiles/raw/4390b0437dbdeac8902b65627a1d443875c797a1/";
 		ResourceLabelProvider labelProvider = new ProfileResourceLabelProvider();
-		return asList( "CDC%201.2.2%20PROFILE/cdc_122_profile.xml",
-				"CDC%201.2.2%20PROFILE/cdc_122_profile_mono.xml",
-				"CDC%202.5%20PROFILE/cdc25_profile.xml",
-				"CDC%202.5%20PROFILE/cdc25_profile_mono.xml" ).stream()
-						.map( uri -> newResource( baseUrl + uri, labelProvider ) )
-						.map( Resource.V10.class::cast )
-						.collect( Collectors.toList() );
+		return Stream.of( "CDC%201.2.2%20PROFILE/cdc_122_profile.xml",
+						"CDC%201.2.2%20PROFILE/cdc_122_profile_mono.xml",
+						"CDC%202.5%20PROFILE/cdc25_profile.xml",
+						"CDC%202.5%20PROFILE/cdc25_profile_mono.xml" )
+				.map( uri -> newResource( baseUrl + uri, labelProvider ) )
+				.map( Resource.V10.class::cast )
+				.collect( Collectors.toList() );
 	}
 
 	@Bean
@@ -129,7 +123,7 @@ public class Server extends SpringBootServletInitializer
 				.map( Resource::getUri )
 				.map( uri -> newResource( uri, new FileNameResourceLabelProvider() ) )
 				.map( Resource.V10.class::cast )
-				.sorted( ( r1, r2 ) -> r1.getLabel().compareTo( r2.getLabel() ) )
+				.sorted( Comparator.comparing( Resource.V10::getLabel ) )
 				.collect( Collectors.toList() );
 	}
 }
