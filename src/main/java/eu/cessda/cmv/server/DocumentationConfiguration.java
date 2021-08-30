@@ -64,6 +64,10 @@ public class DocumentationConfiguration implements WebMvcConfigurer
 				.addResourceLocations( "classpath:/cmv-documentation/" )
 				.resourceChain( false )
 				.addResolver( pathResourceResolver );
+		registry.addResourceHandler( "/**" )
+				.addResourceLocations("classpath:/static/")
+				.resourceChain( false )
+				.addResolver( pathResourceResolver );
 	}
 
 	@Override
