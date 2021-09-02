@@ -1,3 +1,4 @@
 [submodule "metadata-profiles"]
 	path = metadata-profiles
 	url = https://bitbucket.org/cessda/cessda.metadata.profiles.git
+	branch = master
