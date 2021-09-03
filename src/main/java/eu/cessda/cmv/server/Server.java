@@ -27,6 +27,8 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.ProfileResourceLabelProvider;
 import eu.cessda.cmv.core.ValidationService;
+import org.gesis.commons.resource.ClasspathResourceRepository;
+import org.gesis.commons.resource.FileNameResourceLabelProvider;
 import org.gesis.commons.resource.Resource;
 import org.gesis.commons.resource.ResourceLabelProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,7 @@ import org.zalando.problem.ProblemModule;
 
 import javax.annotation.PostConstruct;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -112,16 +115,15 @@ public class Server extends SpringBootServletInitializer
 
 	@Bean
 	public List<Resource.V10> demoDocuments() {
-//		return ClasspathResourceRepository.newBuilder()
-//				.includeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*.xml" )
-//				.excludeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*profile*.xml" )
-//				.build()
-//				.findAll()
-//				.map( Resource::getUri )
-//				.map( uri -> newResource( uri, new FileNameResourceLabelProvider() ) )
-//				.map( Resource.V10.class::cast )
-//				.sorted( Comparator.comparing( Resource.V10::getLabel ) )
-//				.collect( Collectors.toList() );
-		return Collections.emptyList();
+		return ClasspathResourceRepository.newBuilder()
+				.includeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*.xml" )
+				.excludeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*profile*.xml" )
+				.build()
+				.findAll()
+				.map( Resource::getUri )
+				.map( uri -> newResource( uri, new FileNameResourceLabelProvider() ) )
+				.map( Resource.V10.class::cast )
+				.sorted( Comparator.comparing( Resource.V10::getLabel ) )
+				.collect( Collectors.toList() );
 	}
 }
