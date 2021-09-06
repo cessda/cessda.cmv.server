@@ -25,7 +25,6 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
-import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStateWindow;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import org.apache.commons.validator.routines.UrlValidator;
@@ -152,22 +151,16 @@ public class ResourceSelectionComponent extends CustomComponent
 		comboBox.addSelectionListener( listener ->
 				listener.getSelectedItem().ifPresent( selectedItem ->
 				{
-					recognizeDdiDocument( cessdaMetadataValidatorFactory, selectedItem ).ifPresent( selectResource );
+					recognizeDdiDocument(cessdaMetadataValidatorFactory, selectedItem).ifPresent(selectResource);
 					refreshComponents.run();
-				} )
+				})
 		);
-		UploadFinishedHandler uploadFinishedHandler = (
-				InputStream inputStream,
-				String fileName,
-				String mimeType,
-				long length,
-				int filesLeftInQueue ) ->
+		multiFileUpload.getUploadStatePanel().setFinishedHandler((InputStream inputStream, String fileName, String mimeType, long length, int filesLeftInQueue) ->
 		{
-			Resource.V10 uploadedResource = newResource( inputStream, fileName );
-			recognizeDdiDocument( cessdaMetadataValidatorFactory, uploadedResource ).ifPresent( selectResource );
+			Resource.V10 uploadedResource = newResource(inputStream, fileName);
+			recognizeDdiDocument(cessdaMetadataValidatorFactory, uploadedResource).ifPresent(selectResource);
 			refreshComponents.run();
-		};
-		multiFileUpload.getUploadStatePanel().setFinishedHandler( uploadFinishedHandler );
+		});
 
 		buttonGroup.addSelectionListener( listener -> refreshComponents.run() );
 		clearButton.addClickListener( listener ->
