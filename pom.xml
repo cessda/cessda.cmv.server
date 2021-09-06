@@ -6,7 +6,7 @@
 	<artifactId>cmv-server</artifactId>
 	<version>0.4.2-SNAPSHOT</version>
 	<name>CESSDA Metadata Validator</name>
-	<url>https://cmv-dev.cessda.eu</url>
+	<url>https://cmv.cessda.eu/</url>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -330,6 +330,7 @@
 				<filtering>true</filtering>
 				<includes>
 					<include>application.properties</include>
+					<include>static/**/*</include>
 				</includes>
 			</resource>
 			<resource>
@@ -341,12 +342,12 @@
 			<resource>
 				<directory>src/main/resources/docker</directory>
 				<filtering>true</filtering>
-				<targetPath>${project.basedir}/target/docker/context</targetPath>
+				<targetPath>${project.build.directory}/docker/context</targetPath>
 				<includes><include>**/*</include></includes>
 			</resource>
 			<resource>
 				<directory>src/main/webapp/VAADIN</directory>
-				<targetPath>${project.basedir}/target/classes/VAADIN</targetPath>
+				<targetPath>${project.build.directory}/classes/VAADIN</targetPath>
 				<includes><include>**/*</include></includes>
 			</resource>
 		</resources>
@@ -357,7 +358,7 @@
 			<id>docker-compose</id>
 			<properties>
 				<logging.file.name>application.log</logging.file.name>
-				<server.servlet.context-path></server.servlet.context-path><!-- necessary for HEALTHCHECK -->
+				<server.servlet.context-path/><!-- necessary for HEALTHCHECK -->
 				<vaadin.servlet.productionMode>true</vaadin.servlet.productionMode>
 				<management.endpoints.web.exposure.include>health</management.endpoints.web.exposure.include>
 				<management.endpoint.logfile.enabled>false</management.endpoint.logfile.enabled>

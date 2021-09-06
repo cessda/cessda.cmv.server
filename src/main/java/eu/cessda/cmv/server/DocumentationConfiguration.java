@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,25 +19,24 @@
  */
 package eu.cessda.cmv.server;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import eu.cessda.cmv.server.api.ResourceNotFoundException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.handler.AbstractHandlerMethodExceptionResolver;
 import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 import org.springframework.web.servlet.resource.ResourceResolverChain;
 
-import eu.cessda.cmv.server.api.ResourceNotFoundException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Objects;
 
 @Configuration
 public class DocumentationConfiguration implements WebMvcConfigurer
@@ -63,11 +62,15 @@ public class DocumentationConfiguration implements WebMvcConfigurer
 				return resource;
 			}
 		};
+		// Documentation handler.
 		registry.addResourceHandler( "/documentation/**" )
 				.addResourceLocations( "classpath:/cmv-documentation/" )
 				.resourceChain( false )
 				.addResolver( pathResourceResolver );
+
+		// Static content resource handler.
 		registry.addResourceHandler( "/**" )
+				.addResourceLocations( "classpath:/static/" )
 				.resourceChain( false )
 				.addResolver( pathResourceResolver );
 	}
@@ -83,36 +86,38 @@ public class DocumentationConfiguration implements WebMvcConfigurer
 	public void extendHandlerExceptionResolvers( List<HandlerExceptionResolver> resolvers )
 	{
 		ExceptionHandlerExceptionResolver defaultResolver = (ExceptionHandlerExceptionResolver) resolvers.stream()
-				.filter( resolver -> resolver instanceof ExceptionHandlerExceptionResolver ).findAny()
+				.filter( ExceptionHandlerExceptionResolver.class::isInstance ).findAny()
 				.orElseThrow( () -> new IllegalStateException(
 						"No registered " + ExceptionHandlerExceptionResolver.class.getSimpleName() + " found." ) );
-
-		class ResourceExceptionHandlerExceptionResolver extends ExceptionHandlerExceptionResolver
-		{
-			@Override
-			public ModelAndView resolveException(
-					HttpServletRequest request,
-					HttpServletResponse response,
-					Object handler,
-					Exception ex )
-			{
-				if ( handler instanceof ResourceHttpRequestHandler )
-				{
-					return doResolveException( request, response, (HandlerMethod) null, ex );
-				}
-				return null;
-			}
-		}
-		ExceptionHandlerExceptionResolver resolver = new ResourceExceptionHandlerExceptionResolver();
+		var resolver = new ResourceExceptionHandlerExceptionResolver();
 		resolver.setApplicationContext( defaultResolver.getApplicationContext() );
 		resolver.setContentNegotiationManager( defaultResolver.getContentNegotiationManager() );
 		resolver.setCustomArgumentResolvers( defaultResolver.getCustomArgumentResolvers() );
 		resolver.setCustomReturnValueHandlers( defaultResolver.getCustomReturnValueHandlers() );
 		resolver.afterPropertiesSet();
-		resolver.setReturnValueHandlers( defaultResolver.getReturnValueHandlers() == null ? null
-				: defaultResolver.getReturnValueHandlers().getHandlers() );
-		resolver.setArgumentResolvers( defaultResolver.getArgumentResolvers() == null ? null
-				: defaultResolver.getArgumentResolvers().getResolvers() );
+		resolver.setReturnValueHandlers( Objects.requireNonNull( defaultResolver.getReturnValueHandlers() ).getHandlers() );
+		resolver.setArgumentResolvers( Objects.requireNonNull( defaultResolver.getArgumentResolvers() ).getResolvers() );
 		resolvers.add( resolver );
+	}
+
+	private static class ResourceExceptionHandlerExceptionResolver extends ExceptionHandlerExceptionResolver
+	{
+		/**
+		 * Resolve exceptions that come from an instance of {@link ResourceHttpRequestHandler} by delegating to
+		 * {@link AbstractHandlerMethodExceptionResolver#doResolveException(HttpServletRequest, HttpServletResponse, Object, Exception)}.
+		 */
+		@Override
+		public ModelAndView resolveException(
+				HttpServletRequest request,
+				HttpServletResponse response,
+				Object handler,
+				Exception ex )
+		{
+			if ( handler instanceof ResourceHttpRequestHandler )
+			{
+				return doResolveException( request, response, null, ex );
+			}
+			return null;
+		}
 	}
 }

@@ -19,8 +19,6 @@
  */
 package eu.cessda.cmv.server.api;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -29,6 +27,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.zalando.problem.Problem;
 import org.zalando.problem.spring.web.advice.ProblemHandling;
+
+import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class ExceptionHandlerAdvice implements ProblemHandling,
@@ -43,7 +43,7 @@ public class ExceptionHandlerAdvice implements ProblemHandling,
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append( throwable.getMessage() ).append( " by " )
 				.append( request.getProtocol() ).append( " " )
-				.append( ((ServletWebRequest) webRequest).getHttpMethod().toString() ).append( " " )
+				.append( ( (ServletWebRequest) webRequest ).getHttpMethod() ).append( " " )
 				.append( request.getRequestURI().replace( request.getContextPath(), "" ) );
 		if ( request.getQueryString() != null )
 		{
