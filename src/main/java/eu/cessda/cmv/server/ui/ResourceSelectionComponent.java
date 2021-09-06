@@ -132,35 +132,35 @@ public class ResourceSelectionComponent extends CustomComponent
 			selectedResources.add( resource );
 		};
 		textField.addBlurListener( listener ->
-				// See https://bitbucket.org/cessda/cessda.cmv/issues/89
-				textField.getOptionalValue().ifPresent( value ->
+			// See https://bitbucket.org/cessda/cessda.cmv/issues/89
+			textField.getOptionalValue().ifPresent( value ->
+			{
+				UrlValidator urlValidator = UrlValidator.getInstance();
+				if ( urlValidator.isValid( value ) )
 				{
-					UrlValidator urlValidator = UrlValidator.getInstance();
-					if ( urlValidator.isValid( value ) )
-					{
-						recognizeDdiDocument( cessdaMetadataValidatorFactory, newResource( value ) ).ifPresent( selectResource );
-						refreshComponents.run();
-					}
-					else
-					{
-						Notification.show( "Input is not a valid url", Type.WARNING_MESSAGE );
-						textField.clear();
-					}
-				} )
+					recognizeDdiDocument( cessdaMetadataValidatorFactory, newResource( value ) ).ifPresent( selectResource );
+					refreshComponents.run();
+				}
+				else
+				{
+					Notification.show( "Input is not a valid url", Type.WARNING_MESSAGE );
+					textField.clear();
+				}
+			} )
 		);
 		comboBox.addSelectionListener( listener ->
-				listener.getSelectedItem().ifPresent( selectedItem ->
-				{
-					recognizeDdiDocument(cessdaMetadataValidatorFactory, selectedItem).ifPresent(selectResource);
-					refreshComponents.run();
-				})
+			listener.getSelectedItem().ifPresent( selectedItem ->
+			{
+				recognizeDdiDocument( cessdaMetadataValidatorFactory, selectedItem ).ifPresent( selectResource );
+				refreshComponents.run();
+			} )
 		);
-		multiFileUpload.getUploadStatePanel().setFinishedHandler((InputStream inputStream, String fileName, String mimeType, long length, int filesLeftInQueue) ->
+		multiFileUpload.getUploadStatePanel().setFinishedHandler( ( InputStream inputStream, String fileName, String mimeType, long length, int filesLeftInQueue ) ->
 		{
-			Resource.V10 uploadedResource = newResource(inputStream, fileName);
-			recognizeDdiDocument(cessdaMetadataValidatorFactory, uploadedResource).ifPresent(selectResource);
+			Resource.V10 uploadedResource = newResource( inputStream, fileName );
+			recognizeDdiDocument( cessdaMetadataValidatorFactory, uploadedResource ).ifPresent( selectResource );
 			refreshComponents.run();
-		});
+		} );
 
 		buttonGroup.addSelectionListener( listener -> refreshComponents.run() );
 		clearButton.addClickListener( listener ->

@@ -19,31 +19,39 @@
  */
 package eu.cessda.cmv.server.ui;
 
-import com.vaadin.navigator.View;
-import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.spring.annotation.UIScope;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.renderers.ComponentRenderer;
-import com.vaadin.ui.themes.ValoTheme;
-import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
-import eu.cessda.cmv.core.ValidationGateName;
-import eu.cessda.cmv.core.ValidationService;
-import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
-import eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions;
-import org.gesis.commons.resource.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.MULTI;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.SINGLE;
 import static java.util.Arrays.asList;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.gesis.commons.resource.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.vaadin.navigator.View;
+import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.spring.annotation.UIScope;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.renderers.ComponentRenderer;
+import com.vaadin.ui.themes.ValoTheme;
+
+import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
+import eu.cessda.cmv.core.ValidationGateName;
+import eu.cessda.cmv.core.ValidationService;
+import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
+import eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions;
 
 @UIScope
 @SpringView( name = ValidationView.VIEW_NAME )
