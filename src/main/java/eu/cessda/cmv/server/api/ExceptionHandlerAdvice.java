@@ -28,7 +28,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.zalando.problem.Problem;
 import org.zalando.problem.spring.web.advice.ProblemHandling;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
@@ -38,7 +37,6 @@ public class ExceptionHandlerAdvice implements ProblemHandling,
 	private static final Logger logger = LoggerFactory.getLogger( ExceptionHandlerAdvice.class );
 
 	@Override
-	@ParametersAreNonnullByDefault
 	public void log( Throwable throwable, Problem problem, NativeWebRequest webRequest, HttpStatus status )
 	{
 		HttpServletRequest request = ((ServletWebRequest) webRequest).getRequest();
