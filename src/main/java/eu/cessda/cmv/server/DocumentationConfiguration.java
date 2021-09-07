@@ -78,8 +78,16 @@ public class DocumentationConfiguration implements WebMvcConfigurer
 	@Override
 	public void addViewControllers( ViewControllerRegistry registry )
 	{
+		// Documentation redirects
 		registry.addRedirectViewController( "/documentation", "/documentation/index.html" );
 		registry.addRedirectViewController( "/documentation/", "/documentation" );
+
+		// CDC profile redirects
+		registry.addRedirectViewController( "/profiles/cdc/{ddi}/latest/profile.xml", "/profiles/cdc/{ddi}/1.0.4/profile.xml" );
+		registry.addRedirectViewController( "/profiles/cdc/ddi-3.2/latest/profile.xml", "/profiles/cdc/ddi-3.2/0.1.1/profile.xml" );
+
+		// EQB profile redirect
+		registry.addRedirectViewController( "/profiles/eqb/{ddi}/latest/profile.xml", "/profiles/eqb/{ddi}/0.1.0/profile.xml" );
 	}
 
 	@Override
