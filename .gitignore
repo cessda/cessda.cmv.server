@@ -13,6 +13,3 @@
 # Vaadin
 src/main/webapp/VAADIN/themes/*/styles.css
 src/main/webapp/VAADIN/themes/*/styles.scss.cache
-
-# Exclude copied in metadata profiles
-src/main/resources/static/profiles/

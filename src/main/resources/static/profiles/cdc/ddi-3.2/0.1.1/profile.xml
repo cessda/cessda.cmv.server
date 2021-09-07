@@ -1,0 +1,1021 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../xslt/stylesheet.xsl"?>
+<!--____________________________________________________________________________________
+© Copyright 2020, CESSDA ERIC
+Licence: This document is issued under a CC BY licence (https://creativecommons.org/licenses/by/4.0/)
+Author: Darren Bell - UK Data Archive
+Created: 2021-03-10
+Version: v0.1.1
+Change summary: Second draft for review - Resolved issues 37,40,42,43,45,46
+Last modified 2021-08-25 Darren Bell
+____________________________________________________________________________________
+-->
+<pr:DDIProfile xmlns:r="ddi:reusable:3_2"
+			   xmlns:pr="ddi:ddiprofile:3_2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			   xsi:schemaLocation="ddi:ddiprofile:3_2 https://ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/ddiprofile.xsd"
+			   versionDate="2021-04-28">
+	<r:Agency>CESSDA</r:Agency>
+	<r:ID>CDC_DDI32_PROFILE</r:ID>
+	<r:Version>0.1.1</r:Version>
+	<r:VersionResponsibility>Darren Bell - UKDA</r:VersionResponsibility>
+	<pr:DDIProfileName>
+		<r:String>CESSDA DATA CATALOGUE (CDC) DDI3.2 PROFILE</r:String>
+	</pr:DDIProfileName>
+	<pr:XPathVersion>1.0</pr:XPathVersion>
+	<pr:DDINamespace>3.2</pr:DDINamespace>
+	<pr:XMLPrefixMap>
+		<pr:XMLPrefix/>
+		<pr:XMLNamespace>ddi:codebook:3_2</pr:XMLNamespace>
+	</pr:XMLPrefixMap>
+	<pr:XMLPrefixMap>
+		<pr:XMLPrefix>xsi</pr:XMLPrefix>
+		<pr:XMLNamespace>http://www.w3.org/2001/XMLSchema-instance</pr:XMLNamespace>
+	</pr:XMLPrefixMap>
+	<!--****************************************************************************************-->
+	<!--ROOT ELEMENT-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/ddi:DDIInstance/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: ISO 639-1 codes are strongly encouraged to be used</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/ddi:DDIInstance/@xsi:schemaLocation"
+			 defaultValue="ddi:instance:3_2 http://www.ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/instance.xsd"
+			 fixedValue="true" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: System-required information - always "ddi:instance:3_2
+				http://www.ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/instance.xsd"
+			</r:Content>
+		</r:Description>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--XML DOCUMENT TITLE-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/ddi:DDIInstance/r:Citation/r:Title/r:String" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: No</r:Content>
+			<r:Content>Usage: Title of the CDC XML document - note that the Study Title goes in
+				/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Title/r:String
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<OptionalNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/ddi:DDIInstance/r:Citation/r:Title/r:String/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..r:Title/r:String' element is present</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: ISO 639-1 codes are strongly encouraged to be used</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[
+                <Constraints>
+                    <MandatoryNodeIfParentPresentConstraint/>
+                </Constraints>
+                ]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--LANGUAGE OF DATA FILES-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/pi:PhysicalInstance/r:Citation/r:Language"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: ISO 639-1 codes are strongly encouraged to be used if available for the language.
+			</r:Content>
+			<r:Content>CDC_UI_Label: Language of data file(s)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--STUDY ARCHIVAL IDENTIFIER AND STUDY DESCRIPTION PAGE URL-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:UserID" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: This element serves two use cases.
+				(1) Unique archival number.
+				If no such number available, a PID may be used alternatively (and in such a case,
+				the PID must be captured in this element *as well as* in
+				"/ddi:DDIInstance/s:StudyUnit/r:Citation/r:InternationalIdentifier/r:IdentifierContent").
+				The @typeOfUserID attribute must be "StudyNumber".
+				(2) A URL or URN (a reference to a web resource that specifies its location)
+				linking to the study description on the SP website. CDC provides a link from
+				the study information there to the study description on the SP website,
+				to allow users to access the data. [This element not visible in the UI, it is only needed for the link].
+				The @typeOfUserID attribute must be "URLServiceProvider".
+			</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:UserID/@typeOfUserID" defaultValue="StudyNumber"
+			 fixedValue="true" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Must be specifed when the "ddi:DDIInstance/s:StudyUnit/r:UserID"
+				element is used for the unique archival number.
+			</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:UserID/@typeOfUserID"
+			 defaultValue="URLServiceProvider" fixedValue="true" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Must be specifed when the "ddi:DDIInstance/s:StudyUnit/r:UserID"
+				element is used for the URL of the study description at the SP website.
+			</r:Content>
+		</r:Description>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--STUDY TITLE -->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Title/r:String" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Title of the Study (as opposed to the title of the XML document).</r:Content>
+			<r:Content>CDC_UI_Label: Study title</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Title/r:String/@xml:lang"
+			 isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the study title. ISO 639-1 codes are strongly encouraged
+				to be used.
+			</r:Content>
+		</r:Description>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--PRINCIPAL INVESTIGATOR (CREATOR) / PUBLISHER-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Creator/r:CreatorName/r:String"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Principal investigator Person OR Institution</r:Content>
+			<r:Content>CDC_UI_Label: Creator</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Creator/r:CreatorName/r:String/@xml:lang"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the Organisation name, which may be the contents of the
+				"r:CreatorName/r:String" element or the @affiliation attribute of
+				"r:CreatorName/r:String" if it specifies a person. ISO 639-1 codes codes are
+				strongly encouraged to be used.
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Creator/r:CreatorName/@affiliation"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: If "r:CreatorName/r:String" is a person, the organisational
+				affiliation of that person
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<OptionalNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Publisher/r:PublisherName/r:String"
+			 isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: The element should contain the name of the organisation who has
+				published the metadata for the harvested study description. This is usually the SP.
+				Note that there is no requirement to use an @abbr attribute, as in the DDI2.5 CDC
+				profile, as the @abbr attribute is not available in the DDI3.2 schema.
+			</r:Content>
+			<r:Content>CDC_UI_Label: Publisher</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Publisher/r:PublisherName/r:String/@xml:lang"
+			isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the organisation name. ISO codes are strongly encouraged
+				to be used.
+			</r:Content>
+		</r:Description>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--YEAR OF PUBLICATION-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:PublicationDate/r:SimpleDate"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: The year (use ISO format YYYY) when the study description was
+				published.
+			</r:Content>
+			<r:Content>CDC_UI_Label: Year of publication</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<OptionalNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--STUDY PID-->
+	<!--****************************************************************************************-->
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:InternationalIdentifier/r:IdentifierContent"
+			isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Used for the study PID. PID must be one of these four types: ARK, DOI, Handle or URN.
+			</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:InternationalIdentifier/r:ManagingAgency"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Agency responsible for the persistent identifier of the study. Value
+				should be one of
+				https://vocabularies.cessda.eu/vocabulary/CessdaPersistentIdentifierTypes i.e. ARK
+				or DOI or Handle or URN
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--ABSTRACT-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Abstract/r:Content" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: The abstract for the study</r:Content>
+			<r:Content>CDC_UI_Label: Abstract</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Abstract/r:Content/@xml:lang" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the abstract. ISO 639-1 codes are strongly encouraged to
+				be used.
+			</r:Content>
+		</r:Description>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--SUBJECTS AND KEYWORDS-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Subject"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Subject classifcation term for the study in the local language. Use
+				descriptive terms from https://vocabularies.cessda.eu/vocabulary/TopicClassification
+				if possible but other vocabularies are permitted.
+			</r:Content>
+			<r:Content>CDC_UI_Label: Topic</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Subject/@xml:lang"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if "/r:TopicalCoverage/r:Subject" element is
+				present
+			</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the subject classification term. ISO 639-1 codes are
+				strongly encouraged to be used.
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[
+                <Constraints>
+                    <MandatoryNodeIfParentPresentConstraint/>
+                </Constraints>
+                ]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Subject/@codeListName"
+			defaultValue="CESSDA Topic Classification" fixedValue="false" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: name of the vocabulary. If possible, use "CESSDA Topic Classification"
+				(regardless of language) but other vocabularies are permitted.
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Subject/@codeListURN"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The Canonical URL of the CV version that is being used e.g.
+				https://vocabularies.cessda.eu/v2/vocabularies/TopicClassification/4.0?languageVersion=en-4.0
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Keyword"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Keyword for the study in the local language.</r:Content>
+			<r:Content>CDC_UI_Label: Keyword</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Keyword/@xml:lang"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if 'keyword' element is present</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the keyword. ISO 639-1 codes are strongly encouraged to be
+				used.
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[
+                <Constraints>
+                    <MandatoryNodeIfParentPresentConstraint/>
+                </Constraints>
+                ]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Keyword/@codeListName"
+			defaultValue="ELSST" fixedValue="false" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended if 'keyword' element is present</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Source of keywords - ELSST is recommended but other vocabularies can
+				be referenced.
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Keyword/@codeListURN"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Optional but note that if @vocab=”ELSST”, then
+				use “https://elsst.cessda.eu/id” here.
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<OptionalNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--COUNTRY COVERAGE-->
+	<!--****************************************************************************************-->
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:SpatialCoverage/r:Description/r:Content"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Countries relevant to the study area</r:Content>
+			<r:Content>CDC_UI_Label: Country</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:SpatialCoverage/r:Description/r:Content/@xml:lang"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..r:SpatialCoverage/r:Description/r:Content' element
+				is present
+			</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the country label. ISO 639-1 codes are strongly encouraged
+				to be used.
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[
+                <Constraints>
+                    <MandatoryNodeIfParentPresentConstraint/>
+                </Constraints>
+                ]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:SpatialCoverage/r:Country_2"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>Usage: Use this element only if the country has an
+				ISO 3166-1 2-letter code.
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--ANALYSIS UNIT-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:AnalysisUnit" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Contains the Analysis Unit code value in English</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:AnalysisUnit/@CodeListName"
+			 defaultValue="DDI Analysis Unit" fixedValue="true" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Use the string "DDI Analysis Unit" regardless of language.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:AnalysisUnit/@CodeListURN" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The Canonical URL of the CV version that is being used e.g.
+				https://vocabularies.cessda.eu/v2/vocabularies/AnalysisUnit/1.0?languageVersion=en-1.0
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<OptionalNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/r:AnalysisUnitsCovered"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Descriptive term of Analysis Unit CV item in the local language.</r:Content>
+			<r:Content>CDC_UI_Label: Analysis unit</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/r:r:AnalysisUnitsCovered/@xml:lang"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if 'AnalysisUnitsCovered' element is
+				present
+			</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the Analysis Unit descriptive term. ISO 639-1
+				codes are strongly encouraged to be used.
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[
+                <Constraints>
+                    <MandatoryNodeIfParentPresentConstraint/>
+                </Constraints>
+                ]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--TIME DIMENSION-->
+	<!--****************************************************************************************-->
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:TimeMethod/d:TypeofTimeMethod"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Code value of the CV "DDI Time Method". Describes the time dimension
+				of the data collection.
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:TimeMethod/d:TypeofTimeMethod/@CodeListName"
+			defaultValue="DDI Time Method" fixedValue="true" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Use the string "DDI Time Method" regardless of language.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:TimeMethod/d:TypeofTimeMethod/@CodeListURN"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The Canonical URL of the CV version that is being used e.g.
+				https://vocabularies.cessda.eu/v2/vocabularies/TimeMethod/1.2?languageVersion=en-1.2
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<OptionalNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:TimeMethod/r:Description/r:Content"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Descriptive term of Time Method CV item in the local language.</r:Content>
+			<r:Content>CDC_UI_Label: Time dimension</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:TimeMethod/r:Description/r:Content/@xml:lang"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if 'TypeofTimeMethod' element is present</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the Time Dimenstion descriptive term. ISO 639-1 codes are
+				strongly encouraged to be used.
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[
+                <Constraints>
+                    <MandatoryNodeIfParentPresentConstraint/>
+                </Constraints>
+                ]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+
+	<!--****************************************************************************************-->
+	<!--SAMPLING METHOD / PROCEDURE-->
+	<!--****************************************************************************************-->
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:SamplingProcedure/d:TypeOfSamplingProcedure"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Type of sampling procedure used for data collection. Controlled
+				vocabulary includes a typology of sampling methods. Code value of the CV "DDI
+				Sampling Procedure"
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:SamplingProcedure/d:TypeOfSamplingProcedure/@codeListName"
+			defaultValue="DDI Sampling Procedure" fixedValue="true" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Use the string "DDI Sampling Procedure" regardless of
+				language.
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:SamplingProcedure/d:TypeOfSamplingProcedure/@codeListURN"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The Canonical URL of the CV version that is being used e.g.
+				https://vocabularies.cessda.eu/v2/vocabularies/SamplingProcedure/1.1?languageVersion=en-1.1
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<OptionalNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:SamplingProcedure/r:Description/r:Content"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Descriptive term of the Sampling Procedure CV
+				item in the local language.
+			</r:Content>
+			<r:Content>CDC_UI_Label: Sampling procedure</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:SamplingProcedure/r:Description/r:Content/@xml:lang"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if 'TypeOfSamplingProcedure' element is
+				present
+			</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the Sampling Procedure Descriptive term. ISO 639-1 codes
+				are strongly encouraged to be used.
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[
+                <Constraints>
+                    <MandatoryNodeIfParentPresentConstraint/>
+                </Constraints>
+                ]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--DATA COLLECTION DATE(S)-->
+	<!--****************************************************************************************-->
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:CollectionEvent/d:DataCollectionDate/r:StartDate"
+			isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Element</r:Content>
+			<r:Content>ElementRepeatable: No</r:Content>
+			<r:Content>Usage: Either a single point in time or start of a date range. Ideally
+				YYYY-MM-DDThh:mm:ssZ format, but can accept YYYY-MM-DD, YYYY-MM or YYYY.
+			</r:Content>
+			<r:Content>CDC_UI_Label: Data collection period: start date</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:CollectionEvent/d:DataCollectionDate/r:EndDate"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Element</r:Content>
+			<r:Content>ElementRepeatable: No</r:Content>
+			<r:Content>Usage: End of a date range. If data collection period is a single event, then
+				this element is not required. Ideally YYYY-MM-DDThh:mm:ssZ format, but can accept
+				YYYY-MM-DD, YYYY-MM or YYYY.
+			</r:Content>
+			<r:Content>CDC_UI_Label: Data collection period: End date</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--DATA COLLECTION METHOD-->
+	<!--****************************************************************************************-->
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:CollectionEvent/d:ModeofCollection/d:TypeofModeofCollection"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Description of the method of data collection - the procedure,
+				technique, or mode of inquiry used to attain the data. Code value of the CV “DDI
+				Mode of Data Collection”"
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:CollectionEvent/d:ModeofCollection/d:TypeofModeofCollection@codeListName"
+			defaultValue="DDI Mode of Collection" fixedValue="true" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Use the string "DDI Mode of Collection" regardless of
+				language.
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:CollectionEvent/d:ModeofCollection/d:TypeofModeofCollection@codeListURN"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The Canonical URL of the CV version that is being used e.g.
+				https://vocabularies.cessda.eu/v2/vocabularies/ModeOfCollection/3.0?languageVersion=en-3.0
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<OptionalNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:CollectionEvent/d:ModeOfCollection/r:Description/r:Content"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Descriptive term of the Mode of Data Collection CV item in the local langiage.</r:Content>
+			<r:Content>CDC_UI_Label: Data collection method</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:CollectionEvent/d:ModeOfCollection/r:Description/r:Content/@xml:lang"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if 'TypeofModeofCollection' element is
+				present
+			</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the Mode of Data Collection descriptive term. ISO 639-1
+				codes are strongly encouraged to be used.
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[
+                <Constraints>
+                    <MandatoryNodeIfParentPresentConstraint/>
+                </Constraints>
+                ]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--ACCESS STATEMENT-->
+	<!--****************************************************************************************-->
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/r:Description/r:Content"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Refers to any information relating to the access and use conditions of
+				data that the SP wants to appear in the CDC
+			</r:Content>
+			<r:Content>CDC_UI_Label: Terms of data access</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used
+			xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/r:Description/r:Content@xml:lang"
+			isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..a:Access/r:Description/r:Content' element is
+				present
+			</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the Access statement. ISO 639-1 codes are strongly
+				encouraged to be used.
+			</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[
+                <Constraints>
+                    <MandatoryNodeIfParentPresentConstraint/>
+                </Constraints>
+                ]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+</pr:DDIProfile>
