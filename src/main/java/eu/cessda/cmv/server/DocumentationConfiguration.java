@@ -103,8 +103,10 @@ public class DocumentationConfiguration implements WebMvcConfigurer
 		resolver.setCustomArgumentResolvers( defaultResolver.getCustomArgumentResolvers() );
 		resolver.setCustomReturnValueHandlers( defaultResolver.getCustomReturnValueHandlers() );
 		resolver.afterPropertiesSet();
-		resolver.setReturnValueHandlers( Objects.requireNonNull( defaultResolver.getReturnValueHandlers() ).getHandlers() );
-		resolver.setArgumentResolvers( Objects.requireNonNull( defaultResolver.getArgumentResolvers() ).getResolvers() );
+		resolver.setReturnValueHandlers( Objects.requireNonNull( defaultResolver.getReturnValueHandlers() )
+				.getHandlers() );
+		resolver.setArgumentResolvers( Objects.requireNonNull( defaultResolver.getArgumentResolvers() )
+				.getResolvers() );
 		resolvers.add( resolver );
 	}
 

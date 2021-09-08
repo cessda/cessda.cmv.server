@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../../../xslt/1.0.0/stylesheet.xsl"?>
+<?xml-stylesheet type="text/xsl" href="../../../xslt/1.0/stylesheet.xsl"?>
 <!--____________________________________________________________________________________
 © Copyright 2020, CESSDA ERIC
 Licence: This document is issued under a CC BY licence (https://creativecommons.org/licenses/by/4.0/)
@@ -997,7 +997,7 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used
-			xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/r:Description/r:Content@xml:lang"
+			xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/r:Description/r:Content/@xml:lang"
 			isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..a:Access/r:Description/r:Content' element is

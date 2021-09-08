@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../../../xslt/1.0.0/stylesheet.xsl"?>
+<?xml-stylesheet type="text/xsl" href="../../../xslt/1.0/stylesheet.xsl"?>
 <!--____________________________________________________________________________________
 © Copyright 2021, CESSDA ERIC
 Licence: This document is issued under a CC BY licence (https://creativecommons.org/licenses/by/4.0/)
@@ -683,8 +683,6 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-
-
 	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:QuestionItemName/@context"
 			 isRequired="false">
 		<r:Description>
@@ -2093,7 +2091,6 @@ ________________________________________________________________________________
 			xpath="/ddi:DDIInstance/g:ResourcePackage/d:InstrumentScheme/d:Instrument/d:ControlConstructReference/r:TypeOfObject"
 			isRequired="false" defaultValue="Sequence" fixedValue="true">
 		<r:Description>
-			<r:Content>Required: Recommended</r:Content>
 			<r:Content>Required: Mandatory if '..d:InstrumentScheme/d:Instrument/d:ControlConstructReference' element is
 				present.
 			</r:Content>
@@ -2534,7 +2531,6 @@ ________________________________________________________________________________
 			<r:Content>ElementType: Content element</r:Content>
 			<r:Content>ElementRepeatable: Yes</r:Content>
 			<r:Content>Usage: Title of the Study (as opposed to the title of the XML document).</r:Content>
-			<r:Content>CDC UI Label: Study title</r:Content>
 			<r:Content>EQB_ID_Element: 6.6/studyTitle</r:Content>
 			<r:Content>EQB_UI_Label: Title.</r:Content>
 		</r:Description>
