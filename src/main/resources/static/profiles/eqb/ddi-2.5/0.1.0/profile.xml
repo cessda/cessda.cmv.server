@@ -1,0 +1,2234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../xslt/1.0.0/stylesheet.xsl"?>
+<!--____________________________________________________________________________________
+© Copyright 2021, CESSDA ERIC
+Licence: This document is issued under a CC BY licence (https://creativecommons.org/licenses/by/4.0/)
+Author: Darren Bell - UK Data Archive
+Created: 2021-06-02
+Version: v0.1.0
+Last modified 2021-08-22 Darren Bell
+____________________________________________________________________________________
+-->
+<pr:DDIProfile xmlns:r="ddi:reusable:3_2"
+			   xmlns:pr="ddi:ddiprofile:3_2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			   xsi:schemaLocation="ddi:ddiprofile:3_2 https://ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/ddiprofile.xsd"
+			   versionDate="2021-08-22">
+	<r:Agency>CESSDA</r:Agency>
+	<r:ID>EQB_DDI25_PROFILE</r:ID>
+	<r:Version>0.1.0</r:Version>
+	<r:VersionResponsibility>Darren Bell - UKDA</r:VersionResponsibility>
+	<pr:DDIProfileName>
+		<r:String>EUROPEAN QUESTION BANK(EQB) DDI2.5 PROFILE</r:String>
+	</pr:DDIProfileName>
+	<pr:XPathVersion>1.0</pr:XPathVersion>
+	<pr:DDINamespace>2.5</pr:DDINamespace>
+	<pr:XMLPrefixMap>
+		<pr:XMLPrefix/>
+		<pr:XMLNamespace>ddi:codebook:2_5</pr:XMLNamespace>
+	</pr:XMLPrefixMap>
+	<pr:XMLPrefixMap>
+		<pr:XMLPrefix>xsi</pr:XMLPrefix>
+		<pr:XMLNamespace>http://www.w3.org/2001/XMLSchema-instance</pr:XMLNamespace>
+	</pr:XMLPrefixMap>
+	<!--****************************************************************************************-->
+	<!--EQB XML DOCUMENT INFORMATION-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: ISO 639-1 codes are strongly encouraged to be used</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/docDscr/citation/titlStmt/titl" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: No</r:Content>
+			<r:Content>Usage: Title of the EQB XML document - note that the Study Title goes in
+				/codeBook/stdyDscr/citation/titlStmt/titl
+			</r:Content>
+			<r:Content>EQB_ID_Element: none</r:Content>
+			<r:Content>EQB_UI_Label: none.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<OptionalNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/docDscr/citation/titlStmt/titl/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if 'titl' element is present</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: ISO 639-1 codes are strongly encouraged to be used</r:Content>
+			<r:Content>EQB_ID_Element: none</r:Content>
+			<r:Content>EQB_UI_Label: none.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[
+                <Constraints>
+                    <MandatoryNodeIfParentPresentConstraint/>
+                </Constraints>
+                ]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/docDscr/citation/prodStmt/copyright" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Information on the copyright of the study documentation.</r:Content>
+			<r:Content>EQB_ID_Element: 11.1/documentationCopyright</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/docDscr/citation/prodStmt/copyright/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..prodStmt/copyright' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element. ISO 639-1 codes are
+				strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 11.1.1/documentationCopyrightLang</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/docDscr/citation/distStmt/distrbtr" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A name of the organization or institution</r:Content>
+			<r:Content>EQB_ID_Element: 9.2/institutionName</r:Content>
+			<r:Content>EQB_UI_Label: Publisher.</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/docDscr/citation/distStmt/distrbtr/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '../distStmt/distrbtr' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element. ISO 639-1 codes are
+				strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 9.2.1/institutionNameLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/docDscr/citation/distStmt/distrbtr/@abbr" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: If applicable: abbreviation of the institution's name</r:Content>
+			<r:Content>EQB_ID_Element: 9.3/institutionAbbreviation</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--STUDY TITLE AND IDENTIFICATION-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/docDscr/citation/holdings/@URI" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: A URL or URN (a reference to a web resource that specifies its
+				location) linking to the study to a CDC page.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.9/CDCURL</r:Content>
+			<r:Content>EQB_UI_Label: Link to study in CESSDA Data Catalogue.</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/titlStmt/titl" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A title or name for the study. If additional titles are required in
+				other languages, use the parTitl element
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.6 studyTitle</r:Content>
+			<r:Content>EQB_UI_Label: studyTitle</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/titlStmt/titl/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..stdyDscr/citation/titlStmt/titl' element is
+				present.
+			</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element. ISO 639-1 codes are
+				strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.6.1 studyTitleLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/titlStmt/partitl" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Title of the Study in additional languages other than the 'titl'
+				element. It is preferable to include this element to hold an English version of the
+				title if the 'titl' element is not in English.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.6 studyTitle</r:Content>
+			<r:Content>EQB_UI_Label: studyTitle</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<OptionalNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/titlStmt/partitl/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..stdyDscr/citation/titlStmt/partitl' element is
+				present.
+			</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element. ISO 639-1 codes are
+				strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.6.1 studyTitleLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/titlStmt/IDNo" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: The content of this element serves two purposes. It is used both for
+				the PID and for the study/archival number given by the SP. These two cases have
+				different specifications. IDNo in the sense of study number is optional. PID is
+				mandatory
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.2_and_6.3/studyNumber_and_studyPID</r:Content>
+			<r:Content>EQB_UI_Label: Study number.</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/titlStmt/IDNo/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language is recommended when the @agency attribute contains an
+				organisation name, for example, in the context of 'IDNo' being used to display the
+				internal study number
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.3.1/studyNumberLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/titlStmt/IDNo/@agency" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Agency responsible for the identifier of the study. If you are using
+				IDNo for a Persistent Identifer, value should be one of
+				https://vocabularies.cessda.eu/vocabulary/CessdaPersistentIdentifierTypes i.e. ARK
+				or DOI or Handle or URN
+			</r:Content>
+			<r:Content>EQB_ID_Element:
+				6.2.1_and_6.3.1/studyPIDType_and_studyNumberAgency
+			</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!-- PRINCIPAL INVESTIGATOR, COPYRIGHT & PUBLISHER-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/stdyDscr/citation/rspStmt/AuthEnty" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Person OR Institution. Principal Investigator not used in EQB but
+				mandatory in CDC.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 8.2_and_9.2/personName_and_OrganizationName</r:Content>
+			<r:Content>EQB_UI_Label: Not used in EQB</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/rspStmt/AuthEnty/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the Organisation name, which may be the contents of the
+				AuthEnty element or the @affiliation attribute if AuthEnty specifies a person. ISO
+				639-1 codes codes are strongly encouraged to be used.
+			</r:Content>
+			<r:Content>EQB_UI_Label: Not used in EQB</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/rspStmt/AuthEnty/@affiliation" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: If AuthEnty is a person, the organisational affiliation of that
+				person
+			</r:Content>
+			<r:Content>EQB_UI_Label: Not used in EQB</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<OptionalNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/prodStmt/copyright" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Freetext description on the metadata access conditions for the
+				provided metadata for the study-related information only. Examples of such
+				conditions are the copyright status, usage regulations based on legislation, a
+				license, or other agreement concerning the metadata usage.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.21.3/metadataAccessStudy</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><RecommendedNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/prodStmt/copyright/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..stdyDscr/citation/prodStmt/copyright' element is
+				present.
+			</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element. ISO 639-1 codes are
+				strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.21.3.1/metadataAccessStudyLang</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/distStmt/distrbtr" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A name of the institution publishing the metadata, i.e. CESSDA Service
+				Provider providing the metadata information or the name of the actual publisher of
+				the metadata, who is not the SPs. Only on study level.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.11/publisherName</r:Content>
+			<r:Content>EQB_UI_Label: Publisher</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/distStmt/distrbtr/xml:lang" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element. ISO 639-1 codes are
+				strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.11.1/publisherNameLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info).</r:Content>
+		</r:Description>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--DATE OF PUBLICATION-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/stdyDscr/citation/distStmt/distDate" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: The year or freetext date of when the study description was published.
+				This element may be empty.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.10/PublicationDate</r:Content>
+			<r:Content>EQB_UI_Label: Publication date.</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/distStmt/distDate/@date" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended if 'distDate' element is present</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: IDate (date-time combination (YYYY-MM-DDTHH:MM:SS), date (YYYY-MM-DD),
+				year-month (YYYY-MM), year (YYYY)) of publication (by publisher) of the study.
+				Extract the year if only this is needed (e.g. citation). This element refers to the
+				date (ISO 8601) when the data of the study was or will be made publicly available.
+				If there is an embargo on the data in effect, use the date when the embargo period
+				ends.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.10/PublicationDate</r:Content>
+			<r:Content>EQB_UI_Label: Publication date.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><RecommendedNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--STUDY GROUP INFORMATION-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/stdyDscr/citation/serStmt/serName" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A title or name for the study group.</r:Content>
+			<r:Content>EQB_ID_Element: 7.3/studyGroupTitle</r:Content>
+			<r:Content>EQB_UI_Label: Filter/Part of study group/series.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/serStmt/serName/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..serStmt/serName' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>EQB_ID_Element: 7.3.1/studyGroupTitleLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info).</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/serStmt/serInfo/ExtLink" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A value of a persistent identifier for the study group.</r:Content>
+			<r:Content>EQB_ID_Element: 7.2/studyGroupID</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info).</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/serStmt/serInfo/ExtLink/@URI" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if ',,serInfo/ExtLink' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: An URL or URN (a reference to a web resource that specifies its
+				location) linking to the study group.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 7.4/studyGroupUrl</r:Content>
+			<r:Content>EQB_UI_Label: included as hyperlink</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/serStmt/serInfo/ExtLink/@title" isRequired="false"
+			 defaultValue="GroupID" fixedValue="true">
+		<r:Description>
+			<r:Content>Required: Mandatory if ',,serInfo/ExtLink' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: A required attribute containing the local user identification system.
+				Always 'GroupID'.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 7.2.1/studyGroupIDType</r:Content>
+			<r:Content>EQB_UI_Label: included as hyperlink</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--STUDY VERSION INFORMATION-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/stdyDscr/citation/verStmt/version" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A number of the version (free text) that the Service Provider uses to
+				identify this version of the study.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.4/studyVersionNumber</r:Content>
+			<r:Content>EQB_UI_Label: Versionnumber.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/verStmt/version/@date" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage:A date of the version that the Service Provider uses to identify this
+				version of the study.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.5/studyVersiondate</r:Content>
+			<r:Content>EQB_UI_Label: Versiondate.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/holdings/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the study description page at the SP website (there can be
+				multiple 'holding' elements for study description pages in different languages. ISO
+				639-1 codes are strongly encouraged to be used.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.8/SPURL</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/citation/holdings/@URI" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: This is the document the metadata refers to, i.e. the URL of the study
+				description page at the SP website.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.8/SPURL</r:Content>
+			<r:Content>EQB_UI_Label: Further information on study and data</r:Content>
+		</r:Description>
+	</pr:Used>
+
+	<!--****************************************************************************************-->
+	<!--TOPICS-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/stdyDscr/stdyInfo/subject/topcClas" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Subject classifcation term for the study in the local language. Use
+				descriptive terms from https://vocabularies.cessda.eu/vocabulary/TopicClassification
+				if possible but other vocabularies are permitted.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.20/topicControlledDescriptive</r:Content>
+			<r:Content>EQB_UI_Label: Topics</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/stdyInfo/subject/topcClas/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if 'topcClas' element is present</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the subject classification term. ISO 639-1 codes are
+				strongly encouraged to be used.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.20.1/topicLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info).</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[
+                <Constraints>
+                    <MandatoryNodeIfParentPresentConstraint/>
+                </Constraints>
+                ]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/stdyInfo/subject/topcClas/@vocab"
+			 defaultValue="CESSDA Topic Classification" fixedValue="false" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: name of the vocabulary. If possible, use "CESSDA Topic Classification"
+				(regardless of language) but other vocabularies are permitted.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.20.2/topicName</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info).</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/stdyInfo/subject/topcClas/@vocabURI" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The Canonical URL of the CV version that is being used e.g.
+				https://vocabularies.cessda.eu/v2/vocabularies/TopicClassification/4.0?languageVersion=en-4.0
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.20.4/topicURL</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info).</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--ABSTRACT-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/stdyDscr/stdyInfo/abstract" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: The abstract for the study</r:Content>
+			<r:Content>EQB_ID_Element: 6.7/studyDescription</r:Content>
+			<r:Content>EQB_UI_Label: Abstract</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/stdyInfo/abstract/@xml:lang" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the abstract. ISO 639-1 codes are strongly encouraged to
+				be used.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.7.1/studyDescriptionLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--DATA COLLECTION DATE(S)-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/stdyDscr/stdyInfo/sumDscr/collDate" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: This is the free text expression of the collection period. This
+				element may be empty.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.19/dataCollectionDate</r:Content>
+			<r:Content>EQB_UI_Label: Data collection period</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<OptionalNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/stdyInfo/sumDscr/collDate/@event" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if parent is present</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Either 'start', 'end' or 'single' to indicate the type of @date
+				Attribute
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.19/dataCollectionDate</r:Content>
+			<r:Content>EQB_UI_Label: Data collection period</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[
+                <Constraints>
+                    <MandatoryNodeIfParentPresentConstraint/>
+                </Constraints>
+                ]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/stdyInfo/sumDscr/collDate/@date" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended strongly if 'collDate' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Ideally YYYY-MM-DDThh:mm:ssZ format, but can accept YYYY-MM-DD,
+				YYYY-MM or YYYY as date attribute. If there are multiple end dates, use the
+				last.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.19/dataCollectionDate</r:Content>
+			<r:Content>EQB_UI_Label: Data collection period</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--COUNTRY COVERAGE-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/stdyDscr/stdyInfo/sumDscr/nation" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Countries relevant to the study area</r:Content>
+			<r:Content>EQB_ID_Element: 6.16/country</r:Content>
+			<r:Content>EQB_UI_Label: Country</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/stdyInfo/sumDscr/nation/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if 'nation' element is present</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the country label. ISO 639-1 codes are strongly encouraged
+				to be used.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.16/country</r:Content>
+			<r:Content>EQB_UI_Label: Country</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[
+                <Constraints>
+                    <MandatoryNodeIfParentPresentConstraint/>
+                </Constraints>
+                ]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/stdyInfo/sumDscr/nation/@abbr" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Use this attribute only if the country in the 'nation' element has an
+				ISO 3166-1 2-letter code.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.16/country</r:Content>
+			<r:Content>EQB_UI_Label: Country</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--TIME DIMENSION-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/timeMeth" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Contains the Time Method CV item in the local language</r:Content>
+			<r:Content>EQB_ID_Element: 6.15.2/timeMethodDescriptive</r:Content>
+			<r:Content>EQB_UI_Label: Time dimension</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/timeMeth/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if 'timeMeth' element is present</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the Time Method CV item. ISO 639-1 codes are strongly
+				encouraged to be used.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.15.2.1/timeMethodLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[
+                <Constraints>
+                    <MandatoryNodeIfParentPresentConstraint/>
+                </Constraints>
+                ]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/timeMeth/concept" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: No</r:Content>
+			<r:Content>Usage: Time Method Controlled Vocabulary "Code value" that is the same across
+				languages. e.g if the 'timeMeth' element is 'Pitkittäisaineisto' for Finnish, the
+				'concept' element is 'Longitudinal'. See example at
+				https://vocabularies.cessda.eu/urn/urn:ddi:int.ddi.cv:TimeMethod
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.15.1/timeMethodControlled</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/timeMeth/concept/@vocab"
+			 defaultValue="DDI Time Method" fixedValue="true" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Use the string "DDI Time Method" regardless of language.</r:Content>
+			<r:Content>EQB_ID_Element: 6.15.3/timeMethodName</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/timeMeth/concept/@vocabURI"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The Canonical URL of the CV version that is being used e.g.
+				https://vocabularies.cessda.eu/v2/vocabularies/TimeMethod/1.2?languageVersion=en-1.2
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.15.5/timeMethodURL</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<OptionalNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--SAMPLING METHOD / PROCEDURE-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/sampProc" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Contains the Sampling Procedure CV item in the local language and/or a
+				freetext description in the local language
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.17.2/samplingProcedureDescriptive</r:Content>
+			<r:Content>EQB_UI_Label: Sampling procedure</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><RecommendedNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/sampProc/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if 'sampProc' element is present</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the Sampling Procedure CV item or freetext description.
+				ISO 639-1 codes are strongly encouraged to be used.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.17.2.1/samplingProcedureLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[
+                <Constraints>
+                    <MandatoryNodeIfParentPresentConstraint/>
+                </Constraints>
+                ]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/sampProc/concept" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: No</r:Content>
+			<r:Content>Usage: Sampling Procedure Controlled Vocabulary "Code value" that is the same
+				across languages. e.g if the 'sampProc' element is 'Todennäköisyysotanta' for
+				Finnish, the 'concept' element is 'Probability'. See example at
+				https://vocabularies.cessda.eu/urn/urn:ddi:int.ddi.cv:SamplingProcedure
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.17.1/samplingProcedureControlled</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/sampProc/concept/@vocab"
+			 defaultValue="DDI Sampling Procedure" fixedValue="true" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Use the string "DDI Sampling Procedure" regardless of
+				language.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.17.3/samplingProcedureName</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/sampProc/concept/@vocabURI"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The Canonical URL of the CV version that is being used e.g.
+				https://vocabularies.cessda.eu/v2/vocabularies/SamplingProcedure/1.1?languageVersion=en-1.1
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.17.5/samplingProcedureURL</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<OptionalNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--DATA COLLECTION METHOD-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/collMode" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Contains the Mode of Collection CV item in the local
+				language.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.18.2/modeOfCollectionDescriptive</r:Content>
+			<r:Content>EQB_UI_Label: Data collection mode</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><RecommendedNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/collMode/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if 'collMode' element is present</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Language of the Mode of Collection CV item. ISO 639-1 codes are
+				strongly encouraged to be used.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.18.2.1/modeOfCollectionLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[
+                <Constraints>
+                    <MandatoryNodeIfParentPresentConstraint/>
+                </Constraints>
+                ]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/collMode/concept" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: No</r:Content>
+			<r:Content>Usage: Mode of Collection Controlled Vocabulary "Code value" that is the same
+				across languages. e.g if the 'collMode' element is 'Haastattelu' for Finnish, the
+				'concept' element is 'Interview'. See example at
+				https://vocabularies.cessda.eu/urn/urn:ddi:int.ddi.cv:ModeOfCollection
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.18.1/modeOfCollectionControlled</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/collMode/concept/@vocab"
+			 defaultValue="DDI Mode of Collection" fixedValue="true" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Use the string "DDI Mode of Collection" regardless of
+				language.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.18.3/modeOfCollectionName</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<RecommendedNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/collMode/concept/@vocabURI"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The Canonical URL of the CV version that is being used e.g.
+				https://vocabularies.cessda.eu/v2/vocabularies/ModeOfCollection/3.0?languageVersion=en-3.0
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.18.5/modeOfCollectionURL</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content><![CDATA[
+			<Constraints>
+				<OptionalNodeConstraint/>
+			</Constraints>
+			]]></r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--INSTRUMENT-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/resInstru" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the instrument name that is being used in the study.
+				ISO 639-1 codes are strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 5.2/instrumentName</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/method/dataColl/resInstru/@xml:lang" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the instrument name that is being used in the study.
+				ISO 639-1 codes are strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 5.2.1/instrumentNameLang</r:Content>
+			<r:Content>EQB_UI_Label: Interview Language.</r:Content>
+		</r:Description>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--ACCESS STATEMENTS-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/stdyDscr/dataAccs/useStmt/specPerm" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Freetext description on the metadata access conditions for the
+				provided metadata if there is one access condition for both study- and
+				question-related metadata. Examples of such conditions are the copyright status,
+				usage regulations based on legislation, a license, or other agreement concerning the
+				metadata usage.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 11.3/metadataAccessConditionAll</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><RecommendedNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/dataAccs/useStmt/specPerm/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..stdyDscr/dataAccs/useStmt/specPerm/' element is
+				present.
+			</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: The language of the content of the element. ISO 639-1 codes are
+				strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 11.3/metadataAccessConditionAll</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/dataAccs/useStmt/restrctn" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Freetext description of possibilities to access data.</r:Content>
+			<r:Content>EQB_ID_Element: 6.21.1/dataAccess</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0.</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/dataAccs/useStmt/restrctn/@xml:lang" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: The language of the content of the element. ISO 639-1 codes are
+				strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.21.1.1/dataAccessLang</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0.</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/dataAccs/useStmt/conditions" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: If the preserved content is subject to any access restrictions, those
+				must be expressed in as much detail as possible in the information package in
+				accordance with cataloguing rules and metadata formats used. Examples of such
+				restrictions are the copyright status, usage restrictions based on legislation, a
+				license, or other agreement concerning the content usage. Should the information
+				package contain several digital objects with different restrictions, these
+				restrictions should be attached correctly and individually to those objects that the
+				restrictions concern.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.21.2/dataAccessCondition</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/dataAccs/useStmt/conditions/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..stdyDscr/dataAccs/useStmt/conditions/' element is
+				present.
+			</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: The language of the content of the element. ISO 639-1 codes are
+				strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 6.21.2/dataAccessConditionLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--SHOWCARD-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/stdyDscr/othrStdyMat/relMat/@label" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..codeBook/stdyDscr/othrStdyMat/relMat' element is
+				present
+			</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Within the context of survey research, a showcard or showsheet is a
+				visual aid used predominantly during in-person surveys. It is a card, a piece of
+				paper, or an electronic screen containing answer categories to a question, from
+				which the respondent chooses the answer to the survey question. showcardFileName is
+				linked to the variable by using the /var/@name value for the relMat/@label value
+				here
+			</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.11.1/showcardFileName</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info).</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/othrStdyMat/relMat/@type" isRequired="false"
+			 defaultValue="ShowCard" fixedValue="true">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..codeBook/stdyDscr/othrStdyMat/relMat' element is
+				present
+			</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Required to indicate that @label represents /var/@name
+				value.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.11.1/showcardFileName</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info).</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/othrStdyMat/relMat/citation/titlStmt/titl" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A file name of the showcard in the original language. Use 'parTitl'
+				element if other languages are required.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.11.1/showcardFileName</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/othrStdyMat/relMat/citation/titlStmt/titl/@xml:lang"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..othrStdyMat/relMat/citation/titlStmt/titl' element
+				is present.
+			</r:Content>
+			<r:Content>ElementType: Attribue</r:Content>
+			<r:Content>Usage: The language of the content of the element. ISO 639-1 codes are
+				strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.11.1.1/showcardFileNameLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/othrStdyMat/relMat/citation/titlStmt/partitl"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A file name of the showcard in anguages other than the original. Use
+				'titl' element for the original language.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.11.1/showcardFileName</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/othrStdyMat/relMat/citation/titlStmt/parTitl/@xml:lang"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..othrStdyMat/relMat/citation/titlStmt/parTitl'
+				element is present.
+			</r:Content>
+			<r:Content>ElementType: Attribue</r:Content>
+			<r:Content>Usage: The language of the content of the element. ISO 639-1 codes are
+				strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.11.1.1/showcardFileNameLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/othrStdyMat/relMat/citation/prodStmt/copyright"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Freetext description on the metadata access conditions for the
+				provided metadata for question-related information only. Examples of such conditions
+				are the copyright status, usage regulations based on legislation, a license, or
+				other agreement concerning the metadata usage.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 1.3.1/metadataAccessQuestion</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><RecommendedNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/othrStdyMat/relMat/citation/prodStmt/copyright/@xml:lang"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..othrStdyMat/relMat/citation/prodStmt/copyright'
+				element is present.
+			</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element. ISO 639-1 codes are
+				strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 1.3.1.1/metadataAccessQuestionLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/stdyDscr/othrStdyMat/relMat/citation/holdings/@URI" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: A link to the showcard</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.12/showcardURL</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--DATAFILE INFORMATION-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/fileDscr/fileTxt/fileName" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A file name of the data set.</r:Content>
+			<r:Content>EQB_ID_Element: 4.3/datasetFileName</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0.</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/fileDscr/fileTxt/fileName/@xml:lang" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element. ISO 639-1 codes are
+				strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 4.3.1/datasetFileNameLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info).</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/fileDscr/fileTxt/fileCitation/titlStmt/IDNo" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: An identifier that captures information on the type and value of a
+				PID.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 4.2/datasetPID</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/fileDscr/fileTxt/fileCitation/titlStmt/IDNo/@agency"
+			 isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..fileDscr/fileTxt/fileCitation/titlStmt/IDNo'
+				element is present.
+			</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The identification of the agency which assigns and manages the
+				identifier, i.e., ISBN, ISSN, DOI, etc.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 4.2.1/datasetPIDType</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--VARIABLE INFORMATION-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/dataDscr/var/@name" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: A name of a variable within a dataset.</r:Content>
+			<r:Content>EQB_ID_Element: 4.5.2/variableName</r:Content>
+			<r:Content>EQB_UI_Label: Variables</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/@xml:lang" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element. ISO 639-1 codes are
+				strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 4.5.2.1/variableNameLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info).</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/@qstn" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: A reference of a variable to a question e.g. 'QID1'</r:Content>
+			<r:Content>EQB_ID_Element: 4.5.7/referenceVariableToQuestion</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/@nature" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: A variable can have different types according to the ways they can be
+				studied, measured, and presented. E.g. 'Ordinal'
+			</r:Content>
+			<r:Content>EQB_ID_Element: 4.5.5/variableType</r:Content>
+			<r:Content>EQB_UI_Label: Variables.</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/@representationType" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: States the type of object being referenced e.g. 'code', 'mumeric' or 'text' for example.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.9.1/referenceItemToResponseType</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info).</r:Content>
+		</r:Description>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/location/@width" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Length of the text: Min length</r:Content>
+			<r:Content>EQB_ID_Element: 2.3.4/textDomainMinLength</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/labl" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A label of a variable for display.</r:Content>
+			<r:Content>EQB_ID_Element: 4.5.3/variableLabel</r:Content>
+			<r:Content>EQB_UI_Label: Variables</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/labl/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..dataDscr/var/labl' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element. ISO 639-1 codes are
+				strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 4.5.3.1/variableLabelLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--VARIABLE QUESTION ITEM INFORMATION-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/dataDscr/var/qstn/@seqNo" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '../dataDscr/var/qstn' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: Question number.</r:Content>
+			<r:Content>EQB_ID_Element: 1.1/questionItem</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info).</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/qstn/@elementVersion" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '../dataDscr/var/qstn' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A version number of the question item.</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.2/questionItemVersion</r:Content>
+			<r:Content>EQB_UI_Label: Version.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/qstn/@IDNo" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '../dataDscr/var/qstn' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: ID of the question e.g. 'QID1'</r:Content>
+			<r:Content>EQB_ID_Element: 1.1/questionItem</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info).</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/qstn/ExtLink" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: An identifier provided by the user for the question.</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.3/questionItemID</r:Content>
+			<r:Content>EQB_UI_Label: Question ID</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/qstn/ExtLink/@title" isRequired="false" defaultValue="QuestionID"
+			 fixedValue="true">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..var/qstn/ExtLink' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Type of User ID for question. Always 'QuestionID'.</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.3.1/questionItemIDType</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/qstn/list/label" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A label of a question item the metadata refers to for display.</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.4/questionItemName</r:Content>
+			<r:Content>EQB_UI_Label: Name.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/qstn/list/label/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..dataDscr/var/qstn/list/label' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element.
+				ISO 639-1 codes are strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.4.1/questionItemNameLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/qstn/list/itm" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A number of the question item the metadata refers to within the associated instrument.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.8/questionItemNumber</r:Content>
+			<r:Content>EQB_UI_Label: Question number.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/qstn/list/itm/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..var/qstn/list/itm/' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element.
+				ISO 639-1 codes are strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.8.1/questionItemNumberLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/qstn/preQTxt" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A prequestion and/or postquestion and other statements as part
+				of the question item text.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.6/questionItemStatement</r:Content>
+			<r:Content>EQB_UI_Label: Pre-/Post-question text.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/qstn/preQTxt/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..var/qstn/preQTxt' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element.
+				ISO 639-1 codes are strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.6.1/questionItemStatementLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/qstn/qstnLit" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A literal question item text.</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.5/questionItemText</r:Content>
+			<r:Content>EQB_UI_Label: Question text</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/qstn/qstnLit/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..var/qstn/qstnLit' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element.
+				ISO 639-1 codes are strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.5.1/questionItemTextLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/qstn/ivuInstr" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Recommended</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: An instruction for the interviewer.</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.7/questionItemInterviewerinstruction</r:Content>
+			<r:Content>EQB_UI_Label: Interviewer instruction .</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><RecommendedNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/qstn/ivuInstr/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..var/qstn/ivuInstr' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element.
+				ISO 639-1 codes are strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 1.1.7.1/questionItemInterviewerinstructionLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/valrng/range/@min" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..dataDscr/var/valrng/range' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Structures a numeric range. Low value is designated</r:Content>
+			<r:Content>EQB_ID_Element: 2.2.4/numericDomainRangeLow</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/valrng/range/@max" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..dataDscr/var/valrng/range' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Structures a numeric range. High value is designated</r:Content>
+			<r:Content>EQB_ID_Element: 2.2.5/numericDomainRangeHigh</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--VARIABLE CODELISTS AND CATEGORIES-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/dataDscr/var/catgryGrp/@catgry" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..dataDscr/var/catgryGrp' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Category IDs in this Category group e.g. 'Ctgry1 Ctgry2'.</r:Content>
+			<r:Content>EQB_ID_Element: 2.1/codeDomain</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info).</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/catgryGrp/@levelnm" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..dataDscr/var/catgryGrp' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: An identifier of the codelist the metadata refers to.</r:Content>
+			<r:Content>EQB_ID_Element: 2.1.1.2/codelistID</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/catgryGrp/@levelno" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..dataDscr/var/catgryGrp' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: It indicates the minimum and the maximum number of possible answers within the codelist.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 2.1.1.2/codelistResponseCardinality</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/catgryGrp/labl/@level" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if 'dataDscr/var/catgryGrp/labl' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: @level attribute indicates whether the labl element is:
+				(1) A name of the codelist (@level='name') OR
+				(2) A label of the codelist (@level='label') OR
+				(2) A description of the codelist (@level='description')
+			</r:Content>
+			<r:Content>EQB_ID_Element: 2.1.1.3,4,5/codelistName,Label,Description</r:Content>
+			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/catgryGrp/labl/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if 'dataDscr/var/catgryGrp/labl' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element.
+				ISO 639-1 codes are strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element:
+				2.1.1.3.1,2.1.1.4.1,2.1.1.5.1/codelistNameLang,codelistLabelLang,codelistDescriptionLang
+			</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/catgry/@missing" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..dataDscr/var/catgry' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: A value for missing data. If the category is describing a classification of
+				"missing data" set the value of isMissing to "true".
+			</r:Content>
+			<r:Content>EQB_ID_Element: 2.1.1.4.2/answerMissingValue</r:Content>
+			<r:Content>EQB_UI_Label: Answer code/Response category</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/catgry/catValu" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..dataDscr/var/catgry' element is present.</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A structure that links a unique value of a code to a specified category.</r:Content>
+			<r:Content>EQB_ID_Element: 2.1.1.3/answerCode</r:Content>
+			<r:Content>EQB_UI_Label: Answer code.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/catgry/labl" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..dataDscr/var/catgry' element is present.</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A description of a particular category or response</r:Content>
+			<r:Content>EQB_ID_Element: 2.1.1.4.1/answerCategory</r:Content>
+			<r:Content>EQB_UI_Label: Response category</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/catgry/labl/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..dataDscr/var/catgry/labl' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: The language of the content of the element.
+				ISO 639-1 codes are strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 2.1.1.4.1.1/answerCategoryLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--VARIABLE CONCEPTS-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/dataDscr/var/concept" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A name of the concept.</r:Content>
+			<r:Content>EQB_ID_Element: 3.2/ConceptName</r:Content>
+			<r:Content>EQB_UI_Label: Concepts.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/concept/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '../dataDscr/var/concept' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element.
+				ISO 639-1 codes are strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 3.2/ConceptNameLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/concept/list/itm/label" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A label of the concept.</r:Content>
+			<r:Content>EQB_ID_Element: 3.3/conceptLabel</r:Content>
+			<r:Content>EQB_UI_Label: Concepts</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/concept/list/itm/label/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..dataDscr/var/concept/list/itm/label' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element.
+				ISO 639-1 codes are strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 3.3.1/conceptLabelLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/concept/list/itm/p" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A description of the concept.</r:Content>
+			<r:Content>EQB_ID_Element: 3.4/conceptDescription</r:Content>
+			<r:Content>EQB_UI_Label: Concept Descriptions</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/concept/list/itm/p/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..dataDscr/var/concept/list/itm/p' element is present</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element.
+				ISO 639-1 codes are strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 3.4.1/conceptDescriptionLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--VARIABLE DESCRIPTION-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/dataDscr/var/notes" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: An additional description of the variable or the file content.</r:Content>
+			<r:Content>EQB_ID_Element: 4.5.4/variableDescription</r:Content>
+			<r:Content>EQB_UI_Label: Variables.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/dataDscr/var/notes/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..dataDscr/var/notes' element is present.</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: The language of the content of the element.
+				ISO 639-1 codes are strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 4.5.4.1/variableDescriptionLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<!--****************************************************************************************-->
+	<!--DOCUMENTATION-->
+	<!--****************************************************************************************-->
+	<pr:Used xpath="/codeBook/otherMat/@type" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory if 'codeBook/otherMat' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: A controlled vocabulary of the type of document that is provided.</r:Content>
+			<r:Content>EQB_ID_Element: 10.3/documentType'</r:Content>
+			<r:Content>EQB_UI_Label: Type.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/otherMat/@level" isRequired="true">
+		<r:Description>
+			<r:Content>Required: Mandatory if 'codeBook/otherMat' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Required for DDI schema. Object to which the document is related e.g. 'Study'.</r:Content>
+			<r:Content>EQB_ID_Element: 10.3/documentType'</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info).</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/otherMat/citation/titlStmt/titl" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: No</r:Content>
+			<r:Content>Usage: A title for the document in the original language. Use the 'parTitl'
+				element if Title is required for another language.
+			</r:Content>
+			<r:Content>EQB_ID_Element: 10.2/documentTitle</r:Content>
+			<r:Content>EQB_UI_Label: Title</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/otherMat/citation/titlStmt/titl/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '../otherMat/citation/titlStmt/titl' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element.
+				ISO 639-1 codes are strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 10.2.1/documentTitleLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/otherMat/citation/titlStmt/parTitl" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: A title for the document in a language other than the original.</r:Content>
+			<r:Content>EQB_ID_Element: 10.2/documentTitle</r:Content>
+			<r:Content>EQB_UI_Label: Title.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/otherMat/citation/titlStmt/parTitl/@xml:lang" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Mandatory if '../otherMat/citation/titlStmt/parTitl' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: The language of the content of the element.
+				ISO 639-1 codes are strongly encouraged to be used
+			</r:Content>
+			<r:Content>EQB_ID_Element: 10.2.1/documentTitleLang</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/otherMat/citation/titlStmt/IDNo" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: An identifier for the document.</r:Content>
+			<r:Content>EQB_ID_Element: 10.1/documentID</r:Content>
+			<r:Content>EQB_UI_Label: ID.</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/otherMat/citation/titlStmt/IDNo/@agency" isRequired="false" defaultValue="DocumentID"
+			 fixedValue="true">
+		<r:Description>
+			<r:Content>Required: Mandatory if '..otherMat/citation/titlStmt/IDNo' element is present.</r:Content>
+			<r:Content>ElementType: Attribute</r:Content>
+			<r:Content>Usage: Type of ID for the document ID. Always 'DocumentID'.</r:Content>
+			<r:Content>EQB_ID_Element: 10.1.1/documentIDType</r:Content>
+			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><MandatoryNodeIfParentPresentConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+	<pr:Used xpath="/codeBook/otherMat/citation/holdings/@URI" isRequired="false">
+		<r:Description>
+			<r:Content>Required: Optional</r:Content>
+			<r:Content>ElementType: Content element</r:Content>
+			<r:Content>ElementRepeatable: Yes</r:Content>
+			<r:Content>Usage: URL / Web address of the document the metadata refer to.</r:Content>
+			<r:Content>EQB_ID_Element: 10.4/documentURL'</r:Content>
+			<r:Content>EQB_UI_Label: displayed as hyperlink</r:Content>
+		</r:Description>
+		<pr:Instructions>
+			<r:Content>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
+			</r:Content>
+		</pr:Instructions>
+	</pr:Used>
+</pr:DDIProfile>

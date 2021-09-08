@@ -15,12 +15,6 @@ pipeline {
     }
 
     stages {
-        stage ('Copy Validation Profiles and XLSTs') {
-            steps {
-                sh "mkdir --parents src/main/resources/static/profiles/"
-                sh "cp --recursive metadata-profiles/* src/main/resources/static/profiles/"
-            }
-        }
         // Building on master
         stage('Pull SDK Docker Image') {
             agent {
