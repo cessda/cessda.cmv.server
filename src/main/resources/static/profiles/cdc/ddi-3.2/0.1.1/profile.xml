@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../../../xslt/1.0.0/stylesheet.xsl"?>
+<?xml-stylesheet type="text/xsl" href="../../../xslt/1.0/stylesheet.xsl"?>
 <!--____________________________________________________________________________________
 © Copyright 2020, CESSDA ERIC
 Licence: This document is issued under a CC BY licence (https://creativecommons.org/licenses/by/4.0/)
@@ -11,9 +11,9 @@ Last modified 2021-08-25 Darren Bell
 ____________________________________________________________________________________
 -->
 <pr:DDIProfile xmlns:r="ddi:reusable:3_2"
-			   xmlns:pr="ddi:ddiprofile:3_2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			   xsi:schemaLocation="ddi:ddiprofile:3_2 https://ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/ddiprofile.xsd"
-			   versionDate="2021-04-28">
+               xmlns:pr="ddi:ddiprofile:3_2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="ddi:ddiprofile:3_2 https://ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/ddiprofile.xsd"
+               versionDate="2021-04-28">
 	<r:Agency>CESSDA</r:Agency>
 	<r:ID>CDC_DDI32_PROFILE</r:ID>
 	<r:Version>0.1.1</r:Version>
@@ -49,8 +49,8 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/@xsi:schemaLocation"
-			 defaultValue="ddi:instance:3_2 http://www.ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/instance.xsd"
-			 fixedValue="true" isRequired="true">
+	         defaultValue="ddi:instance:3_2 http://www.ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/instance.xsd"
+	         fixedValue="true" isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -99,7 +99,7 @@ ________________________________________________________________________________
 	<!--LANGUAGE OF DATA FILES-->
 	<!--****************************************************************************************-->
 	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/pi:PhysicalInstance/r:Citation/r:Language"
-			 isRequired="false">
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -139,7 +139,7 @@ ________________________________________________________________________________
 		</r:Description>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:UserID/@typeOfUserID" defaultValue="StudyNumber"
-			 fixedValue="true" isRequired="true">
+	         fixedValue="true" isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -149,7 +149,7 @@ ________________________________________________________________________________
 		</r:Description>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:UserID/@typeOfUserID"
-			 defaultValue="URLServiceProvider" fixedValue="true" isRequired="true">
+	         defaultValue="URLServiceProvider" fixedValue="true" isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -171,7 +171,7 @@ ________________________________________________________________________________
 		</r:Description>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Title/r:String/@xml:lang"
-			 isRequired="true">
+	         isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -184,7 +184,7 @@ ________________________________________________________________________________
 	<!--PRINCIPAL INVESTIGATOR (CREATOR) / PUBLISHER-->
 	<!--****************************************************************************************-->
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Creator/r:CreatorName/r:String"
-			 isRequired="false">
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -221,7 +221,7 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Creator/r:CreatorName/@affiliation"
-			 isRequired="false">
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -238,7 +238,7 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Publisher/r:PublisherName/r:String"
-			 isRequired="true">
+	         isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -266,7 +266,7 @@ ________________________________________________________________________________
 	<!--YEAR OF PUBLICATION-->
 	<!--****************************************************************************************-->
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:PublicationDate/r:SimpleDate"
-			 isRequired="false">
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -344,7 +344,7 @@ ________________________________________________________________________________
 	<!--SUBJECTS AND KEYWORDS-->
 	<!--****************************************************************************************-->
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Subject"
-			 isRequired="false">
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -364,7 +364,7 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Subject/@xml:lang"
-			 isRequired="false">
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if "/r:TopicalCoverage/r:Subject" element is
 				present
@@ -421,7 +421,7 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Keyword"
-			 isRequired="false">
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -438,7 +438,7 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Keyword/@xml:lang"
-			 isRequired="false">
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if 'keyword' element is present</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -536,7 +536,7 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:SpatialCoverage/r:Country_2"
-			 isRequired="false">
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -571,7 +571,7 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:AnalysisUnit/@CodeListName"
-			 defaultValue="DDI Analysis Unit" fixedValue="true" isRequired="false">
+	         defaultValue="DDI Analysis Unit" fixedValue="true" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -997,7 +997,7 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used
-			xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/r:Description/r:Content@xml:lang"
+			xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/r:Description/r:Content/@xml:lang"
 			isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..a:Access/r:Description/r:Content' element is

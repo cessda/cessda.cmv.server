@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,7 +40,6 @@ import org.springframework.context.annotation.Bean;
 import org.zalando.problem.ProblemModule;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -114,7 +113,8 @@ public class Server extends SpringBootServletInitializer
 	}
 
 	@Bean
-	public List<Resource.V10> demoDocuments() {
+	public List<Resource.V10> demoDocuments()
+	{
 		return ClasspathResourceRepository.newBuilder()
 				.includeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*.xml" )
 				.excludeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*profile*.xml" )
