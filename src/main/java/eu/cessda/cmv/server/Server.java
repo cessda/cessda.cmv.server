@@ -25,12 +25,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
-import eu.cessda.cmv.core.ProfileResourceLabelProvider;
 import eu.cessda.cmv.core.ValidationService;
 import org.gesis.commons.resource.ClasspathResourceRepository;
 import org.gesis.commons.resource.FileNameResourceLabelProvider;
 import org.gesis.commons.resource.Resource;
-import org.gesis.commons.resource.ResourceLabelProvider;
+import org.gesis.commons.xml.XercesXalanDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -43,7 +42,6 @@ import javax.annotation.PostConstruct;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.gesis.commons.resource.Resource.newResource;
 
@@ -101,27 +99,37 @@ public class Server extends SpringBootServletInitializer
 	@Bean
 	public List<Resource.V10> demoProfiles()
 	{
-		String baseUrl = "https://bitbucket.org/cessda/cessda.metadata.profiles/raw/4390b0437dbdeac8902b65627a1d443875c797a1/";
-		ResourceLabelProvider labelProvider = new ProfileResourceLabelProvider();
-		return Stream.of( "CDC%201.2.2%20PROFILE/cdc_122_profile.xml",
-						"CDC%201.2.2%20PROFILE/cdc_122_profile_mono.xml",
-						"CDC%202.5%20PROFILE/cdc25_profile.xml",
-						"CDC%202.5%20PROFILE/cdc25_profile_mono.xml" )
-				.map( uri -> newResource( baseUrl + uri, labelProvider ) )
+		return ClasspathResourceRepository.newBuilder()
+				.includeLocationPattern( "classpath*:**/profiles/**/*.xml" )
+				.build()
+				.findAll()
+				.map( resource ->
+				{
+					var profile = XercesXalanDocument.newBuilder().ofInputStream( resource.readInputStream() ).build();
+
+					// Extract the profile name and version.
+					// There isn't a public method to do this, so use the XPath directly.
+					var profileName = profile.selectNode( "/DDIProfile/DDIProfileName" ).getTextContent().trim();
+					var profileVersion = profile.selectNode( "/DDIProfile/Version" ).getTextContent().trim();
+
+					return newResource( resource.getUri(), profileName + ": " + profileVersion );
+				} )
 				.map( Resource.V10.class::cast )
+				.sorted( Comparator.comparing( Resource.V10::getLabel ) )
 				.collect( Collectors.toList() );
 	}
 
 	@Bean
 	public List<Resource.V10> demoDocuments()
 	{
+		var labelProvider = new FileNameResourceLabelProvider();
 		return ClasspathResourceRepository.newBuilder()
 				.includeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*.xml" )
 				.excludeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*profile*.xml" )
 				.build()
 				.findAll()
 				.map( Resource::getUri )
-				.map( uri -> newResource( uri, new FileNameResourceLabelProvider() ) )
+				.map( uri -> newResource( uri, labelProvider ) )
 				.map( Resource.V10.class::cast )
 				.sorted( Comparator.comparing( Resource.V10::getLabel ) )
 				.collect( Collectors.toList() );
