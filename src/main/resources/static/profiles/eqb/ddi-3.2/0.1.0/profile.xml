@@ -5,18 +5,18 @@
 Licence: This document is issued under a CC BY licence (https://creativecommons.org/licenses/by/4.0/)
 Author: Darren Bell - UK Data Archive
 Created: 2021-05-22
-Version: v0.1.0
-Change summary: First release
-Last modified 2021-08-22 Darren Bell
+Version: v0.1.1
+Change summary: Replaced erronerous CDATA syntax for MutuallyExclusiveGroupConstraint with placeholder comment in 11 instances, fixed erronerous use of @xml@lang
+Last modified 2021-09-09 Darren Bell
 ____________________________________________________________________________________
 -->
 <pr:DDIProfile xmlns:r="ddi:reusable:3_2"
-			   xmlns:pr="ddi:ddiprofile:3_2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			   xsi:schemaLocation="ddi:ddiprofile:3_2 https://ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/ddiprofile.xsd"
-			   versionDate="2021-08-22">
+               xmlns:pr="ddi:ddiprofile:3_2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="ddi:ddiprofile:3_2 https://ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/ddiprofile.xsd"
+               versionDate="2021-09-09">
 	<r:Agency>CESSDA</r:Agency>
 	<r:ID>EQB_DDI32_PROFILE</r:ID>
-	<r:Version>0.1.0</r:Version>
+	<r:Version>0.1.1</r:Version>
 	<r:VersionResponsibility>Darren Bell - UKDA</r:VersionResponsibility>
 	<pr:DDIProfileName>
 		<r:String>CESSDA EUROPEAN QUESTION BANK (EQB) DDI3.2 PROFILE</r:String>
@@ -35,7 +35,7 @@ ________________________________________________________________________________
 	<!--PUBLISHER AND COPYRIGHT-->
 	<!--****************************************************************************************-->
 	<pr:Used xpath="/ddi:DDIInstance/r:Citation/r:Publisher/r:PublisherReference/r:TypeOfObject"
-			 isRequired="true">
+	         isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -144,7 +144,7 @@ ________________________________________________________________________________
 		</r:Description>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/g:Group/r:Citation/r:Title/r:String/@xml:lang"
-			 isRequired="false">
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if ...r:Title/r:String is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -161,7 +161,7 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/g:Group/r:Citation/r:Title/r:String/@isTranslated"
-			 isRequired="false">
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -178,8 +178,7 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--DATASET INFORMATION-->
 	<!--****************************************************************************************-->
-	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/pi:PhysicalInstance/r:Citation/r:Title/r:String"
-			 isRequired="true">
+	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/pi:PhysicalInstance/r:Citation/r:Title/r:String" isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -190,7 +189,7 @@ ________________________________________________________________________________
 		</r:Description>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/pi:PhysicalInstance/r:Citation/r:Title/r:String/@xml:lang"
-			 isRequired="false">
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if ...r:Title/r:String is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -206,9 +205,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="ddi:DDIInstance/r:ResourcePackage/pi:PhysicalInstance/r:Citation/r:InternationalIdentifier/r:IdentifierContent"
-			isRequired="false">
+	<pr:Used xpath="ddi:DDIInstance/r:ResourcePackage/pi:PhysicalInstance/r:Citation/r:InternationalIdentifier/r:IdentifierContent" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -229,9 +226,7 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--INSTITUTION(S)-->
 	<!--****************************************************************************************-->
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/a:Organization/a:OrganizationIdentification/a:OrganizationName/r:String"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/a:Organization/a:OrganizationIdentification/a:OrganizationName/r:String" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -246,9 +241,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/a:Organization/a:OrganizationIdentification/a:OrganizationName/r:String/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/a:Organization/a:OrganizationIdentification/a:OrganizationName/r:String/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if a:OrganizationIdentification/a:OrganizationName is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -264,9 +257,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/a:Organization/a:OrganizationIdentification/a:OrganizationName/r:Abbreviation/r:String"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/a:Organization/a:OrganizationIdentification/a:OrganizationName/r:Abbreviation/r:String" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -284,9 +275,7 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--PERSON(S)-->
 	<!--****************************************************************************************-->
-	<pr:Used
-			xpath="ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/a:Individual/a:IndividualIdentification/a:IndividualName/a:FirstGiven"
-			isRequired="false">
+	<pr:Used xpath="ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/a:Individual/a:IndividualIdentification/a:IndividualName/a:FirstGiven" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -301,9 +290,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/a:Individual/a:IndividualIdentification/a:IndividualName/a:Middle"
-			isRequired="false">
+	<pr:Used xpath="ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/a:Individual/a:IndividualIdentification/a:IndividualName/a:Middle" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -318,9 +305,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/a:Individual/a:IndividualIdentification/a:IndividualName/a:LastFamily"
-			isRequired="false">
+	<pr:Used xpath="ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/a:Individual/a:IndividualIdentification/a:IndividualName/a:LastFamily" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -338,9 +323,8 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--PERSON(S) AFFILITION TO ORGANIZATION-->
 	<!--****************************************************************************************-->
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/r:Relation/a:SourceObject/a:IndividualReference/r:TypeOfObject"
-			fixedValue="true" defaultValue="Individual" isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/r:Relation/a:SourceObject/a:IndividualReference/r:TypeOfObject"
+	         fixedValue="true" defaultValue="Individual" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -357,9 +341,8 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/r:Relation/a:TargetObject/a:Role/r:Description/r:Content"
-			fixedValue="true" defaultValue="Affiliation" isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/r:Relation/a:TargetObject/a:Role/r:Description/r:Content"
+	         fixedValue="true" defaultValue="Affiliation" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -376,9 +359,8 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/r:Relation/a:TargetObject/a:OrganizationReference/r:TypeOfObject"
-			fixedValue="true" defaultValue="Organization" isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/a:OrganizationScheme/r:Relation/a:TargetObject/a:OrganizationReference/r:TypeOfObject"
+	         fixedValue="true" defaultValue="Organization" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -398,8 +380,7 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--CONCEPTS-->
 	<!--****************************************************************************************-->
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/c:ConceptScheme/c:Concept/c:ConceptName/r:String"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/c:ConceptScheme/c:Concept/c:ConceptName/r:String" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -414,8 +395,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/c:ConceptScheme/c:Concept/c:ConceptName/r:String/@xml@lang"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/c:ConceptScheme/c:Concept/c:ConceptName/r:String/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..c:ConceptName/r:String' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -446,8 +426,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/c:ConceptScheme/c:Concept/r:Label/r:Content/@xml@lang"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/c:ConceptScheme/c:Concept/r:Label/r:Content/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..c:ConceptName/r:Label/r:Content' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -463,8 +442,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/c:ConceptScheme/c:Concept/r:Description/r:Content"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/c:ConceptScheme/c:Concept/r:Description/r:Content" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -479,8 +457,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/c:ConceptScheme/c:Concept/r:Description/r:Content/@xml@lang"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/c:ConceptScheme/c:Concept/r:Description/r:Content/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..c:ConceptName/r:Description/r:Content' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -499,9 +476,7 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--(QUESTION ITEM(AND GRID) INTERVIEWER INSTRUCTIONS-->
 	<!--****************************************************************************************-->
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:InterviewerInstructionScheme/d:Instruction/d:InstructionText/d:LiteralText/d:Text"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:InterviewerInstructionScheme/d:Instruction/d:InstructionText/d:LiteralText/d:Text" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -518,9 +493,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:InterviewerInstructionScheme/d:Instruction/d:InstructionText/d:LiteralText/d:Text/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:InterviewerInstructionScheme/d:Instruction/d:InstructionText/d:LiteralText/d:Text/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if 'd:InstructionText/d:LiteralText' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -536,9 +509,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:InterviewerInstructionScheme/d:Instruction/d:InstructionText/d:LiteralText/d:Text/@isTranslated"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:InterviewerInstructionScheme/d:Instruction/d:InstructionText/d:LiteralText/d:Text/@isTranslated" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -555,9 +526,7 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--CONTROLCONSRUCT SCHEME (Q.ITEM & Q.GRID STATEMENTS)-->
 	<!--****************************************************************************************-->
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:ControlConstructScheme/d:StatementItem/d:DisplayText/d:LiteralText/d:Text"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:ControlConstructScheme/d:StatementItem/d:DisplayText/d:LiteralText/d:Text" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -574,9 +543,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:ControlConstructScheme/d:StatementItem/d:DisplayText/d:LiteralText/d:Text/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:ControlConstructScheme/d:StatementItem/d:DisplayText/d:LiteralText/d:Text/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if 'd:StatementItem/d:DisplayText/d:LiteralText/d:Text' is present.
 			</r:Content>
@@ -593,9 +560,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:ControlConstructScheme/d:StatementItem/d:DisplayText/d:LiteralText/d:Text/@isTranslated"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:ControlConstructScheme/d:StatementItem/d:DisplayText/d:LiteralText/d:Text/@isTranslated" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -611,9 +576,8 @@ ________________________________________________________________________________
 	</pr:Used>
 	<!--    https://bitbucket.org/cessda/cessda.metadata.profiles/issues/59/-->
 	<!--    https://bitbucket.org/cessda/cessda.metadata.profiles/issues/56-->
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:ControlConstructScheme/d:Sequence/d:ControlConstructReference/r:TypeOfObject"
-			isRequired="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:ControlConstructScheme/d:Sequence/d:ControlConstructReference/r:TypeOfObject"
+	         isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -630,9 +594,8 @@ ________________________________________________________________________________
 			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
 		</r:Description>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:ControlConstructScheme/d:QuestionConstruct/d:QuestionReference/r:TypeOfObject"
-			isRequired="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:ControlConstructScheme/d:QuestionConstruct/d:QuestionReference/r:TypeOfObject"
+	         isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -667,9 +630,8 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/r:UserID/@typeOfUserID"
-			 isRequired="false"
-			 defaultValue="QuestionID" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/r:UserID/@typeOfUserID" isRequired="false"
+	         defaultValue="QuestionID" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..d:QuestionItem/r:UserID' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -683,8 +645,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:QuestionItemName/@context"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:QuestionItemName/@context" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..d:QuestionItem/d:QuestionItemName' element is present</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -704,8 +665,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:QuestionItemName/r:String"
-			 isRequired="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:QuestionItemName/r:String" isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -720,9 +680,7 @@ ________________________________________________________________________________
 
 
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:QuestionItemName/r:String/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:QuestionItemName/r:String/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..d:QuestionItemName/r:String/' element is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -738,9 +696,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:QuestionItemName/r:String/@isTranslated"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:QuestionItemName/r:String/@isTranslated" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -754,9 +710,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:QuestionText/d:LiteralText/d:Text"
-			isRequired="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:QuestionText/d:LiteralText/d:Text" isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -766,9 +720,7 @@ ________________________________________________________________________________
 			<r:Content>EQB_UI_Label: Question text.</r:Content>
 		</r:Description>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:QuestionText/d:LiteralText/d:Text/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:QuestionText/d:LiteralText/d:Text/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..d:QuestionText/d:LiteralText/d:Text' is present</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -784,9 +736,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:QuestionText/d:LiteralText/d:Text/@isTranslated"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:QuestionText/d:LiteralText/d:Text/@isTranslated" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -805,10 +755,8 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!-->>QUESTION ITEM RESPONSEDOMAIN/CONCEPT REFERENCES-->
 	<!--****************************************************************************************-->
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:DateTimeDomainReference/r:TypeOfObject"
-			isRequired="false"
-			defaultValue="ManagedDateTimeRepresentation" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:DateTimeDomainReference/r:TypeOfObject" isRequired="false"
+	         defaultValue="ManagedDateTimeRepresentation" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Optional - mutually exclusive with other QuestionItem ResponseDomainReferences
 			</r:Content>
@@ -822,16 +770,13 @@ ________________________________________________________________________________
 		</r:Description>
 		<pr:Instructions>
 			<r:Content>
-				<![CDATA[<Constraints>
-                <![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>
-                <groupID=1 MutuallyExclusiveGroupConstraint/></Constraints>]]>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
 			</r:Content>
+			<!--ALSO HAS GROUPID=1 MutuallyExclusiveGroupConstraint-->
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:MissingValuesDomainReference/r:TypeOfObject"
-			isRequired="false"
-			defaultValue="ManagedMissingValuesRepresentation" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:MissingValuesDomainReference/r:TypeOfObject" isRequired="false"
+	         defaultValue="ManagedMissingValuesRepresentation" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Optional - mutually exclusive with other QuestionItem ResponseDomainReferences
 			</r:Content>
@@ -845,16 +790,13 @@ ________________________________________________________________________________
 		</r:Description>
 		<pr:Instructions>
 			<r:Content>
-				<![CDATA[<Constraints>
-                <![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>
-                <groupID=1 MutuallyExclusiveGroupConstraint/></Constraints>]]>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
 			</r:Content>
+			<!--ALSO HAS GROUPID=1 MutuallyExclusiveGroupConstraint-->
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:NumericDomainReference/r:TypeOfObject"
-			isRequired="false"
-			defaultValue="ManagedNumericRepresentation" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:NumericDomainReference/r:TypeOfObject" isRequired="false"
+	         defaultValue="ManagedNumericRepresentation" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Optional - mutually exclusive with other QuestionItem ResponseDomainReferences
 			</r:Content>
@@ -868,16 +810,13 @@ ________________________________________________________________________________
 		</r:Description>
 		<pr:Instructions>
 			<r:Content>
-				<![CDATA[<Constraints>
-                <![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>
-                <groupID=1 MutuallyExclusiveGroupConstraint/></Constraints>]]>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
 			</r:Content>
+			<!--ALSO HAS GROUPID=1 MutuallyExclusiveGroupConstraint-->
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:ScaleDomainReference/r:TypeOfObject"
-			isRequired="false"
-			defaultValue="ManagedScaleRepresentation" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:ScaleDomainReference/r:TypeOfObject" isRequired="false"
+	         defaultValue="ManagedScaleRepresentation" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Optional - mutually exclusive with other QuestionItem ResponseDomainReferences
 			</r:Content>
@@ -891,16 +830,13 @@ ________________________________________________________________________________
 		</r:Description>
 		<pr:Instructions>
 			<r:Content>
-				<![CDATA[<Constraints>
-                <![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>
-                <groupID=1 MutuallyExclusiveGroupConstraint/></Constraints>]]>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
 			</r:Content>
+			<!--ALSO HAS GROUPID=1 MutuallyExclusiveGroupConstraint-->
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:TextDomainReference/r:TypeOfObject"
-			isRequired="false"
-			defaultValue="ManagedTextRepresentation" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:TextDomainReference/r:TypeOfObject" isRequired="false"
+	         defaultValue="ManagedTextRepresentation" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Optional - mutually exclusive with other QuestionItem ResponseDomainReferences
 			</r:Content>
@@ -914,16 +850,13 @@ ________________________________________________________________________________
 		</r:Description>
 		<pr:Instructions>
 			<r:Content>
-				<![CDATA[<Constraints>
-                <![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>
-                <groupID=1 MutuallyExclusiveGroupConstraint/></Constraints>]]>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
 			</r:Content>
+			<!--ALSO HAS GROUPID=1 MutuallyExclusiveGroupConstraint-->
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/r:ConceptReference/r:TypeOfObject"
-			isRequired="false"
-			defaultValue="Concept" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/r:ConceptReference/r:TypeOfObject" isRequired="false"
+	         defaultValue="Concept" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -944,9 +877,7 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--QUESTION ITEM SHOWCARD(S)-->
 	<!--****************************************************************************************-->
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:ExternalAid/r:Description/r:Content"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:ExternalAid/r:Description/r:Content" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -961,9 +892,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:ExternalAid/r:Description/r:Content/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:ExternalAid/r:Description/r:Content/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..d:ExternalAid/r:Description/r:Content' element is present</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -979,9 +908,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:ExternalAid/r:Description/r:Content/@isTranslated"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:ExternalAid/r:Description/r:Content/@isTranslated" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -995,9 +922,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:ExternalAid/r:ExternalURLReference"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:ExternalAid/r:ExternalURLReference" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1012,10 +937,8 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:InterviewerInstructionReference/r:TypeOfObject"
-			isRequired="false"
-			defaultValue="Instruction" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionItem/d:InterviewerInstructionReference/r:TypeOfObject" isRequired="false"
+	         defaultValue="Instruction" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1048,9 +971,8 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/r:UserID/@typeOfUserID"
-			 isRequired="false"
-			 defaultValue="QuestionID" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/r:UserID/@typeOfUserID" isRequired="false"
+	         defaultValue="QuestionID" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Required: Mandatory if '..d:QuestionGrid/r:UserID' element is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1066,8 +988,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:QuestionGridName/@context"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:QuestionGridName/@context" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..d:QuestionGrid/d:QuestionGridName' element is present</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1087,8 +1008,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:QuestionGridName/r:String"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:QuestionGridName/r:String" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1106,9 +1026,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:QuestionGridName/r:String/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:QuestionGridName/r:String/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..d:QuestionGridName/r:String/' element is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1124,9 +1042,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:QuestionGridName/r:String/@isTranslated"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:QuestionGridName/r:String/@isTranslated" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1140,9 +1056,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:QuestionText/d:LiteralText/d:Text"
-			isRequired="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:QuestionText/d:LiteralText/d:Text" isRequired="true">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1157,9 +1071,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:QuestionText/d:LiteralText/d:Text/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:QuestionText/d:LiteralText/d:Text/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..d:/QuestionGrid/d:QuestionText/d:LiteralText/d:Text' is present
 			</r:Content>
@@ -1176,9 +1088,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:QuestionText/d:LiteralText/d:Text/@isTranslated"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:QuestionText/d:LiteralText/d:Text/@isTranslated" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1197,9 +1107,8 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--QUESTION GRID DIMENSION-->
 	<!--****************************************************************************************-->
-	<pr:Used
-			xpath="ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:GridDimension/d:CodeDomain/r:CodeListReference/r:TypeOfObject"
-			isRequired="false" defaultValue="CodeList" fixedValue="true">
+	<pr:Used xpath="ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:GridDimension/d:CodeDomain/r:CodeListReference/r:TypeOfObject"
+	         isRequired="false" defaultValue="CodeList" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1214,9 +1123,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:GridDimension/d:CodeDomain/r:Description/r:Content"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:GridDimension/d:CodeDomain/r:Description/r:Content" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1231,9 +1138,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:GridDimension/d:CodeDomain/r:Description/r:Content/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:GridDimension/d:CodeDomain/r:Description/r:Content/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..d:CodeDomain/r:Description/r:Content' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1249,9 +1154,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:GridDimension/d:CodeDomain/r:Description/r:Content/@isTranslated"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:GridDimension/d:CodeDomain/r:Description/r:Content/@isTranslated" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended if '..d:CodeDomain/r:Description/r:Content' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1268,10 +1171,8 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!-->>QUESTION GRID RESPONSEDOMAIN/CONCEPT REFERENCES-->
 	<!--****************************************************************************************-->
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:DateTimeDomainReference/r:TypeOfObject"
-			isRequired="false"
-			defaultValue="ManagedDateTimeRepresentation" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:DateTimeDomainReference/r:TypeOfObject" isRequired="false"
+	         defaultValue="ManagedDateTimeRepresentation" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Optional - mutually exclusive with other QuestionGrid ResponseDomainReferences
 			</r:Content>
@@ -1285,16 +1186,13 @@ ________________________________________________________________________________
 		</r:Description>
 		<pr:Instructions>
 			<r:Content>
-				<![CDATA[<Constraints>
-                <![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>
-                <groupID=2 MutuallyExclusiveGroupConstraint/></Constraints>]]>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
 			</r:Content>
+			<!--ALSO HAS GROUPID=2 MutuallyExclusiveGroupConstraint-->
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:MissingValuesDomainReference/r:TypeOfObject"
-			isRequired="false"
-			defaultValue="ManagedMissingValuesRepresentation" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:MissingValuesDomainReference/r:TypeOfObject" isRequired="false"
+	         defaultValue="ManagedMissingValuesRepresentation" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Optional - mutually exclusive with other QuestionGrid ResponseDomainReferences
 			</r:Content>
@@ -1308,16 +1206,13 @@ ________________________________________________________________________________
 		</r:Description>
 		<pr:Instructions>
 			<r:Content>
-				<![CDATA[<Constraints>
-                <![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>
-                <groupID=2 MutuallyExclusiveGroupConstraint/></Constraints>]]>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
 			</r:Content>
+			<!--ALSO HAS GROUPID=2 MutuallyExclusiveGroupConstraint-->
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:NumericDomainReference/r:TypeOfObject"
-			isRequired="false"
-			defaultValue="ManagedNumericRepresentation" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:NumericDomainReference/r:TypeOfObject" isRequired="false"
+	         defaultValue="ManagedNumericRepresentation" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Optional - mutually exclusive with other QuestionGrid ResponseDomainReferences
 			</r:Content>
@@ -1331,16 +1226,13 @@ ________________________________________________________________________________
 		</r:Description>
 		<pr:Instructions>
 			<r:Content>
-				<![CDATA[<Constraints>
-                <![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>
-                <groupID=2 MutuallyExclusiveGroupConstraint/></Constraints>]]>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
 			</r:Content>
+			<!--ALSO HAS GROUPID=2 MutuallyExclusiveGroupConstraint-->
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:ScaleDomainReference/r:TypeOfObject"
-			isRequired="false"
-			defaultValue="ManagedScaleRepresentation" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:ScaleDomainReference/r:TypeOfObject" isRequired="false"
+	         defaultValue="ManagedScaleRepresentation" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Optional - mutually exclusive with other QuestionGrid ResponseDomainReferences
 			</r:Content>
@@ -1354,16 +1246,13 @@ ________________________________________________________________________________
 		</r:Description>
 		<pr:Instructions>
 			<r:Content>
-				<![CDATA[<Constraints>
-                <![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>
-                <groupID=2 MutuallyExclusiveGroupConstraint/></Constraints>]]>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
 			</r:Content>
+			<!--ALSO HAS GROUPID=2 MutuallyExclusiveGroupConstraint-->
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:TextDomainReference/r:TypeOfObject"
-			isRequired="false"
-			defaultValue="ManagedTextRepresentation" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:TextDomainReference/r:TypeOfObject" isRequired="false"
+	         defaultValue="ManagedTextRepresentation" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Optional - mutually exclusive with other QuestionGrid ResponseDomainReferences
 			</r:Content>
@@ -1377,15 +1266,12 @@ ________________________________________________________________________________
 		</r:Description>
 		<pr:Instructions>
 			<r:Content>
-				<![CDATA[<Constraints>
-                <![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>
-                <groupID=2 MutuallyExclusiveGroupConstraint/></Constraints>]]>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
 			</r:Content>
+			<!--ALSO HAS GROUPID=2 MutuallyExclusiveGroupConstraint-->
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:StructuredMixedGridResponseDomain/d:GridResponseDomain/d:CodeDomain/r:OutParameter"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:StructuredMixedGridResponseDomain/d:GridResponseDomain/d:CodeDomain/r:OutParameter" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional - mutually exclusive with other QuestionGrid ResponseDomainReferences
 			</r:Content>
@@ -1400,15 +1286,12 @@ ________________________________________________________________________________
 		</r:Description>
 		<pr:Instructions>
 			<r:Content>
-				<![CDATA[<Constraints>
-                <![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>
-                <groupID=2 MutuallyExclusiveGroupConstraint/></Constraints>]]>
+				<![CDATA[<Constraints><OptionalNodeConstraint/></Constraints>]]>
 			</r:Content>
+			<!--ALSO HAS GROUPID=2 MutuallyExclusiveGroupConstraint-->
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:StructuredMixedGridResponseDomain/d:GridResponseDomain/d:GridAttachment/d:CellCoordinatesAsDefined/d:SelectDimension/@rank"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:StructuredMixedGridResponseDomain/d:GridResponseDomain/d:GridAttachment/d:CellCoordinatesAsDefined/d:SelectDimension/@rank" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1422,10 +1305,8 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/r:ConceptReference/r:TypeOfObject"
-			isRequired="false"
-			defaultValue="Concept" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/r:ConceptReference/r:TypeOfObject" isRequired="false"
+	         defaultValue="Concept" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1446,9 +1327,7 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--QUESTION GRID SHOWCARD(S)-->
 	<!--****************************************************************************************-->
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:ExternalAid/r:Description/r:Content"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:ExternalAid/r:Description/r:Content" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1463,9 +1342,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:ExternalAid/r:Description/r:Content/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:ExternalAid/r:Description/r:Content/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..d:ExternalAid/r:Description/r:Content' element is present</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1481,9 +1358,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:ExternalAid/r:Description/r:Content/@isTranslated"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:ExternalAid/r:Description/r:Content/@isTranslated" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1497,9 +1372,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:ExternalAid/r:ExternalURLReference"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:ExternalAid/r:ExternalURLReference" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1514,10 +1387,8 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:InterviewerInstructionReference/r:TypeOfObject"
-			isRequired="false"
-			defaultValue="Instruction" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:QuestionScheme/d:QuestionGrid/d:InterviewerInstructionReference/r:TypeOfObject" isRequired="false"
+	         defaultValue="Instruction" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1535,8 +1406,7 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--CATEGORY SCHEME-->
 	<!--****************************************************************************************-->
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CategoryScheme/l:Category/l:CategoryName/r:String"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CategoryScheme/l:Category/l:CategoryName/r:String" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1553,8 +1423,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CategoryScheme/l:Category/l:CategoryName/r:String/@xml:lang"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CategoryScheme/l:Category/l:CategoryName/r:String/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..l:CategoryName/r:String element is present'.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1570,9 +1439,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/l:CategoryScheme/l:Category/l:CategoryName/r:String/@isTranslated"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CategoryScheme/l:Category/l:CategoryName/r:String/@isTranslated" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1603,8 +1470,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CategoryScheme/l:Category/l:Label/r:Content"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CategoryScheme/l:Category/l:Label/r:Content" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1619,8 +1485,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CategoryScheme/l:Category/l:Label/r:Content/@xml:lang"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CategoryScheme/l:Category/l:Label/r:Content/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..l:Category/l:Label/r:Content element is present'.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1636,8 +1501,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CategoryScheme/l:Category/l:Label/r:Content/@isTranslated"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CategoryScheme/l:Category/l:Label/r:Content/@isTranslated" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1669,9 +1533,8 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CodeListScheme/l:CodeList/r:UserID/@typeOfUserID"
-			 isRequired="false"
-			 defaultValue="UserID" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CodeListScheme/l:CodeList/r:UserID/@typeOfUserID" isRequired="false"
+	         defaultValue="UserID" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Mandatory if '../l:CodeList/r:UserID/' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1686,8 +1549,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CodeListScheme/l:CodeList/l:CodeListName/r:String"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CodeListScheme/l:CodeList/l:CodeListName/r:String" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1702,8 +1564,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CodeListScheme/l:CodeList/l:CodeListName/r:String/@xml:lang"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CodeListScheme/l:CodeList/l:CodeListName/r:String/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..l:CodeListName/r:String' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1734,8 +1595,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CodeListScheme/l:CodeList/r:Label/r:String/@xml:lang"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CodeListScheme/l:CodeList/r:Label/r:String/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..l:CodeList/r:Label/r:String' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1751,8 +1611,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CodeListScheme/l:CodeList/r:Description/r:String"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CodeListScheme/l:CodeList/r:Description/r:String" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1767,8 +1626,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CodeListScheme/l:CodeList/r:Description/r:String/@xml:lang"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CodeListScheme/l:CodeList/r:Description/r:String/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..l:CodeList/r:Description/r:String' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1784,9 +1642,8 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/l:CodeListScheme/l:CodeList/l:Code/r:CategoryReference/r:TypeOfObject"
-			isRequired="false" defaultValue="Category" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:CodeListScheme/l:CodeList/l:Code/r:CategoryReference/r:TypeOfObject"
+	         isRequired="false" defaultValue="Category" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1821,9 +1678,8 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--VARIABLE SCHEME-->
 	<!--****************************************************************************************-->
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:VariableScheme/l:Variable/r:UserID/@typeOfUserID"
-			 isRequired="false"
-			 defaultValue="variableType" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:VariableScheme/l:Variable/r:UserID/@typeOfUserID" isRequired="false"
+	         defaultValue="variableType" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..l:Variable/r:UserID' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1842,8 +1698,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/l:VariableName/r:String"
-			 isRequired="true">
+	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/l:VariableName/r:String" isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1853,8 +1708,7 @@ ________________________________________________________________________________
 			<r:Content>EQB_UI_Label: Variables.</r:Content>
 		</r:Description>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/l:VariableName/r:String/@xml:lang"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/l:VariableName/r:String/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..l:VariableName/r:String' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1870,9 +1724,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/l:VariableName/r:String/@isTranslated"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/l:VariableName/r:String/@isTranslated" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1887,8 +1739,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/r:Label/r:Content"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/r:Label/r:Content" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1903,8 +1754,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/r:Label/r:Content/@xml:lang"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/r:Label/r:Content/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..l:Variable/r:Label/r:Content' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1920,8 +1770,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/r:Label/r:Content/@isTranslated"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/r:Label/r:Content/@isTranslated" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1936,8 +1785,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/r:Description/r:Content"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/r:Description/r:Content" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1952,8 +1800,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/r:Description/r:Content/@xml:lang"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/r:Description/r:Content/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..l:Variable/r:Description/r:Content' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1969,9 +1816,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/r:Description/r:Content/@isTranslated"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/r:ResourcePackage/l:VariableScheme/l:Variable/r:Description/r:Content/@isTranslated" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -1987,7 +1832,7 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:VariableScheme/l:Variable/r:QuestionReference/r:TypeOfObject"
-			 isRequired="true" defaultValue="QuestionItem">
+	         isRequired="true" defaultValue="QuestionItem">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -1999,9 +1844,8 @@ ________________________________________________________________________________
 			<r:Content>EQB_UI_Label: not displayed (internal info)</r:Content>
 		</r:Description>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/l:VariableScheme/l:Variable/l:VariableRepresentation/r:CodeRepresentation/r:CodeListReference/r:TypeOfObject"
-			isRequired="true" defaultValue="CodeList">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/l:VariableScheme/l:Variable/l:VariableRepresentation/r:CodeRepresentation/r:CodeListReference/r:TypeOfObject"
+	         isRequired="true" defaultValue="CodeList">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2016,8 +1860,7 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--INSTRUMENT SCHEME-->
 	<!--****************************************************************************************-->
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:InstrumentScheme/d:Instrument/d:InstrumentName/r:String"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:InstrumentScheme/d:Instrument/d:InstrumentName/r:String" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2032,9 +1875,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:InstrumentScheme/d:Instrument/d:InstrumentName/r:String/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:InstrumentScheme/d:Instrument/d:InstrumentName/r:String/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '../d:InstrumentName/r:String' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -2050,9 +1891,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:InstrumentScheme/d:Instrument/d:InstrumentName/r:String/isTranslated"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:InstrumentScheme/d:Instrument/d:InstrumentName/r:String/isTranslated" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -2067,9 +1906,8 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<!--https://bitbucket.org/cessda/cessda.metadata.profiles/issues/56-->
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:InstrumentScheme/d:Instrument/d:ControlConstructReference/@objectLanguage"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:InstrumentScheme/d:Instrument/d:ControlConstructReference/@objectLanguage"
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..d:InstrumentScheme/d:Instrument/d:ControlConstructReference' element is
 				present.
@@ -2087,9 +1925,8 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/d:InstrumentScheme/d:Instrument/d:ControlConstructReference/r:TypeOfObject"
-			isRequired="false" defaultValue="Sequence" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/d:InstrumentScheme/d:Instrument/d:ControlConstructReference/r:TypeOfObject"
+	         isRequired="false" defaultValue="Sequence" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..d:InstrumentScheme/d:Instrument/d:ControlConstructReference' element is
 				present.
@@ -2116,8 +1953,7 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--MANAGED REPRESENTATION SCHEME-->
 	<!--****************************************************************************************-->
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedDateTimeRepresentation"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedDateTimeRepresentation" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Container element</r:Content>
@@ -2132,9 +1968,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedMissingValuesRepresentation"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedMissingValuesRepresentation" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Container element</r:Content>
@@ -2150,8 +1984,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedScaleRepresentation"
-			 isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedScaleRepresentation" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Container element</r:Content>
@@ -2166,9 +1999,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedNumericRepresentation/r:ManagedNumericRepresentationName/r:String"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedNumericRepresentation/r:ManagedNumericRepresentationName/r:String" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2183,9 +2014,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedNumericRepresentation/r:ManagedNumericRepresentationName/r:String/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedNumericRepresentation/r:ManagedNumericRepresentationName/r:String/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..r:ManagedNumericRepresentationName/r:String' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -2201,9 +2030,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedNumericRepresentation/r:Label/r:Content"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedNumericRepresentation/r:Label/r:Content" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2218,9 +2045,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedNumericRepresentation/r:Label/r:Content/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedNumericRepresentation/r:Label/r:Content/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..r:ManagedNumericRepresentation/r:Label/r:Content' is present.
 			</r:Content>
@@ -2237,9 +2062,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedNumericRepresentation/r:Description/r:Content"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedNumericRepresentation/r:Description/r:Content" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2254,9 +2077,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedNumericRepresentation/r:Description/r:Content/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedNumericRepresentation/r:Description/r:Content/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..r:ManagedNumericRepresentation/r:Description/r:Content' is present.
 			</r:Content>
@@ -2273,9 +2094,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedNumericRepresentation/r:NumberRange/r:Low"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedNumericRepresentation/r:NumberRange/r:Low" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2290,9 +2109,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedNumericRepresentation/r:NumberRange/r:High"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedNumericRepresentation/r:NumberRange/r:High" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2307,9 +2124,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedTextRepresentation/@minLength"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedTextRepresentation/@minLength" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -2323,9 +2138,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedTextRepresentation/r:ManagedTextRepresentationName/r:String"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedTextRepresentation/r:ManagedTextRepresentationName/r:String" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2340,9 +2153,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedTextRepresentation/r:ManagedTextRepresentationName/r:String/@xml@lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedTextRepresentation/r:ManagedTextRepresentationName/r:String/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..r:ManagedTextRepresentationName/r:String' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -2358,9 +2169,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedTextRepresentation/r:Label/r:Content"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedTextRepresentation/r:Label/r:Content" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2375,9 +2184,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedTextRepresentation/r:Label/r:Content/@xml@lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedTextRepresentation/r:Label/r:Content/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..r:ManagedTextRepresentation/r:Label/r:Content' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -2393,9 +2200,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedTextRepresentation/r:Description/r:Content"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedTextRepresentation/r:Description/r:Content" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2410,9 +2215,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedTextRepresentation/r:Description/r:Content/@xml@lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/g:ResourcePackage/r:ManagedRepresentationScheme/r:ManagedTextRepresentation/r:Description/r:Content/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..r:ManagedTextRepresentation/r:Label/r:Content' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -2463,7 +2266,7 @@ ________________________________________________________________________________
 		</r:Description>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:UserID/@typeOfUserID" defaultValue="StudyNumber"
-			 fixedValue="true" isRequired="true">
+	         fixedValue="true" isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -2475,7 +2278,7 @@ ________________________________________________________________________________
 		</r:Description>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:UserID/@typeOfUserID"
-			 defaultValue="URLServiceProvider" fixedValue="true" isRequired="true">
+	         defaultValue="URLServiceProvider" fixedValue="true" isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -2487,7 +2290,7 @@ ________________________________________________________________________________
 		</r:Description>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:UserID/@typeOfUserID"
-			 defaultValue="Versionnumber" fixedValue="true" isRequired="false">
+	         defaultValue="Versionnumber" fixedValue="true" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -2505,7 +2308,7 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:UserID/@typeOfUserID"
-			 defaultValue="Versiondate" fixedValue="true" isRequired="false">
+	         defaultValue="Versiondate" fixedValue="true" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -2536,7 +2339,7 @@ ________________________________________________________________________________
 		</r:Description>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Title/r:String/@xml:lang"
-			 isRequired="true">
+	         isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -2548,7 +2351,7 @@ ________________________________________________________________________________
 		</r:Description>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Title/r:String/@isTranslated"
-			 isRequired="false">
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -2565,9 +2368,8 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--PRINCIPAL INVESTIGATOR(S) AND PUBLISHER(S) -->
 	<!--****************************************************************************************-->
-	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Creator/r:CreatorReference/r:TypeOfObject"
-			 isRequired="false"
-			 defaultValue="Individual" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Creator/r:CreatorReference/r:TypeOfObject" isRequired="false"
+	         defaultValue="Individual" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2585,9 +2387,8 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Creator/r:CreatorReference/r:TypeOfObject"
-			 isRequired="false"
-			 defaultValue="Organization" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Creator/r:CreatorReference/r:TypeOfObject" isRequired="false"
+	         defaultValue="Organization" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2606,7 +2407,7 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:Publisher/r:PublisherName/r:String"
-			 isRequired="true">
+	         isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2653,7 +2454,7 @@ ________________________________________________________________________________
 	<!--YEAR OF PUBLICATION-->
 	<!--****************************************************************************************-->
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Citation/r:PublicationDate/r:SimpleDate"
-			 isRequired="true">
+	         isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2743,7 +2544,7 @@ ________________________________________________________________________________
 	<!--TOPICS-->
 	<!--****************************************************************************************-->
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Subject"
-			 isRequired="false">
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2764,7 +2565,7 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Subject/@xml:lang"
-			 isRequired="false">
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if "/r:TopicalCoverage/r:Subject" element is
 				present
@@ -2874,7 +2675,7 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:SpatialCoverage/r:Country_2"
-			 isRequired="false">
+	         isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2911,7 +2712,7 @@ ________________________________________________________________________________
 		</pr:Instructions>
 	</pr:Used>
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:OtherMaterial/r:UserID/r:TypeOfObject" isRequired="false"
-			 defaultValue="DocumentID" fixedValue="true">
+	         defaultValue="DocumentID" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Optional</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -2956,8 +2757,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:OtherMaterial/r:Citation/r:Title/r:String/@xml:lang"
-			 isRequired="false ">
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:OtherMaterial/r:Citation/r:Title/r:String/@xml:lang" isRequired="false ">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..r:OtherMaterial/r:Citation/r:Title/r:String' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -3357,9 +3157,8 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--REFERENCE TO INSTRUMENT FROM STUDY-->
 	<!--****************************************************************************************-->
-	<pr:Used
-			xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:InstrumentScheme/d:InstrumentReference/r:TypeOfObject"
-			isRequired="false" defaultValue="Instrument" fixedValue="true">
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:InstrumentScheme/d:InstrumentReference/r:TypeOfObject"
+	         isRequired="false" defaultValue="Instrument" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -3380,7 +3179,7 @@ ________________________________________________________________________________
 	<!--REFERENCE TO DATASET(S) FROM STUDY-->
 	<!--****************************************************************************************-->
 	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:PhysicalInstanceReference/r:TypeOfObject"
-			 isRequired="true" defaultValue="PhysicalInstance" fixedValue="true">
+	         isRequired="true" defaultValue="PhysicalInstance" fixedValue="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -3395,8 +3194,7 @@ ________________________________________________________________________________
 	<!--****************************************************************************************-->
 	<!--ACCESS INFORMATION - STUDY LEVEL-->
 	<!--****************************************************************************************-->
-	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/r:Description/r:Content"
-			 isRequired="true">
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/r:Description/r:Content" isRequired="true">
 		<r:Description>
 			<r:Content>Required: Mandatory</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -3406,9 +3204,7 @@ ________________________________________________________________________________
 			<r:Content>EQB_UI_Label: to be displayed in EQB v2.0</r:Content>
 		</r:Description>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/r:Description/r:Content/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/r:Description/r:Content/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..a:Item/a:Access/r:Description/r:Content' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -3425,9 +3221,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/a:AccessConditions/r:Content"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/a:AccessConditions/r:Content" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -3448,9 +3242,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/a:AccessConditions/r:Content/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/a:AccessConditions/r:Content/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..a:Item/a:Access/a:AccessConditions/r:Content' is present.</r:Content>
 			<r:Content>ElementType: Attribute</r:Content>
@@ -3467,9 +3259,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Collection/a:DefaultAccess/a:AccessConditions/r:Content"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Collection/a:DefaultAccess/a:AccessConditions/r:Content" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -3488,9 +3278,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Collection/a:Item/a:Access/a:AccessConditions/r:Content"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Collection/a:Item/a:Access/a:AccessConditions/r:Content" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Recommended</r:Content>
 			<r:Content>ElementType: Content element</r:Content>
@@ -3514,9 +3302,7 @@ ________________________________________________________________________________
 			</r:Content>
 		</pr:Instructions>
 	</pr:Used>
-	<pr:Used
-			xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Collection/a:Item/a:Access/a:AccessConditions/r:Content/@xml:lang"
-			isRequired="false">
+	<pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Collection/a:Item/a:Access/a:AccessConditions/r:Content/@xml:lang" isRequired="false">
 		<r:Description>
 			<r:Content>Required: Mandatory if '..a:Collection/a:Item/a:Access/a:AccessConditions/r:Content' is
 				present.
