@@ -12,13 +12,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *- Fixed (for any bug fixes)*  
 *- Security (in case of vulnerabilities)*
 
+## [0.4.2] - 2021-09-13
+
+## Added
+
+- Metadata profiles are now hosted on the CMV server ([#59](https://bitbucket.org/cessda/cessda.cmv.server/issues/59))
+- A stylesheet for the metadata profiles was added, allowing browsers to render a friendly
+  version ([#59](https://bitbucket.org/cessda/cessda.cmv.server/issues/59))
+
+## Changed
+
+- The description of the predefined profiles are read from the profiles
+  themselves ([#61](https://bitbucket.org/cessda/cessda.cmv.server/issues/61))
+
 ## [0.4.1] - 2021-04-15
 
 ### Added
+
 - Embed JIRA issue collector code (#48)
 - Embed Matomo tracking code (#47)
 
 ## [0.4.0] - 2021-04-12
+
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4681201.svg)](https://doi.org/10.5281/zenodo.4681201)
 
 ### Added

@@ -4,7 +4,7 @@
 
 	<groupId>eu.cessda.cmv</groupId>
 	<artifactId>cmv-server</artifactId>
-	<version>0.4.2-SNAPSHOT</version>
+	<version>0.4.2</version>
 	<name>CESSDA Metadata Validator</name>
 	<url>https://cmv.cessda.eu/</url>
 	<parent>
@@ -290,9 +290,9 @@
 				<artifactId>dependency-check-maven</artifactId>
 				<version>6.3.1</version>
 				<configuration>
-					<!-- Specifies if the build should be failed if a CVSS score above a 
-					     specified level is identified. The default is 11 which means since 
-					     the CVSS scores are 0-10, by default the build will never fail. 
+					<!-- Specifies if the build should be failed if a CVSS score above a
+					     specified level is identified. The default is 11 which means since
+					     the CVSS scores are 0-10, by default the build will never fail.
 					     Score 10 means the highest risk-->
 					<failBuildOnCVSS>10</failBuildOnCVSS>
 				</configuration>
