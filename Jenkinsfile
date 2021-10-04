@@ -19,7 +19,7 @@ pipeline {
         stage('Pull SDK Docker Image') {
             agent {
                 docker {
-                    image 'maven:3-jdk-11'
+                    image 'openjdk:17'
                     reuseNode true
                 }
             }
@@ -27,7 +27,7 @@ pipeline {
                 stage('Build Project') {
                     steps {
                         withMaven {
-                            sh "$MVN_CMD clean install -Pdocker-compose"
+                            sh './mvnw clean install -Pdocker-compose'
                         }
                     }
                     when { branch 'master' }
@@ -36,7 +36,7 @@ pipeline {
                 stage('Test Project') {
                     steps {
                         withMaven {
-                            sh "$MVN_CMD clean test -Pdocker-compose"
+                            sh './mvnw clean test -Pdocker-compose'
                         }
                     }
                     when { not { branch 'master' } }
@@ -50,7 +50,7 @@ pipeline {
                     steps {
                         withSonarQubeEnv('cessda-sonar') {
                             withMaven {
-                                sh "$MVN_CMD sonar:sonar -Pdocker-compose"
+                                sh './mvnw sonar:sonar -Pdocker-compose'
                             }
                         }
                         timeout(time: 1, unit: 'HOURS') {
@@ -64,9 +64,7 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 sh 'gcloud auth configure-docker'
-                withMaven(maven: 'maven-3-6') {
-                    sh "mvn docker:build docker:push -Pdocker-compose -D\"docker.registry.host\"=${docker_repo} -D\"docker.image.name\"=${productName}-${componentName} -D\"docker.image.tag\"=${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
-                }
+	            sh "./mvnw docker:build docker:push -Pdocker-compose -D\"docker.registry.host\"=${docker_repo} -D\"docker.image.name\"=${productName}-${componentName} -D\"docker.image.tag\"=${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
                 sh "gcloud container images add-tag ${IMAGE_TAG} ${docker_repo}/${productName}-${componentName}:${env.BRANCH_NAME}-latest"
             }
             when { branch 'master' }
