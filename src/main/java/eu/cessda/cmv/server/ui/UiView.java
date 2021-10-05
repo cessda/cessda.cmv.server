@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.viritin.layouts.MCssLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 
+import java.io.Serial;
 import java.util.Locale;
 
 @Title( "CESSDA Metadata Validator" )
@@ -44,6 +45,7 @@ import java.util.Locale;
 @SuppressWarnings( "java:S2160" )
 public class UiView extends UI
 {
+	@Serial
 	private static final long serialVersionUID = 5352286420346188519L;
 
 	public static final String CONTAINER = "container";

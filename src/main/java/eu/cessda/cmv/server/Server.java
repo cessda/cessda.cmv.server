@@ -41,7 +41,6 @@ import org.zalando.problem.ProblemModule;
 import javax.annotation.PostConstruct;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.gesis.commons.resource.Resource.newResource;
 
@@ -116,7 +115,7 @@ public class Server extends SpringBootServletInitializer
 				} )
 				.map( Resource.V10.class::cast )
 				.sorted( Comparator.comparing( Resource.V10::getLabel ) )
-				.collect( Collectors.toList() );
+				.toList();
 	}
 
 	@Bean
@@ -132,6 +131,6 @@ public class Server extends SpringBootServletInitializer
 				.map( uri -> newResource( uri, labelProvider ) )
 				.map( Resource.V10.class::cast )
 				.sorted( Comparator.comparing( Resource.V10::getLabel ) )
-				.collect( Collectors.toList() );
+				.toList();
 	}
 }

@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,39 +19,32 @@
  */
 package eu.cessda.cmv.server.ui;
 
-import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
-import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
-import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.MULTI;
-import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.SINGLE;
-import static java.util.Arrays.asList;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.gesis.commons.resource.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Grid;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
-
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.core.ValidationService;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
 import eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions;
+import org.gesis.commons.resource.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.Serial;
+import java.util.ArrayList;
+import java.util.List;
+
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.MULTI;
+import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.SINGLE;
+import static java.util.Arrays.asList;
 
 @UIScope
 @SpringView( name = ValidationView.VIEW_NAME )
@@ -59,6 +52,7 @@ public class ValidationView extends VerticalLayout implements View
 {
 	public static final String VIEW_NAME = "validation";
 
+	@Serial
 	private static final long serialVersionUID = -5924926837826583950L;
 	private static final Logger LOGGER = LoggerFactory.getLogger( ValidationView.class );
 

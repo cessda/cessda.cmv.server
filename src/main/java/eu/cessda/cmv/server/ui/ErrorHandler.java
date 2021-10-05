@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,14 +22,15 @@ package eu.cessda.cmv.server.ui;
 import com.vaadin.server.DefaultErrorHandler;
 import com.vaadin.ui.UI;
 
-class ErrorHandler extends DefaultErrorHandler
-{
+import java.io.Serial;
+
+class ErrorHandler extends DefaultErrorHandler {
+	@Serial
 	private static final long serialVersionUID = -3222914297712190571L;
 
 	@Override
-	public void error( com.vaadin.server.ErrorEvent event )
-	{
-		UI.getCurrent().addWindow( new ErrorWindow( event ) );
+	public void error(com.vaadin.server.ErrorEvent event) {
+		UI.getCurrent().addWindow(new ErrorWindow(event));
 		doDefault( event );
 	}
 }

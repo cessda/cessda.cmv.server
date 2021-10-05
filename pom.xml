@@ -16,7 +16,7 @@
 	<properties>
 		<docker.image.name>cessda/${project.artifactId}</docker.image.name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 		<code-generation-comment>This file is generated, all changes will be overriden</code-generation-comment>
 		<logging.file.name>target/application.log</logging.file.name>
 		<logging.level.org.springframework>INFO</logging.level.org.springframework>
