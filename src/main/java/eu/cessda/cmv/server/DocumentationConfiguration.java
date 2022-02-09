@@ -83,12 +83,13 @@ public class DocumentationConfiguration implements WebMvcConfigurer
 		registry.addRedirectViewController( "/documentation/", "/documentation" );
 
 		// CDC profile redirects
-		registry.addRedirectViewController("/profiles/cdc/{ddi}/latest/profile.xml", "/profiles/cdc/{ddi}/1.0.4/profile.xml");
-		registry.addRedirectViewController("/profiles/cdc/{ddi}/latest/profile-mono.xml", "/profiles/cdc/{ddi}/1.0.4/profile-mono.xml");
-		registry.addRedirectViewController("/profiles/cdc/ddi-3.2/latest/profile.xml", "/profiles/cdc/ddi-3.2/0.1.1/profile.xml");
+		registry.addRedirectViewController( "/profiles/cdc/{ddi}/latest/profile.xml", "/profiles/cdc/{ddi}/1.0.4/profile.xml" );
+		registry.addRedirectViewController( "/profiles/cdc/{ddi}/latest/profile-mono.xml", "/profiles/cdc/{ddi}/1.0.4/profile-mono.xml" );
+		registry.addRedirectViewController( "/profiles/cdc/ddi-3.2/latest/profile.xml", "/profiles/cdc/ddi-3.2/0.1.1/profile.xml" );
 
-		// EQB profile redirect
-		registry.addRedirectViewController( "/profiles/eqb/{ddi}/latest/profile.xml", "/profiles/eqb/{ddi}/0.1.0/profile.xml" );
+		// EQB profile redirects
+		registry.addRedirectViewController( "/profiles/eqb/ddi-2.5/latest/profile.xml", "/profiles/eqb/ddi-2.5/0.1.0/profile.xml" );
+		registry.addRedirectViewController( "/profiles/eqb/ddi-3.2/latest/profile.xml", "/profiles/eqb/ddi-3.2/0.1.1/profile.xml" );
 	}
 
 	@Override
