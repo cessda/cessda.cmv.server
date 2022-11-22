@@ -30,15 +30,21 @@ import org.gesis.commons.resource.ClasspathResourceRepository;
 import org.gesis.commons.resource.FileNameResourceLabelProvider;
 import org.gesis.commons.resource.Resource;
 import org.gesis.commons.xml.XercesXalanDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.zalando.problem.jackson.ProblemModule;
 
 import javax.annotation.PostConstruct;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -47,6 +53,8 @@ import static org.gesis.commons.resource.Resource.newResource;
 @SpringBootApplication
 public class Server extends SpringBootServletInitializer
 {
+	private static final Logger log = LoggerFactory.getLogger( Server.class );
+
 	static final String ALLOWED_CLI_OPTION = "--spring.config.additional-location=file:./application.properties";
 
 	@Autowired
@@ -119,18 +127,39 @@ public class Server extends SpringBootServletInitializer
 	}
 
 	@Bean
+	public CorsFilter corsFilter()
+	{
+		var corsConfiguration = new CorsConfiguration().applyPermitDefaultValues();
+
+		// Register CORS filters for public APIs
+		var source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration( "/api/V0/**", corsConfiguration );
+		source.registerCorsConfiguration( "/api/oas3", corsConfiguration );
+
+		return new CorsFilter( source );
+	}
+
+	@Bean
 	public List<Resource.V10> demoDocuments()
 	{
 		var labelProvider = new FileNameResourceLabelProvider();
-		return ClasspathResourceRepository.newBuilder()
-				.includeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*.xml" )
-				.excludeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*profile*.xml" )
-				.build()
-				.findAll()
-				.map( Resource::getUri )
-				.map( uri -> newResource( uri, labelProvider ) )
-				.map( Resource.V10.class::cast )
-				.sorted( Comparator.comparing( Resource.V10::getLabel ) )
-				.toList();
+		try
+		{
+			return ClasspathResourceRepository.newBuilder()
+					.includeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*.xml" )
+					.excludeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*profile*.xml" )
+					.build()
+					.findAll()
+					.map( Resource::getUri )
+					.map( uri -> newResource( uri, labelProvider ) )
+					.map( Resource.V10.class::cast )
+					.sorted( Comparator.comparing( Resource.V10::getLabel ) )
+					.toList();
+		}
+		catch ( RuntimeException e )
+		{
+			log.warn( "Couldn't discover demo documents", e );
+			return Collections.emptyList();
+		}
 	}
 }
