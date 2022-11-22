@@ -17,13 +17,14 @@
 		<docker.image.name>cessda/${project.artifactId}</docker.image.name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>17</java.version>
-		<code-generation-comment>This file is generated, all changes will be overriden</code-generation-comment>
+		<code-generation-comment>This file is generated, all changes will be overridden</code-generation-comment>
 		<logging.file.name>target/application.log</logging.file.name>
-		<logging.level.org.springframework>INFO</logging.level.org.springframework>
+		<logging.level.org.springframework>WARN</logging.level.org.springframework>
+		<logging.level.com.vaadin>WARN</logging.level.com.vaadin>
 		<server.port>8080</server.port>
 		<server.servlet.context-path>/</server.servlet.context-path>
 		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
-		<vaadin.version>8.16.0</vaadin.version>
+		<vaadin.version>8.14.3</vaadin.version>
 		<vaadin.servlet.productionMode>false</vaadin.servlet.productionMode>
 		<sonar.exclusions>src/main/java/eu/cessda/cmv/server/ui/**/*.java</sonar.exclusions>
 		<management.endpoints.enabled-by-default>true</management.endpoints.enabled-by-default>
@@ -102,7 +103,7 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.6.9</version>
+			<version>1.6.6</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.cessda.cmv</groupId>
@@ -321,6 +322,33 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>xml-maven-plugin</artifactId>
+				<version>1.0.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>transform</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<transformationSets>
+						<transformationSet>
+							<dir>src/main/resources/static/profiles</dir>
+							<stylesheet>src/main/resources/static/profiles/xslt/1.0/stylesheet.xsl</stylesheet>
+							<fileMappers>
+								<fileMapper
+										implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+									<targetExtension>.html</targetExtension>
+								</fileMapper>
+							</fileMappers>
+							<outputDir>${project.build.directory}/classes/static/profiles</outputDir>
+						</transformationSet>
+					</transformationSets>
+				</configuration>
 			</plugin>
 		</plugins>
 		<finalName>${project.artifactId}</finalName>
