@@ -30,15 +30,20 @@ import com.vaadin.ui.themes.ValoTheme;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ConstraintViolationV0;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
 import org.gesis.commons.resource.Resource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import java.io.Serial;
 import java.util.List;
 
+import static java.lang.Math.max;
+
 public class ValidationReportGridValueProvider
-		implements ValueProvider<ValidationReportV0, CustomComponent>
+		implements ValueProvider<ValidationReportGridValueProvider.Report, CustomComponent>
 {
 	@Serial
 	private static final long serialVersionUID = 5087782841088695356L;
+	private static final int ELEMENT_SIZE = 30;
 
 	private final List<Resource.V10> documentResources;
 
@@ -48,27 +53,49 @@ public class ValidationReportGridValueProvider
 	}
 
 	@Override
-	public CustomComponent apply( ValidationReportV0 validationReport )
+	public CustomComponent apply( ValidationReportGridValueProvider.Report report )
 	{
+		var validationReport = report.validationReport();
+
+
 		Label documentLabel = new Label();
 		documentLabel.setCaption( "Document" );
 		documentResources.stream()
 				.filter( r -> r.getUri().equals( validationReport.getDocumentUri() ) ).findFirst()
 				.ifPresentOrElse( r -> documentLabel.setValue( r.getLabel() ),
 						() -> documentLabel.setValue( validationReport.getDocumentUri().toString() ) );
+
+
+		var constraintViolations = validationReport.getConstraintViolations();
 		Grid<ConstraintViolationV0> constraintViolationGrid = new Grid<>();
 		constraintViolationGrid.setCaption( "Constraint Violations" );
 		constraintViolationGrid.setHeaderVisible( false );
 		constraintViolationGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
 		constraintViolationGrid.setSizeFull();
 		constraintViolationGrid.setSelectionMode( SelectionMode.NONE );
-		constraintViolationGrid.setItems( validationReport.getConstraintViolations() );
+		constraintViolationGrid.setItems( constraintViolations );
 		constraintViolationGrid.addColumn( ConstraintViolationV0::getMessage );
-		constraintViolationGrid.setHeight( 400, Unit.PIXELS );
+		constraintViolationGrid.setHeight( max(
+				constraintViolations.size() * ELEMENT_SIZE, ELEMENT_SIZE ), Unit.PIXELS );
+
+
+		var schemaViolationGrid = new Grid<SAXParseException>();
+		schemaViolationGrid.setCaption( "Schema Violations" );
+		schemaViolationGrid.setHeaderVisible( false );
+		schemaViolationGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
+		schemaViolationGrid.setSizeFull();
+		schemaViolationGrid.setSelectionMode( SelectionMode.NONE );
+		schemaViolationGrid.setItems( report.validationErrors() );
+		schemaViolationGrid.addColumn( SAXException::toString );
+		schemaViolationGrid.setHeight( max(
+				report.validationErrors().size() * ELEMENT_SIZE, ELEMENT_SIZE ), Unit.PIXELS );
 
 		FormLayout formLayout = new FormLayout();
 		formLayout.addComponent( documentLabel );
+		formLayout.addComponent( schemaViolationGrid );
 		formLayout.addComponent( constraintViolationGrid );
 		return new CustomComponent( formLayout );
 	}
+
+	public record Report(List<SAXParseException> validationErrors, ValidationReportV0 validationReport) {}
 }

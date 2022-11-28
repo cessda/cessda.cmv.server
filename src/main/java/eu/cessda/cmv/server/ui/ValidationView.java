@@ -28,14 +28,14 @@ import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.ValidationGateName;
-import eu.cessda.cmv.core.ValidationService;
-import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
+import eu.cessda.cmv.server.CombinedValidator;
 import eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions;
 import org.gesis.commons.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,14 +56,14 @@ public class ValidationView extends VerticalLayout implements View
 	private static final long serialVersionUID = -5924926837826583950L;
 	private static final Logger LOGGER = LoggerFactory.getLogger( ValidationView.class );
 
-	public ValidationView( @Autowired ValidationService.V10 validationService,
-			@Autowired List<Resource.V10> demoDocuments,
-			@Autowired List<Resource.V10> demoProfiles,
-			@Autowired CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory )
+	public ValidationView( @Autowired CombinedValidator validationService,
+						   @Autowired List<Resource.V10> demoDocuments,
+						   @Autowired List<Resource.V10> demoProfiles,
+						   @Autowired CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory )
 	{
 		List<Resource.V10> profileResources = new ArrayList<>();
 		List<Resource.V10> documentResources = new ArrayList<>();
-		List<ValidationReportV0> validationReports = new ArrayList<>();
+		List<ValidationReportGridValueProvider.Report> validationReports = new ArrayList<>();
 
 		ComboBox<ValidationGateName> validationGateNameComboBox = new ComboBox<>();
 		validationGateNameComboBox.setCaption( "Validation Gate" );
@@ -71,12 +71,12 @@ public class ValidationView extends VerticalLayout implements View
 		validationGateNameComboBox.setItems( ValidationGateName.values() );
 		validationGateNameComboBox.setValue( ValidationGateName.BASIC );
 
-		Grid<ValidationReportV0> validationReportGrid = new Grid<>();
+		Grid<ValidationReportGridValueProvider.Report> validationReportGrid = new Grid<>();
 		validationReportGrid.setHeaderVisible( false );
 		validationReportGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
 		validationReportGrid.setSizeFull();
 		validationReportGrid.setSelectionMode( SelectionMode.NONE );
-		validationReportGrid.setRowHeight( 500 );
+		validationReportGrid.setRowHeight( 9000 );
 		validationReportGrid.setItems( validationReports );
 		validationReportGrid
 				.addColumn( new ValidationReportGridValueProvider( documentResources ), new ComponentRenderer() )
@@ -104,10 +104,17 @@ public class ValidationView extends VerticalLayout implements View
 			validationReportGrid.getDataProvider().refreshAll();
 			documentResources.forEach( documentResource ->
 			{
-				ValidationReportV0 validationReport = validationService.validate( documentResource,
-						profileResources.get( 0 ),
-						validationGateNameComboBox.getSelectedItem().orElseThrow() );
-				validationReports.add( validationReport );
+				try
+				{
+					var validationReport = validationService.validate( documentResource,
+							profileResources.get( 0 ),
+							validationGateNameComboBox.getSelectedItem().orElseThrow() );
+					validationReports.add( validationReport );
+				}
+				catch ( IOException e )
+				{
+					throw new RuntimeException( e );
+				}
 			} );
 			validationReportGrid.getDataProvider().refreshAll();
 			if ( !documentResources.isEmpty() )
