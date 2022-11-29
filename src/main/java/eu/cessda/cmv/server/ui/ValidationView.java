@@ -34,6 +34,7 @@ import org.gesis.commons.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -63,7 +64,7 @@ public class ValidationView extends VerticalLayout implements View
 	{
 		List<Resource.V10> profileResources = new ArrayList<>();
 		List<Resource.V10> documentResources = new ArrayList<>();
-		List<ValidationReportGridValueProvider.Report> validationReports = new ArrayList<>();
+		List<ValidationReport> validationReports = new ArrayList<>();
 
 		ComboBox<ValidationGateName> validationGateNameComboBox = new ComboBox<>();
 		validationGateNameComboBox.setCaption( "Validation Gate" );
@@ -71,23 +72,21 @@ public class ValidationView extends VerticalLayout implements View
 		validationGateNameComboBox.setItems( ValidationGateName.values() );
 		validationGateNameComboBox.setValue( ValidationGateName.BASIC );
 
-		Grid<ValidationReportGridValueProvider.Report> validationReportGrid = new Grid<>();
+		Grid<ValidationReport> validationReportGrid = new Grid<>();
 		validationReportGrid.setHeaderVisible( false );
 		validationReportGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
 		validationReportGrid.setSizeFull();
 		validationReportGrid.setSelectionMode( SelectionMode.NONE );
-		validationReportGrid.setRowHeight( 9000 );
+		validationReportGrid.setRowHeight( 700 );
 		validationReportGrid.setItems( validationReports );
 		validationReportGrid
 				.addColumn( new ValidationReportGridValueProvider( documentResources ), new ComponentRenderer() )
 				.setSortable( false )
 				.setHandleWidgetEvents( true );
 
-		Panel reportPanel = new Panel( "Reports" );
-		reportPanel.setContent( validationReportGrid );
+		var reportPanel = new Panel( "Reports", validationReportGrid );
 
-		Button validateButton = new Button( "Validate" );
-		validateButton.addClickListener( listener ->
+		var validateButton = new Button( "Validate", listener ->
 		{
 			if ( profileResources.isEmpty() )
 			{
@@ -102,7 +101,10 @@ public class ValidationView extends VerticalLayout implements View
 
 			validationReports.clear();
 			validationReportGrid.getDataProvider().refreshAll();
-			documentResources.forEach( documentResource ->
+
+			var validationExceptions = new ArrayList<Exception>();
+
+			for ( var documentResource : documentResources )
 			{
 				try
 				{
@@ -111,11 +113,17 @@ public class ValidationView extends VerticalLayout implements View
 							validationGateNameComboBox.getSelectedItem().orElseThrow() );
 					validationReports.add( validationReport );
 				}
-				catch ( IOException e )
+				catch ( IOException | SAXException e )
 				{
-					throw new RuntimeException( e );
+					validationExceptions.add( e );
 				}
-			} );
+			}
+
+			if ( !validationExceptions.isEmpty() )
+			{
+				Notification.show( "Some validations failed: " + validationExceptions );
+			}
+
 			validationReportGrid.getDataProvider().refreshAll();
 			if ( !documentResources.isEmpty() )
 			{
@@ -124,45 +132,53 @@ public class ValidationView extends VerticalLayout implements View
 			reportPanel.setVisible( true );
 		} );
 
-		Runnable refreshReportPanel = () ->
+		validationGateNameComboBox.addSelectionListener( listener ->
 		{
 			validationReports.clear();
 			validationReportGrid.getDataProvider().refreshAll();
 			reportPanel.setVisible( false );
-		};
-		validationGateNameComboBox.addSelectionListener( listener -> refreshReportPanel.run() );
+		} );
 
-		ResourceSelectionComponent profileSelection = new ResourceSelectionComponent(
+		var profileSelection = new ResourceSelectionComponent(
 				SINGLE,
 				asList( ProvisioningOptions.values() ),
 				BY_PREDEFINED,
 				demoProfiles,
 				profileResources,
-				refreshReportPanel,
+				() ->
+				{
+					validationReports.clear();
+					validationReportGrid.getDataProvider().refreshAll();
+					reportPanel.setVisible( false );
+				},
 				cessdaMetadataValidatorFactory );
 		profileSelection.setCaption( "Profile" );
 		profileSelection.setWidthFull();
 
-		ResourceSelectionComponent documentSelection = new ResourceSelectionComponent(
+		var documentSelection = new ResourceSelectionComponent(
 				MULTI,
 				asList( ProvisioningOptions.values() ),
 				BY_UPLOAD,
 				demoDocuments,
 				documentResources,
-				refreshReportPanel,
+				() ->
+				{
+					validationReports.clear();
+					validationReportGrid.getDataProvider().refreshAll();
+					reportPanel.setVisible( false );
+				},
 				cessdaMetadataValidatorFactory );
 		documentSelection.setCaption( "Documents" );
 		documentSelection.setWidthFull();
 
-		FormLayout configurationFormLayout = new FormLayout();
+		var configurationFormLayout = new FormLayout();
 		configurationFormLayout.setMargin( true );
 		configurationFormLayout.addComponent( validationGateNameComboBox );
 		configurationFormLayout.addComponent( profileSelection );
 		configurationFormLayout.addComponent( documentSelection );
-		Panel configurationPanel = new Panel( "Configuration" );
-		configurationPanel.setContent( configurationFormLayout );
+		var configurationPanel = new Panel( "Configuration", configurationFormLayout );
 
-		setSizeFull();
+		this.setSizeFull();
 		addComponent( configurationPanel );
 		addComponent( validateButton );
 		addComponent( reportPanel );
