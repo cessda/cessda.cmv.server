@@ -49,6 +49,7 @@ import static java.util.Arrays.asList;
 
 @UIScope
 @SpringView( name = ValidationView.VIEW_NAME )
+@SuppressWarnings( "java:S110" )
 public class ValidationView extends VerticalLayout implements View
 {
 	public static final String VIEW_NAME = "validation";

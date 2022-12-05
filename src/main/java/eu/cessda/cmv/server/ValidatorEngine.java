@@ -81,6 +81,16 @@ public class ValidatorEngine
 		} );
 	}
 
+	/**
+	 * Validates a given XML document against XML schema and a CMV profile.
+	 *
+	 * @param validationRequest the document to validate.
+	 * @param profile the profile to use when validating.
+	 * @param validationGate the validation gate to use when validating
+	 * @return a {@link ValidationReport} containing the list of XML validation errors and the CMV validation report.
+	 * @throws IOException if an IO error occurred when parsing the document.
+	 * @throws SAXException if the XML document was invalid.
+	 */
 	public ValidationReport validate( Resource validationRequest, Resource profile, ValidationGateName validationGate ) throws IOException, SAXException
 	{
 		// Validate XML
