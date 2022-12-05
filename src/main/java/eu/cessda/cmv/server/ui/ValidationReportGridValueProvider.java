@@ -28,6 +28,7 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ConstraintViolationV0;
+import eu.cessda.cmv.server.ValidationReport;
 import org.gesis.commons.resource.Resource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;

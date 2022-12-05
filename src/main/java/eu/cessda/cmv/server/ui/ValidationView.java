@@ -28,11 +28,10 @@ import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.ValidationGateName;
-import eu.cessda.cmv.server.CombinedValidator;
+import eu.cessda.cmv.server.ValidationReport;
+import eu.cessda.cmv.server.ValidatorEngine;
 import eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions;
 import org.gesis.commons.resource.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.SAXException;
 
@@ -40,6 +39,7 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
@@ -55,9 +55,8 @@ public class ValidationView extends VerticalLayout implements View
 
 	@Serial
 	private static final long serialVersionUID = -5924926837826583950L;
-	private static final Logger LOGGER = LoggerFactory.getLogger( ValidationView.class );
 
-	public ValidationView( @Autowired CombinedValidator validationService,
+	public ValidationView( @Autowired ValidatorEngine validationService,
 						   @Autowired List<Resource.V10> demoDocuments,
 						   @Autowired List<Resource.V10> demoProfiles,
 						   @Autowired CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory )
@@ -121,7 +120,10 @@ public class ValidationView extends VerticalLayout implements View
 
 			if ( !validationExceptions.isEmpty() )
 			{
-				Notification.show( "Some validations failed: " + validationExceptions );
+				var validationExceptionString = validationExceptions.stream()
+						.map( Exception::toString )
+						.collect( Collectors.joining( "/n" ) );
+				Notification.show( "Some validations failed", validationExceptionString, Notification.Type.WARNING_MESSAGE );
 			}
 
 			validationReportGrid.getDataProvider().refreshAll();

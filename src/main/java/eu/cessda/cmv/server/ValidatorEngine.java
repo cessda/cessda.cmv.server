@@ -21,7 +21,6 @@ package eu.cessda.cmv.server;
 
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.core.ValidationService;
-import eu.cessda.cmv.server.ui.ValidationReport;
 import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,6 +28,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
 import java.io.IOException;
@@ -36,21 +36,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class CombinedValidator
+public class ValidatorEngine
 {
 	private final ThreadLocal<javax.xml.validation.Validator> xmlValidators;
 	private final ValidationService.V10 validationService;
 
 	@Autowired
-	public CombinedValidator( ValidationService.V10 validationService )
+	public ValidatorEngine( ValidationService.V10 validationService )
 	{
 		this.validationService = validationService;
 		this.xmlValidators = ThreadLocal.withInitial( () ->
 		{
 			try
 			{
-				var resource = this.getClass().getResource( "/static/schemas/codebook/codebook.xsd" );
-				var schema = SchemaFactory.newDefaultInstance().newSchema( resource );
+				// Find the resources for the XML schemas
+				var codebookResource = this.getClass().getResource( "/static/schemas/codebook/codebook.xsd" );
+				var lifecycleResource = this.getClass().getResource( "/static/schemas/lifecycle/instance.xsd" );
+				var nesstarResource = this.getClass().getResource( "/static/schemas/nesstar/Version1-2-2.xsd" );
+				var oaiResource = this.getClass().getResource( "/static/schemas/oai-pmh/OAI-PMH.xsd" );
+
+				// Assert schemas are not null
+				assert codebookResource != null;
+				assert lifecycleResource != null;
+				assert nesstarResource != null;
+				assert oaiResource != null;
+
+				// Construct schema objects from the XML schemas
+				var schema = SchemaFactory.newDefaultInstance().newSchema( new Source[]{
+						new StreamSource( codebookResource.toExternalForm() ),
+						new StreamSource( lifecycleResource.toExternalForm() ),
+						new StreamSource( nesstarResource.toExternalForm() ),
+						new StreamSource( oaiResource.toExternalForm() )
+				} );
+
+				// Create a validator and set its error handler
 				var validator = schema.newValidator();
 				validator.setErrorHandler( new LoggingErrorHandler() );
 				return validator;

@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package eu.cessda.cmv.server.ui;
+package eu.cessda.cmv.server;
 
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
 import org.xml.sax.SAXParseException;
