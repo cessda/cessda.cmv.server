@@ -28,17 +28,18 @@ import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.ValidationGateName;
-import eu.cessda.cmv.core.ValidationService;
-import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
+import eu.cessda.cmv.server.ValidationReport;
+import eu.cessda.cmv.server.ValidatorEngine;
 import eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions;
 import org.gesis.commons.resource.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.xml.sax.SAXException;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
@@ -48,22 +49,22 @@ import static java.util.Arrays.asList;
 
 @UIScope
 @SpringView( name = ValidationView.VIEW_NAME )
+@SuppressWarnings( "java:S110" )
 public class ValidationView extends VerticalLayout implements View
 {
 	public static final String VIEW_NAME = "validation";
 
 	@Serial
 	private static final long serialVersionUID = -5924926837826583950L;
-	private static final Logger LOGGER = LoggerFactory.getLogger( ValidationView.class );
 
-	public ValidationView( @Autowired ValidationService.V10 validationService,
-			@Autowired List<Resource.V10> demoDocuments,
-			@Autowired List<Resource.V10> demoProfiles,
-			@Autowired CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory )
+	public ValidationView( @Autowired ValidatorEngine validationService,
+						   @Autowired List<Resource.V10> demoDocuments,
+						   @Autowired List<Resource.V10> demoProfiles,
+						   @Autowired CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory )
 	{
 		List<Resource.V10> profileResources = new ArrayList<>();
 		List<Resource.V10> documentResources = new ArrayList<>();
-		List<ValidationReportV0> validationReports = new ArrayList<>();
+		List<ValidationReport> validationReports = new ArrayList<>();
 
 		ComboBox<ValidationGateName> validationGateNameComboBox = new ComboBox<>();
 		validationGateNameComboBox.setCaption( "Validation Gate" );
@@ -71,23 +72,21 @@ public class ValidationView extends VerticalLayout implements View
 		validationGateNameComboBox.setItems( ValidationGateName.values() );
 		validationGateNameComboBox.setValue( ValidationGateName.BASIC );
 
-		Grid<ValidationReportV0> validationReportGrid = new Grid<>();
+		Grid<ValidationReport> validationReportGrid = new Grid<>();
 		validationReportGrid.setHeaderVisible( false );
 		validationReportGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
 		validationReportGrid.setSizeFull();
 		validationReportGrid.setSelectionMode( SelectionMode.NONE );
-		validationReportGrid.setRowHeight( 500 );
+		validationReportGrid.setRowHeight( 700 );
 		validationReportGrid.setItems( validationReports );
 		validationReportGrid
 				.addColumn( new ValidationReportGridValueProvider( documentResources ), new ComponentRenderer() )
 				.setSortable( false )
 				.setHandleWidgetEvents( true );
 
-		Panel reportPanel = new Panel( "Reports" );
-		reportPanel.setContent( validationReportGrid );
+		var reportPanel = new Panel( "Reports", validationReportGrid );
 
-		Button validateButton = new Button( "Validate" );
-		validateButton.addClickListener( listener ->
+		var validateButton = new Button( "Validate", listener ->
 		{
 			if ( profileResources.isEmpty() )
 			{
@@ -102,13 +101,32 @@ public class ValidationView extends VerticalLayout implements View
 
 			validationReports.clear();
 			validationReportGrid.getDataProvider().refreshAll();
-			documentResources.forEach( documentResource ->
+
+			var validationExceptions = new ArrayList<Exception>();
+
+			for ( var documentResource : documentResources )
 			{
-				ValidationReportV0 validationReport = validationService.validate( documentResource,
-						profileResources.get( 0 ),
-						validationGateNameComboBox.getSelectedItem().orElseThrow() );
-				validationReports.add( validationReport );
-			} );
+				try
+				{
+					var validationReport = validationService.validate( documentResource,
+							profileResources.get( 0 ),
+							validationGateNameComboBox.getSelectedItem().orElseThrow() );
+					validationReports.add( validationReport );
+				}
+				catch ( IOException | SAXException e )
+				{
+					validationExceptions.add( e );
+				}
+			}
+
+			if ( !validationExceptions.isEmpty() )
+			{
+				var validationExceptionString = validationExceptions.stream()
+						.map( Exception::toString )
+						.collect( Collectors.joining( "/n" ) );
+				Notification.show( "Some validations failed", validationExceptionString, Notification.Type.WARNING_MESSAGE );
+			}
+
 			validationReportGrid.getDataProvider().refreshAll();
 			if ( !documentResources.isEmpty() )
 			{
@@ -117,45 +135,53 @@ public class ValidationView extends VerticalLayout implements View
 			reportPanel.setVisible( true );
 		} );
 
-		Runnable refreshReportPanel = () ->
+		validationGateNameComboBox.addSelectionListener( listener ->
 		{
 			validationReports.clear();
 			validationReportGrid.getDataProvider().refreshAll();
 			reportPanel.setVisible( false );
-		};
-		validationGateNameComboBox.addSelectionListener( listener -> refreshReportPanel.run() );
+		} );
 
-		ResourceSelectionComponent profileSelection = new ResourceSelectionComponent(
+		var profileSelection = new ResourceSelectionComponent(
 				SINGLE,
 				asList( ProvisioningOptions.values() ),
 				BY_PREDEFINED,
 				demoProfiles,
 				profileResources,
-				refreshReportPanel,
+				() ->
+				{
+					validationReports.clear();
+					validationReportGrid.getDataProvider().refreshAll();
+					reportPanel.setVisible( false );
+				},
 				cessdaMetadataValidatorFactory );
 		profileSelection.setCaption( "Profile" );
 		profileSelection.setWidthFull();
 
-		ResourceSelectionComponent documentSelection = new ResourceSelectionComponent(
+		var documentSelection = new ResourceSelectionComponent(
 				MULTI,
 				asList( ProvisioningOptions.values() ),
 				BY_UPLOAD,
 				demoDocuments,
 				documentResources,
-				refreshReportPanel,
+				() ->
+				{
+					validationReports.clear();
+					validationReportGrid.getDataProvider().refreshAll();
+					reportPanel.setVisible( false );
+				},
 				cessdaMetadataValidatorFactory );
 		documentSelection.setCaption( "Documents" );
 		documentSelection.setWidthFull();
 
-		FormLayout configurationFormLayout = new FormLayout();
+		var configurationFormLayout = new FormLayout();
 		configurationFormLayout.setMargin( true );
 		configurationFormLayout.addComponent( validationGateNameComboBox );
 		configurationFormLayout.addComponent( profileSelection );
 		configurationFormLayout.addComponent( documentSelection );
-		Panel configurationPanel = new Panel( "Configuration" );
-		configurationPanel.setContent( configurationFormLayout );
+		var configurationPanel = new Panel( "Configuration", configurationFormLayout );
 
-		setSizeFull();
+		this.setSizeFull();
 		addComponent( configurationPanel );
 		addComponent( validateButton );
 		addComponent( reportPanel );

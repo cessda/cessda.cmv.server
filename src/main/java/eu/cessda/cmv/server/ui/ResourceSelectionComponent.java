@@ -132,6 +132,7 @@ public class ResourceSelectionComponent extends CustomComponent
 				selectedResources.clear();
 			}
 			selectedResources.add( resource );
+			refreshComponents.run();
 		};
 		textField.addBlurListener( listener ->
 			// See https://bitbucket.org/cessda/cessda.cmv/issues/89
@@ -141,7 +142,6 @@ public class ResourceSelectionComponent extends CustomComponent
 				if ( urlValidator.isValid( value ) )
 				{
 					recognizeDdiDocument( cessdaMetadataValidatorFactory, newResource( value ) ).ifPresent( selectResource );
-					refreshComponents.run();
 				}
 				else
 				{
@@ -151,17 +151,14 @@ public class ResourceSelectionComponent extends CustomComponent
 			} )
 		);
 		comboBox.addSelectionListener( listener ->
-			listener.getSelectedItem().ifPresent( selectedItem ->
-			{
-				recognizeDdiDocument( cessdaMetadataValidatorFactory, selectedItem ).ifPresent( selectResource );
-				refreshComponents.run();
-			} )
+				listener.getSelectedItem()
+						.flatMap( selectedItem -> recognizeDdiDocument( cessdaMetadataValidatorFactory, selectedItem ) )
+						.ifPresent( selectResource )
 		);
 		multiFileUpload.getUploadStatePanel().setFinishedHandler( ( InputStream inputStream, String fileName, String mimeType, long length, int filesLeftInQueue ) ->
 		{
 			Resource.V10 uploadedResource = newResource( inputStream, fileName );
 			recognizeDdiDocument( cessdaMetadataValidatorFactory, uploadedResource ).ifPresent( selectResource );
-			refreshComponents.run();
 		} );
 
 		buttonGroup.addSelectionListener( listener -> refreshComponents.run() );
