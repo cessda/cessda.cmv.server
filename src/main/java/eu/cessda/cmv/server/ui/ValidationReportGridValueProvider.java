@@ -75,7 +75,7 @@ public class ValidationReportGridValueProvider
 		schemaViolationGrid.setSelectionMode( SelectionMode.NONE );
 		schemaViolationGrid.setItems( report.validationErrors() );
 		schemaViolationGrid.addColumn( SAXException::toString );
-		schemaViolationGrid.setHeight( min( max( report.validationErrors().size() * ELEMENT_SIZE, ELEMENT_SIZE ), 200 ), Unit.PIXELS );
+		schemaViolationGrid.setHeight( min( max( ( report.validationErrors().size() + 1 ) * ELEMENT_SIZE, ELEMENT_SIZE ), 200 ), Unit.PIXELS );
 
 		Grid<ConstraintViolationV0> constraintViolationGrid = new Grid<>();
 		constraintViolationGrid.setCaption( "Constraint Violations" );
@@ -85,7 +85,7 @@ public class ValidationReportGridValueProvider
 		constraintViolationGrid.setSelectionMode( SelectionMode.NONE );
 		constraintViolationGrid.setItems( constraintViolations );
 		constraintViolationGrid.addColumn( ConstraintViolationV0::getMessage );
-		constraintViolationGrid.setHeight( min( max( constraintViolations.size() * ELEMENT_SIZE, ELEMENT_SIZE ), 400 ), Unit.PIXELS );
+		constraintViolationGrid.setHeight( min( max( ( constraintViolations.size() + 1 ) * ELEMENT_SIZE, ELEMENT_SIZE ), 400 ), Unit.PIXELS );
 
 		var formLayout = new FormLayout();
 		formLayout.addComponent( documentLabel );
