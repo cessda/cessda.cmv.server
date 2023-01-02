@@ -289,7 +289,7 @@
 			<plugin>
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
-				<version>7.4.1</version>
+				<version>7.4.3</version>
 				<configuration>
 					<!-- Specifies if the build should be failed if a CVSS score above a
 					     specified level is identified. The default is 11 which means since
