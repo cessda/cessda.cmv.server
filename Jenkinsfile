@@ -31,7 +31,7 @@ pipeline {
                             sh './mvnw clean install -Pdocker-compose'
                         }
                     }
-                    when { branch 'master' }
+                    when { branch 'main' }
                 }
                 // Not running on master - test only (for PRs and integration branches)
                 stage('Test Project') {
@@ -40,7 +40,7 @@ pipeline {
                             sh './mvnw clean test -Pdocker-compose'
                         }
                     }
-                    when { not { branch 'master' } }
+                    when { not { branch 'main' } }
                 }
                 stage('Record Issues') {
                     steps {
@@ -58,23 +58,23 @@ pipeline {
                             waitForQualityGate abortPipeline: true
                         }
                     }
-                    when { branch 'master' }
+                    when { branch 'main' }
                 }
             }
         }
         stage('Build and Push Docker Image') {
             steps {
                 sh 'gcloud auth configure-docker'
-	            sh "./mvnw docker:build docker:push -Pdocker-compose -D\"docker.registry.host\"=${docker_repo} -D\"docker.image.name\"=${productName}-${componentName} -D\"docker.image.tag\"=${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+                sh "./mvnw docker:build docker:push -Pdocker-compose -D\"docker.registry.host\"=${docker_repo} -D\"docker.image.name\"=${productName}-${componentName} -D\"docker.image.tag\"=${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
                 sh "gcloud container images add-tag ${IMAGE_TAG} ${docker_repo}/${productName}-${componentName}:${env.BRANCH_NAME}-latest"
             }
-            when { branch 'master' }
+            when { branch 'main' }
         }
         stage('Deploy CMV Server') {
             steps {
-                build job: 'cessda.cmv.deploy/master', parameters: [string(name: 'serverImageTag', value: "${env.BRANCH_NAME}-${env.BUILD_NUMBER}")], wait: false
+                build job: 'cessda.cmv.deploy/main', parameters: [string(name: 'serverImageTag', value: "${env.BRANCH_NAME}-${env.BUILD_NUMBER}")], wait: false
             }
-            when { branch 'master' }
+            when { branch 'main' }
         }
     }
 }
