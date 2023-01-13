@@ -2488,7 +2488,7 @@ font-size:17px;
 	.v-upload-immediate input[type="file"] {
 		opacity: 100;
 		filter: alpha(opacity=100) ;
-		z-index: 9000;
+		z-index: auto;
 		position: relative;
 		right: 0;
 		height: 30px;
