@@ -39,7 +39,7 @@ import java.util.Locale;
 
 @Title( "CESSDA Metadata Validator" )
 @StyleSheet( { "https://fonts.googleapis.com/css?family=Source+Sans+Pro:100,200,300,400,500,600,700,800,900" } )
-@JavaScript( "https://cessda.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/sb53l8/b/24/a44af77267a987a660377e5c46e0fb64/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-GB&collectorId=0dd601e4" )
+@JavaScript( { "https://code.jquery.com/jquery-3.6.0.min.js", "theme://helpdesk.js" } )
 @Theme( "cmv" )
 @SpringUI( path = "/" )
 @SuppressWarnings( "java:S2160" )
