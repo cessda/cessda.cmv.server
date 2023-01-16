@@ -9,12 +9,11 @@
 [![Vulnerabilities](https://sonarqube.cessda.eu/api/project_badges/measure?project=eu.cessda.cmv%3Acmv-server&metric=vulnerabilities)](https://sonarqube.cessda.eu/dashboard?id=eu.cessda.cmv%3Acmv-server)
 [![Bugs](https://sonarqube.cessda.eu/api/project_badges/measure?project=eu.cessda.cmv%3Acmv-server&metric=bugs)](https://sonarqube.cessda.eu/dashboard?id=eu.cessda.cmv%3Acmv-server)
 
-
 ## Getting started as developer
 
 ### Execute tests and run the application
 
-```
+```shell
 # Execute all tests locally with default config
 mvn clean test
 
@@ -26,7 +25,7 @@ mvn clean spring-boot:run
 
 ### Create and run service environment with docker-compose
 
-```
+```shell
 # Package Java jar file and build docker image with required settings
 mvn -DskipTests clean package docker:build -Pdocker-compose
 
@@ -57,3 +56,25 @@ docker exec -it $CONTAINERID /bin/sh
 # All containers and the local network are stopped and deleted
 docker-compose -f target/docker/context/docker-compose.yml down
 ```
+
+## Contributing
+
+Please read [CONTRIBUTING](CONTRIBUTING.md) for details on our code of conduct,
+and the process for submitting pull requests to us.
+
+## Versioning
+
+See [Semantic Versioning](https://semver.org/) for guidance.
+
+## Changes
+
+You can find the list of changes made in each release in the
+[CHANGELOG](CHANGELOG.md) file.
+
+## License
+
+See the [LICENSE](LICENSE.txt) file.
+
+## Citing
+
+See the [CITATION](CITATION.cff) file.

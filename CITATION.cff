@@ -1,0 +1,45 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: CESSDA Data Catalogue - F-UJI runner component
+message: >-
+  If you use this software, please cite it using https://doi.org/10.5281/zenodo.XXXXXX
+type: software
+authors:
+  - given-names: Jeannine
+    family-names: Beeken
+    email: jeannine.beeken@essex.ac.uk
+    affiliation: UK Data Archive
+  - given-names: Darren
+    family-names: Bell
+    email: dbell@essex.ac.uk
+    affiliation: UK Data Archive
+  - given-names: Sharon
+    family-names: Bolton
+    email: sharonb@essex.ac.uk
+    affiliation: UK Data Archive
+  - given-names: Kerrin
+    family-names: Borschewski
+    email: kerrin.borschewski@gesis.org
+    affiliation: GESIS
+  - given-names: Taina
+    family-names: Jääskeläinen
+    email: taina.jaaskelainen@tuni.fi
+    affiliation: FSD
+  - given-names: Katja
+    family-names: Moilanen
+    email: katja.moilanen@tuni.fi
+    affiliation: FSD
+  - given-names: Matthew
+    family-names: Morris
+    email: matthew.morris@cessda.eu
+    affiliation: CESSDA ERIC
+  - given-names: Alexander
+    family-names: Mühlbauer
+    email: alexander.muehlbauer@gesis.org
+    affiliation: GESIS
+  - given-names: Wolfgang
+    family-names: Zenk-Möltgen
+    email: wolfgang.zenk-moeltgen@gesis.org
+    affiliation: GESIS
