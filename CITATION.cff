@@ -2,9 +2,8 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: CESSDA Data Catalogue - F-UJI runner component
-message: >-
-  If you use this software, please cite it using https://doi.org/10.5281/zenodo.XXXXXX
+title: CESSDA Metadata Validator - Server component
+message: N/A
 type: software
 authors:
   - given-names: Jeannine
