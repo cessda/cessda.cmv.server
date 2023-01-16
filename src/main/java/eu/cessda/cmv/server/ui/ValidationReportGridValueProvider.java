@@ -53,6 +53,14 @@ public class ValidationReportGridValueProvider
 		this.documentResources = documentResources;
 	}
 
+	private static Grid<?> getStringGrid( String message )
+	{
+		var stringGrid = new Grid<String>();
+		stringGrid.setItems( message );
+		stringGrid.addColumn( String::toString );
+		return stringGrid;
+	}
+
 	@Override
 	public CustomComponent apply( ValidationReport report )
 	{
@@ -67,24 +75,43 @@ public class ValidationReportGridValueProvider
 						() -> documentLabel.setValue( validationReport.getDocumentUri().toString() ) );
 
 		var constraintViolations = validationReport.getConstraintViolations();
-		var schemaViolationGrid = new Grid<SAXParseException>();
+
+		// Configure the schema violation grid
+		final Grid<?> schemaViolationGrid;
+		if (!report.validationErrors().isEmpty())
+		{
+			var saxExceptionGrid = new Grid<SAXParseException>();
+			saxExceptionGrid.setItems( report.validationErrors() );
+			saxExceptionGrid.addColumn( SAXException::toString );
+			schemaViolationGrid = saxExceptionGrid;
+		} else {
+			// Display a message stating no schema violations were found
+			schemaViolationGrid = getStringGrid( "No schema violations found" );
+		}
 		schemaViolationGrid.setCaption( "Schema Violations" );
 		schemaViolationGrid.setHeaderVisible( false );
 		schemaViolationGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
 		schemaViolationGrid.setSizeFull();
 		schemaViolationGrid.setSelectionMode( SelectionMode.NONE );
-		schemaViolationGrid.setItems( report.validationErrors() );
-		schemaViolationGrid.addColumn( SAXException::toString );
 		schemaViolationGrid.setHeight( min( max( ( report.validationErrors().size() + 1 ) * ELEMENT_SIZE, ELEMENT_SIZE ), 200 ), Unit.PIXELS );
 
-		Grid<ConstraintViolationV0> constraintViolationGrid = new Grid<>();
+		// Configure the constraint violation grid
+		final Grid<?> constraintViolationGrid;
+		if (!report.validationErrors().isEmpty())
+		{
+			var constraintGrid = new Grid<ConstraintViolationV0>();
+			constraintGrid.setItems( constraintViolations );
+			constraintGrid.addColumn( ConstraintViolationV0::getMessage );
+			constraintViolationGrid = constraintGrid;
+		} else {
+			// Display a message stating no constraint violations were found
+			constraintViolationGrid = getStringGrid( "No constraint violations found" );
+		}
 		constraintViolationGrid.setCaption( "Constraint Violations" );
 		constraintViolationGrid.setHeaderVisible( false );
 		constraintViolationGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
 		constraintViolationGrid.setSizeFull();
 		constraintViolationGrid.setSelectionMode( SelectionMode.NONE );
-		constraintViolationGrid.setItems( constraintViolations );
-		constraintViolationGrid.addColumn( ConstraintViolationV0::getMessage );
 		constraintViolationGrid.setHeight( min( max( ( constraintViolations.size() + 1 ) * ELEMENT_SIZE, ELEMENT_SIZE ), 400 ), Unit.PIXELS );
 
 		var formLayout = new FormLayout();
