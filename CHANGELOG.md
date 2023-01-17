@@ -14,6 +14,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - *Fixed (for any bug fixes)*  
 - *Security (in case of vulnerabilities)*
 
+## [1.0.0]
+
+### Added
+
+- Added latest version redirects for monolingual CDC profiles ([#63](https://github.com/cessda/cessda.cmv.server/issues/63))
+- Enabled CORS for the Swagger documentation and the public API ([#67](https://github.com/cessda/cessda.cmv.server/issues/67))
+- Validate the documents against the XML schema when validating in the user interface ([#68](https://github.com/cessda/cessda.cmv.server/issues/68))
+
+### Changed
+
+- Update OpenJDK to 17 ([#64](https://github.com/cessda/cessda.cmv.server/issues/64))
+- Replace the JIRA feedback form with the EOSC helpdesk feedback form ([#79](https://github.com/cessda/cessda.cmv.server/issues/79))
+
+### Fixed
+
+- Fixed EQB v0.1.1 profile redirect ([#66](https://github.com/cessda/cessda.cmv.server/issues/66))
+
 ## [0.4.2] - 2021-09-13
 
 ### Added
@@ -82,6 +99,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Show notification if DDI document recognition fails ([#19](https://github.com/cessda/cessda.cmv.server/issues/19))
 - Change endpoints urls to be consistent with other CESSDA products ([#18](https://github.com/cessda/cessda.cmv.server/issues/18))
 
+[1.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/v1.0.0
+[0.4.2]: https://github.com/cessda/cessda.cmv.server/releases/tag/v0.4.2
+[0.4.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/v0.4.1
 [0.4.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/v0.4.0
 [0.3.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/v0.3.1
 [0.3.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/v0.3.0
