@@ -329,6 +329,7 @@
 				<version>1.0.2</version>
 				<executions>
 					<execution>
+						<phase>generate-resources</phase>
 						<goals>
 							<goal>transform</goal>
 						</goals>
@@ -338,6 +339,7 @@
 					<transformationSets>
 						<transformationSet>
 							<dir>src/main/resources/static/profiles</dir>
+							<excludes>xslt/1.0/stylesheet.xsl</excludes>
 							<stylesheet>src/main/resources/static/profiles/xslt/1.0/stylesheet.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper
