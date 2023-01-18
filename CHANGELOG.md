@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added latest version redirects for monolingual CDC profiles ([#63](https://github.com/cessda/cessda.cmv.server/issues/63))
 - Enabled CORS for the Swagger documentation and the public API ([#67](https://github.com/cessda/cessda.cmv.server/issues/67))
 - Validate the documents against the XML schema when validating in the user interface ([#68](https://github.com/cessda/cessda.cmv.server/issues/68))
+- Transform the metadata profiles as part of the build process ([#DOCS-21](https://github.com/cessda/cessda.cmv.documentation/issues/21))
 
 ### Changed
 
