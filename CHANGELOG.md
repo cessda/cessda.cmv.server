@@ -14,58 +14,38 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - *Fixed (for any bug fixes)*  
 - *Security (in case of vulnerabilities)*
 
-## [1.0.0] - 2023-01-18
+## [1.0.0] - 2023-01-24
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7545331.svg)](https://doi.org/10.5281/zenodo.7545331)
 
 ### Added
 
-- Add Object Identifier of validated records to the CMV logs
-  ([#80](https://github.com/cessda/cessda.cmv.server/issues/80))
-- Implement EOSC feedback form
-  ([#79](https://github.com/cessda/cessda.cmv.server/issues/79))
-- Check that the XML syntax is valid
-  ([#68](https://github.com/cessda/cessda.cmv.server/issues/68))
-- Enable CORS support for public APIs
-  ([#67](https://github.com/cessda/cessda.cmv.server/issues/67))
-
-## Changes
-
-- Replace references to Bitbucket
-  ([#84](https://github.com/cessda/cessda.cmv.server/issues/84))
-
-### Fixed
-
-- Fix Profile redirects for EQB 0.1.1
-  ([#66](https://github.com/cessda/cessda.cmv.server/issues/66))
-
-## [0.4.3] - 2021-10-05
-
-### Added
-
-- Add redirects for CDC monolingual profiles
-  ([#63](https://github.com/cessda/cessda.cmv.server/issues/63))
+- Added latest version redirects for monolingual CDC profiles ([#63](https://github.com/cessda/cessda.cmv.server/issues/63))
+- Enabled CORS for the Swagger documentation and the public API ([#67](https://github.com/cessda/cessda.cmv.server/issues/67))
+- Validate the documents against the XML schema when validating in the user interface ([#68](https://github.com/cessda/cessda.cmv.server/issues/68))
+- Transform the metadata profiles as part of the build process ([#DOCS-21](https://github.com/cessda/cessda.cmv.documentation/issues/21))
 
 ### Changed
 
-- Update OpenJDK to 17
-  ([#64](https://github.com/cessda/cessda.cmv.server/issues/64))
+- Update OpenJDK to 17 ([#64](https://github.com/cessda/cessda.cmv.server/issues/64))
+- Replace the JIRA feedback form with the EOSC helpdesk feedback form ([#79](https://github.com/cessda/cessda.cmv.server/issues/79))
+
+### Fixed
+
+- Fixed EQB v0.1.1 profile redirect ([#66](https://github.com/cessda/cessda.cmv.server/issues/66))
 
 ## [0.4.2] - 2021-09-13
 
 ### Added
 
-- Metadata profiles are now hosted on the CMV server
-  ([#59](https://github.com/cessda/cessda.cmv.server/issues/59))
-- A stylesheet for the metadata profiles was added,
-  allowing browsers to render a friendly version
-  ([#59](https://github.com/cessda/cessda.cmv.server/issues/59))
+- Metadata profiles are now hosted on the CMV server ([#59](https://github.com/cessda/cessda.cmv.server/issues/59))
+- A stylesheet for the metadata profiles was added, allowing browsers to render a friendly
+  version ([#59](https://github.com/cessda/cessda.cmv.server/issues/59))
 
 ### Changed
 
 - The description of the predefined profiles are read from the profiles
-  themselves
-  ([#61](https://github.com/cessda/cessda.cmv.server/issues/61))
+  themselves ([#61](https://github.com/cessda/cessda.cmv.server/issues/61))
 
 ## [0.4.1] - 2021-04-15
 
@@ -122,6 +102,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Show notification if DDI document recognition fails ([#19](https://github.com/cessda/cessda.cmv.server/issues/19))
 - Change endpoints urls to be consistent with other CESSDA products ([#18](https://github.com/cessda/cessda.cmv.server/issues/18))
 
+[1.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/v1.0.0
+[0.4.2]: https://github.com/cessda/cessda.cmv.server/releases/tag/v0.4.2
+[0.4.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/v0.4.1
 [0.4.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/v0.4.0
 [0.3.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/v0.3.1
 [0.3.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/v0.3.0
