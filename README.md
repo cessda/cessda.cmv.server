@@ -1,5 +1,7 @@
 # cessda.cmv.server
 
+[![SQA badge](https://api.eu.badgr.io/public/assertions/SSQHSCmuQg2tZF2qNstYtA/image)](https://api.eu.badgr.io/public/assertions/SJzx32-FSzOi8dds5E6XbQ)
+
 [![Build Status](https://jenkins.cessda.eu/buildStatus/icon?job=cessda.cmv.server%2Fmaster)](https://jenkins.cessda.eu/job/cessda.cmv.server/job/master/)
 [![Quality Gate Status](https://sonarqube.cessda.eu/api/project_badges/measure?project=eu.cessda.cmv%3Acmv-server&metric=alert_status)](https://sonarqube.cessda.eu/dashboard?id=eu.cessda.cmv%3Acmv-server)
 [![Coverage](https://sonarqube.cessda.eu/api/project_badges/measure?project=eu.cessda.cmv%3Acmv-server&metric=coverage)](https://sonarqube.cessda.eu/dashboard?id=eu.cessda.cmv%3Acmv-server)
