@@ -306,7 +306,8 @@
 					<organizationName>CESSDA ERIC</organizationName>
 					<inceptionYear>2020</inceptionYear>
 					<licenseName>apache_v2</licenseName>
-					<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+					<licenseFile>LICENSE</licenseFile>
+					<canUpdateCopyright>true</canUpdateCopyright>
 					<failOnMissingHeader>true</failOnMissingHeader>
 					<failOnNotUptodateHeader>true</failOnNotUptodateHeader>
 					<roots>
