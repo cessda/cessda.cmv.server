@@ -24,11 +24,14 @@ import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
 import eu.cessda.cmv.core.mediatype.validationrequest.v0.ValidationRequestV0;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Problem;
 
 import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
@@ -93,30 +96,45 @@ public class ValidationControllerV0
 			path = "/CustomValidation",
 			consumes = { APPLICATION_JSON_VALUE },
 			produces = { APPLICATION_JSON_VALUE } )
-	@Operation(
-			operationId = "validate",
-			responses = @ApiResponse( responseCode = "200" ) )
+	@Operation( operationId = "validate", responses = {
+			@ApiResponse( responseCode = "200" ),
+			@ApiResponse( responseCode = "400", content = @Content(schema = @Schema( implementation = Problem.class ) ))
+	} )
 	public ValidationReportV0 customValidate( @RequestBody @Valid ValidationRequest validationRequest)
 	{
-		Resource document = Resource.newResource( new ByteArrayInputStream( validationRequest.document().getBytes( StandardCharsets.UTF_8 ) ) );
-		Resource profile = Resource.newResource( new ByteArrayInputStream( validationRequest.document().getBytes( StandardCharsets.UTF_8 ) ) );
-
+		// Validate that some constraints are configured
 		if (validationRequest.constraints == null || validationRequest.constraints.isEmpty()) {
 			throw new IllegalArgumentException("Constraints should be specified");
 		}
+
+		// Validate that a document and profile are provided
+		var documentString = validationRequest.document();
+		var profileString = validationRequest.profile();
+		if ( documentString == null )
+		{
+			throw new IllegalArgumentException("Document should be provided");
+		}
+		if ( profileString == null )
+		{
+			throw new IllegalArgumentException("Profile should be provided");
+		}
+
+		Resource document = Resource.newResource( new ByteArrayInputStream( documentString.getBytes( StandardCharsets.UTF_8 ) ) );
+		Resource profile = Resource.newResource( new ByteArrayInputStream( profileString.getBytes( StandardCharsets.UTF_8 ) ) );
 
 		try {
 			var validationGate = CessdaMetadataValidatorFactory.newValidationGate( validationRequest.constraints );
 			return validationService.validate( document, profile, validationGate );
 		} catch ( InvalidGateException e ) {
 
+			// Extract the names of the constraints that couldn't be found
 			var stringBuilder = new StringBuilder();
 			var innerExceptions = e.getSuppressed();
-
 			for ( int i = 0; i < innerExceptions.length; i++ )
 			{
 
-				if (i > 0) {
+				if (i > 0)
+				{
 					stringBuilder.append( ", " );
 				}
 
