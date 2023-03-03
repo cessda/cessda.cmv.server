@@ -19,8 +19,7 @@
  */
 package eu.cessda.cmv.server.api;
 
-import eu.cessda.cmv.core.ValidationGateName;
-import eu.cessda.cmv.core.ValidationService;
+import eu.cessda.cmv.core.*;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
 import eu.cessda.cmv.core.mediatype.validationrequest.v0.ValidationRequestV0;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,7 +31,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.ByteArrayInputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -86,4 +88,51 @@ public class ValidationControllerV0
 			throw new IllegalArgumentException( "Invalid request: Use either the query parameters or the request body!" );
 		}
 	}
+
+	@PostMapping(
+			path = "/CustomValidation",
+			consumes = { APPLICATION_JSON_VALUE },
+			produces = { APPLICATION_JSON_VALUE } )
+	@Operation(
+			operationId = "validate",
+			responses = @ApiResponse( responseCode = "200" ) )
+	public ValidationReportV0 customValidate( @RequestBody @Valid ValidationRequest validationRequest)
+	{
+		Resource document = Resource.newResource( new ByteArrayInputStream( validationRequest.document().getBytes( StandardCharsets.UTF_8 ) ) );
+		Resource profile = Resource.newResource( new ByteArrayInputStream( validationRequest.document().getBytes( StandardCharsets.UTF_8 ) ) );
+
+		if (validationRequest.constraints == null || validationRequest.constraints.isEmpty()) {
+			throw new IllegalArgumentException("Constraints should be specified");
+		}
+
+		try {
+			var validationGate = CessdaMetadataValidatorFactory.newValidationGate( validationRequest.constraints );
+			return validationService.validate( document, profile, validationGate );
+		} catch ( InvalidGateException e ) {
+
+			var stringBuilder = new StringBuilder();
+			var innerExceptions = e.getSuppressed();
+
+			for ( int i = 0; i < innerExceptions.length; i++ )
+			{
+
+				if (i > 0) {
+					stringBuilder.append( ", " );
+				}
+
+				stringBuilder.append( ( (InvalidConstraintException) innerExceptions[i] ).getConstraintName() );
+			}
+
+			if ( innerExceptions.length == 1 )
+			{
+				throw new IllegalArgumentException( stringBuilder + " is not a valid constraint", e );
+			}
+			else
+			{
+				throw new IllegalArgumentException( stringBuilder + " are not valid constraints", e );
+			}
+		}
+	}
+
+	record ValidationRequest(String document, String profile, List<String> constraints) {}
 }

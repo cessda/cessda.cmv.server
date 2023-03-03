@@ -19,6 +19,7 @@
  */
 package eu.cessda.cmv.server.api;
 
+import eu.cessda.cmv.core.NotDocumentException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -30,9 +31,9 @@ import static org.zalando.problem.Status.NOT_FOUND;
 
 public interface ExceptionToProblemAdviceTrait extends AdviceTrait
 {
-	@ExceptionHandler
+	@ExceptionHandler(value = { IllegalArgumentException.class, NotDocumentException.class })
 	default ResponseEntity<Problem> handle(
-			IllegalArgumentException exception,
+			Exception exception,
 			NativeWebRequest request )
 	{
 		return create( BAD_REQUEST, exception, request );
