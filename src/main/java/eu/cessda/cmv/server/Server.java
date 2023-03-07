@@ -55,8 +55,6 @@ public class Server extends SpringBootServletInitializer
 {
 	private static final Logger log = LoggerFactory.getLogger( Server.class );
 
-	static final String ALLOWED_CLI_OPTION = "--spring.config.additional-location=file:./application.properties";
-
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -76,9 +74,9 @@ public class Server extends SpringBootServletInitializer
 	public void postConstruct()
 	{
 		objectMapper.configure( MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true );
-		objectMapper.configure( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false );
+		objectMapper.configure( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true );
+		objectMapper.registerModule( new JaxbAnnotationModule().setPriority( JaxbAnnotationModule.Priority.SECONDARY ) );
 		objectMapper.registerModule( new ProblemModule().withStackTraces( false ) );
-		objectMapper.registerModule( new JaxbAnnotationModule() );
 		objectMapper.enable( SerializationFeature.INDENT_OUTPUT );
 	}
 

@@ -28,16 +28,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.zalando.problem.Problem;
 
 import javax.validation.Valid;
-import java.io.ByteArrayInputStream;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -59,13 +55,16 @@ public class ValidationControllerV0
 			produces = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE } )
 	@Operation(
 			operationId = "validate",
-			description = "Use either the query parameters or the request body, query parameters are deprecated",
+			description = "Use the request body, query parameters are deprecated",
 			parameters = {
 					@Parameter( in = QUERY, name = "documentUri", deprecated = true ),
 					@Parameter( in = QUERY, name = "profileUri", deprecated = true ),
 					@Parameter( in = QUERY, name = "validationGateName", deprecated = true )
 			},
-			responses = @ApiResponse( responseCode = "200" ) )
+			responses = {
+					@ApiResponse( responseCode = "200" ),
+					@ApiResponse( responseCode = "400", content = @Content( schema = @Schema( implementation = Problem.class ) ) )
+			} )
 	public ValidationReportV0 validate(
 			@RequestParam( required = false ) URI documentUri,
 			@RequestParam( required = false ) URI profileUri,
@@ -81,10 +80,23 @@ public class ValidationControllerV0
 		}
 		if ( !hasRequestParams && hasRequestBody )
 		{
-			Resource document = validationRequest.getDocument().toResource();
-			Resource profile = validationRequest.getProfile().toResource();
-			validationGateName = validationRequest.getValidationGateName();
-			return validationService.validate( document, profile, validationGateName );
+			// Validate the request
+			var requestValidationResult = validationRequest.validate();
+			if ( requestValidationResult.isEmpty() )
+			{
+				if ( validationRequest.getValidationGateName() != null )
+				{
+					return validateUsingGate( validationRequest );
+				}
+				else
+				{
+					return validateUsingConstraints( validationRequest );
+				}
+			}
+			else
+			{
+				throw new IllegalArgumentException( "Invalid request: " + requestValidationResult );
+			}
 		}
 		else
 		{
@@ -92,41 +104,28 @@ public class ValidationControllerV0
 		}
 	}
 
-	@PostMapping(
-			path = "/CustomValidation",
-			consumes = { APPLICATION_JSON_VALUE },
-			produces = { APPLICATION_JSON_VALUE } )
-	@Operation( operationId = "validate", responses = {
-			@ApiResponse( responseCode = "200" ),
-			@ApiResponse( responseCode = "400", content = @Content(schema = @Schema( implementation = Problem.class ) ))
-	} )
-	public ValidationReportV0 customValidate( @RequestBody @Valid ValidationRequest validationRequest)
+	private ValidationReportV0 validateUsingGate( ValidationRequestV0 validationRequest )
 	{
-		// Validate that some constraints are configured
-		if (validationRequest.constraints == null || validationRequest.constraints.isEmpty()) {
-			throw new IllegalArgumentException("Constraints should be specified");
-		}
+		return validationService.validate(
+				validationRequest.getDocument().toResource(),
+				validationRequest.getProfile().toResource(),
+				validationRequest.getValidationGateName()
+		);
+	}
 
-		// Validate that a document and profile are provided
-		var documentString = validationRequest.document();
-		var profileString = validationRequest.profile();
-		if ( documentString == null )
+	private ValidationReportV0 validateUsingConstraints( ValidationRequestV0 validationRequest )
+	{
+		try
 		{
-			throw new IllegalArgumentException("Document should be provided");
+			var validationGate = CessdaMetadataValidatorFactory.newValidationGate( validationRequest.getConstraints() );
+			return validationService.validate(
+					validationRequest.getDocument().toResource(),
+					validationRequest.getProfile().toResource(),
+					validationGate
+			);
 		}
-		if ( profileString == null )
+		catch ( InvalidGateException e )
 		{
-			throw new IllegalArgumentException("Profile should be provided");
-		}
-
-		Resource document = Resource.newResource( new ByteArrayInputStream( documentString.getBytes( StandardCharsets.UTF_8 ) ) );
-		Resource profile = Resource.newResource( new ByteArrayInputStream( profileString.getBytes( StandardCharsets.UTF_8 ) ) );
-
-		try {
-			var validationGate = CessdaMetadataValidatorFactory.newValidationGate( validationRequest.constraints );
-			return validationService.validate( document, profile, validationGate );
-		} catch ( InvalidGateException e ) {
-
 			// Extract the names of the constraints that couldn't be found
 			var stringBuilder = new StringBuilder();
 			var innerExceptions = e.getSuppressed();
@@ -151,6 +150,4 @@ public class ValidationControllerV0
 			}
 		}
 	}
-
-	record ValidationRequest(String document, String profile, List<String> constraints) {}
 }
