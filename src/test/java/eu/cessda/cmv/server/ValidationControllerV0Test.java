@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,6 +36,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.zalando.problem.Problem;
 
 import java.net.URI;
+import java.util.Collections;
 
 import static org.gesis.commons.resource.Resource.newResource;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -156,6 +157,30 @@ class ValidationControllerV0Test
 	}
 
 	@Test
+	void validateWithCustomValidationGateByValidationRequestV0() throws Exception {
+		String responseBody;
+		MediaType mediaType;
+		ValidationReportV0 validationReport;
+		UriBuilder.V10 uriBuilder = new SpringUriBuilder("")
+				.path(ValidationControllerV0.BASE_PATH)
+				.path("/Validation");
+
+		var requestJSON = this.getClass().getResource( "/request.json" );
+		var validationRequest = objectMapper.readValue( requestJSON, ValidationRequestV0.class );
+
+		mediaType = MediaType.APPLICATION_JSON;
+		responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
+						.accept( mediaType )
+						.contentType( mediaType )
+						.content( objectMapper.writeValueAsString( validationRequest ) ) )
+				.andExpect( status().isOk() )
+				.andReturn().getResponse().getContentAsString();
+		validationReport = objectMapper.readValue( responseBody, ValidationReportV0.class );
+		assertThat( validationReport.getConstraintViolations(), hasSize( 22 ) );
+		assertThat( validationReport.getDocumentUri().toString(), startsWith( "urn:uuid:" ) );
+	}
+
+	@Test
 	void invalidRequest() throws Exception {
 		// Use either the query parameters or the request body!
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder("")
@@ -195,5 +220,66 @@ class ValidationControllerV0Test
 		Problem problem = objectMapper.readValue( responseBody, Problem.class );
 		assertThat( problem.getTitle(), containsString( "Constraint Violation" ) );
 		assertThat( responseBody, containsString( "must not be null" ) );
+	}
+
+	@Test
+	void invalidValidationRequestObjectWithoutGateOrConstraints() throws Exception {
+		UriBuilder.V10 uriBuilder = new SpringUriBuilder("")
+				.path(ValidationControllerV0.BASE_PATH)
+				.path("/Validation");
+		ValidationRequestV0 validationRequest = new ValidationRequestV0();
+		validationRequest.setDocument(URI.create(DOCUMENT_URI));
+		validationRequest.setProfile(new TextResource(newResource(PROFILE_URI)).toString());
+		MediaType mediaType = MediaType.APPLICATION_JSON;
+		String responseBody = mockMvc.perform(post(uriBuilder.toEncodedString() )
+						.accept( mediaType ).contentType( mediaType )
+						.content( objectMapper.writeValueAsString( validationRequest ) ) )
+				.andExpect( status().is( 400 ) )
+				.andReturn().getResponse().getContentAsString();
+		Problem problem = objectMapper.readValue( responseBody, Problem.class );
+		assertThat( problem.getTitle(), containsString( "Bad Request" ) );
+		assertThat( responseBody, containsString( "Validation gate or constraints is missing" ) );
+	}
+
+	@Test
+	void invalidValidationRequestObjectWithInvalidConstraints() throws Exception {
+		UriBuilder.V10 uriBuilder = new SpringUriBuilder("")
+				.path(ValidationControllerV0.BASE_PATH)
+				.path("/Validation");
+
+		var requestJSON = this.getClass().getResource( "/invalidRequest.json" );
+		var validationRequest = objectMapper.readValue( requestJSON, ValidationRequestV0.class );
+
+		MediaType mediaType = MediaType.APPLICATION_JSON;
+		String responseBody = mockMvc.perform(post(uriBuilder.toEncodedString() )
+						.accept( mediaType ).contentType( mediaType )
+						.content( objectMapper.writeValueAsString( validationRequest ) ) )
+				.andExpect( status().is( 400 ) )
+				.andReturn().getResponse().getContentAsString();
+		Problem problem = objectMapper.readValue( responseBody, Problem.class );
+		assertThat( problem.getTitle(), containsString( "Bad Request" ) );
+		assertThat( responseBody, containsString( "are not valid constraints" ) );
+	}
+
+	@Test
+	void invalidValidationRequestObjectWithInvalidConstraint() throws Exception {
+		UriBuilder.V10 uriBuilder = new SpringUriBuilder("")
+				.path(ValidationControllerV0.BASE_PATH)
+				.path("/Validation");
+
+		var requestJSON = this.getClass().getResource( "/invalidRequest.json" );
+		var validationRequest = objectMapper.readValue( requestJSON, ValidationRequestV0.class );
+
+		validationRequest.setConstraints( Collections.singleton( validationRequest.getConstraints().get( 0 ) ) );
+
+		MediaType mediaType = MediaType.APPLICATION_JSON;
+		String responseBody = mockMvc.perform(post(uriBuilder.toEncodedString() )
+						.accept( mediaType ).contentType( mediaType )
+						.content( objectMapper.writeValueAsString( validationRequest ) ) )
+				.andExpect( status().is( 400 ) )
+				.andReturn().getResponse().getContentAsString();
+		Problem problem = objectMapper.readValue( responseBody, Problem.class );
+		assertThat( problem.getTitle(), containsString( "Bad Request" ) );
+		assertThat( responseBody, containsString( "is not a valid constraint" ) );
 	}
 }

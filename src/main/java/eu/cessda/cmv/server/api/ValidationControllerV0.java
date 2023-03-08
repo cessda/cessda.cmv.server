@@ -19,17 +19,18 @@
  */
 package eu.cessda.cmv.server.api;
 
-import eu.cessda.cmv.core.ValidationGateName;
-import eu.cessda.cmv.core.ValidationService;
+import eu.cessda.cmv.core.*;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
 import eu.cessda.cmv.core.mediatype.validationrequest.v0.ValidationRequestV0;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Problem;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -54,13 +55,16 @@ public class ValidationControllerV0
 			produces = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE } )
 	@Operation(
 			operationId = "validate",
-			description = "Use either the query parameters or the request body, query parameters are deprecated",
+			description = "Use the request body, query parameters are deprecated",
 			parameters = {
 					@Parameter( in = QUERY, name = "documentUri", deprecated = true ),
 					@Parameter( in = QUERY, name = "profileUri", deprecated = true ),
 					@Parameter( in = QUERY, name = "validationGateName", deprecated = true )
 			},
-			responses = @ApiResponse( responseCode = "200" ) )
+			responses = {
+					@ApiResponse( responseCode = "200" ),
+					@ApiResponse( responseCode = "400", content = @Content( schema = @Schema( implementation = Problem.class ) ) )
+			} )
 	public ValidationReportV0 validate(
 			@RequestParam( required = false ) URI documentUri,
 			@RequestParam( required = false ) URI profileUri,
@@ -76,14 +80,74 @@ public class ValidationControllerV0
 		}
 		if ( !hasRequestParams && hasRequestBody )
 		{
-			Resource document = validationRequest.getDocument().toResource();
-			Resource profile = validationRequest.getProfile().toResource();
-			validationGateName = validationRequest.getValidationGateName();
-			return validationService.validate( document, profile, validationGateName );
+			// Validate the request
+			var requestValidationResult = validationRequest.validate();
+			if ( requestValidationResult.isEmpty() )
+			{
+				if ( validationRequest.getValidationGateName() != null )
+				{
+					return validateUsingGate( validationRequest );
+				}
+				else
+				{
+					return validateUsingConstraints( validationRequest );
+				}
+			}
+			else
+			{
+				throw new IllegalArgumentException( "Invalid request: " + requestValidationResult );
+			}
 		}
 		else
 		{
 			throw new IllegalArgumentException( "Invalid request: Use either the query parameters or the request body!" );
+		}
+	}
+
+	private ValidationReportV0 validateUsingGate( ValidationRequestV0 validationRequest )
+	{
+		return validationService.validate(
+				validationRequest.getDocument().toResource(),
+				validationRequest.getProfile().toResource(),
+				validationRequest.getValidationGateName()
+		);
+	}
+
+	private ValidationReportV0 validateUsingConstraints( ValidationRequestV0 validationRequest )
+	{
+		try
+		{
+			var validationGate = CessdaMetadataValidatorFactory.newValidationGate( validationRequest.getConstraints() );
+			return validationService.validate(
+					validationRequest.getDocument().toResource(),
+					validationRequest.getProfile().toResource(),
+					validationGate
+			);
+		}
+		catch ( InvalidGateException e )
+		{
+			// Extract the names of the constraints that couldn't be found
+			var stringBuilder = new StringBuilder();
+			var innerExceptions = e.getSuppressed();
+			for ( int i = 0; i < innerExceptions.length; i++ )
+			{
+
+				if (i > 0)
+				{
+					stringBuilder.append( ", " );
+				}
+
+				stringBuilder.append( ( (InvalidConstraintException) innerExceptions[i] ).getConstraintName() );
+			}
+
+			if ( innerExceptions.length == 1 )
+			{
+				throw new IllegalArgumentException( stringBuilder + " is not a valid constraint", e );
+			}
+			else
+			{
+				throw new IllegalArgumentException( stringBuilder + " are not valid constraints", e );
+			}
 		}
 	}
 }
