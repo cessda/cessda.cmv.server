@@ -22,6 +22,7 @@ package eu.cessda.cmv.server.api;
 import eu.cessda.cmv.core.*;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
 import eu.cessda.cmv.core.mediatype.validationrequest.v0.ValidationRequestV0;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,6 +35,7 @@ import org.zalando.problem.Problem;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Set;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -55,7 +57,22 @@ public class ValidationControllerV0
 			produces = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE } )
 	@Operation(
 			operationId = "validate",
-			description = "Use the request body, query parameters are deprecated",
+			description = """
+Perform a validation of a given DDI document against a specified profile.
+
+This API allows constraints to be specified in two forms, either using the preset validation gates or by specifying the constraints manually.
+
+The API will return an object with the URL of the document that was validated, as well as a list of constraint violations found in the document.
+The constraint violations will include a line and column number of the location of the violation, if applicable.
+
+## Useful links
+
+* [Documentation on the definition of the constraints, as well as what constraints are part of each validation gate](/documentation/constraints.html).
+* [CESSDA profiles for the Data Catalogue and European Question Bank](/documentation/profiles.html).
+
+## *Deprecation notice*
+
+Using query parameters to call the API is deprecated and doesn't allow specifying individual constraints, only validation gates. This method of calling the API will be removed in a future API version.""",
 			parameters = {
 					@Parameter( in = QUERY, name = "documentUri", deprecated = true ),
 					@Parameter( in = QUERY, name = "profileUri", deprecated = true ),
@@ -102,6 +119,15 @@ public class ValidationControllerV0
 		{
 			throw new IllegalArgumentException( "Invalid request: Use either the query parameters or the request body!" );
 		}
+	}
+
+	@GetMapping(path = "/Constraints", produces = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE })
+	@Operation(
+			description = "Get the list of supported constraints, use with /Validation ",
+			externalDocs = @ExternalDocumentation( description = "Constraint documentation", url = "link" ) )
+	public Set<String> constraints()
+	{
+		return CessdaMetadataValidatorFactory.getConstraints();
 	}
 
 	private ValidationReportV0 validateUsingGate( ValidationRequestV0 validationRequest )

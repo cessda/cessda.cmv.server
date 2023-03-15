@@ -18,19 +18,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>17</java.version>
 		<code-generation-comment>This file is generated, all changes will be overridden</code-generation-comment>
-		<logging.file.name>target/application.log</logging.file.name>
-		<logging.level.org.springframework>WARN</logging.level.org.springframework>
-		<logging.level.com.vaadin>WARN</logging.level.com.vaadin>
-		<server.port>8080</server.port>
-		<server.servlet.context-path>/</server.servlet.context-path>
 		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
 		<vaadin.version>8.14.3</vaadin.version>
-		<vaadin.servlet.productionMode>false</vaadin.servlet.productionMode>
 		<sonar.exclusions>src/main/java/eu/cessda/cmv/server/ui/**/*.java</sonar.exclusions>
-		<management.endpoints.enabled-by-default>true</management.endpoints.enabled-by-default>
-		<management.endpoints.web.exposure.include>*</management.endpoints.web.exposure.include>
-		<management.endpoint.logfile.enabled>true</management.endpoint.logfile.enabled>
-		<management.info.git.mode>full</management.info.git.mode>
 	</properties>
 
 	<dependencyManagement>
