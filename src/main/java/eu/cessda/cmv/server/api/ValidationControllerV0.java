@@ -123,8 +123,8 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 
 	@GetMapping(path = "/Constraints", produces = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE })
 	@Operation(
-			description = "Get the list of supported constraints, use with /Validation ",
-			externalDocs = @ExternalDocumentation( description = "Constraint documentation", url = "link" ) )
+			description = "Get the list of supported constraints, use with /Validation",
+			externalDocs = @ExternalDocumentation( description = "Constraint documentation", url = "/documentation/constraints.html" ) )
 	public Set<String> constraints()
 	{
 		return CessdaMetadataValidatorFactory.getConstraints();
