@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,20 +19,29 @@
  */
 package eu.cessda.cmv.server.api;
 
+import eu.cessda.cmv.core.NotDocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.zalando.problem.Problem;
+import org.zalando.problem.spring.common.AdviceTraits;
+import org.zalando.problem.spring.web.advice.AdviceTrait;
 import org.zalando.problem.spring.web.advice.ProblemHandling;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static org.zalando.problem.Status.BAD_REQUEST;
+import static org.zalando.problem.Status.NOT_FOUND;
+
 @ControllerAdvice
-public class ExceptionHandlerAdvice implements ProblemHandling,
-		ExceptionToProblemAdviceTrait
+public class ExceptionHandlerAdvice implements ProblemHandling, AdviceTrait
 {
 	private static final Logger logger = LoggerFactory.getLogger( ExceptionHandlerAdvice.class );
 
@@ -40,7 +49,7 @@ public class ExceptionHandlerAdvice implements ProblemHandling,
 	public void log( Throwable throwable, Problem problem, NativeWebRequest webRequest, HttpStatus status )
 	{
 		HttpServletRequest request = ((ServletWebRequest) webRequest).getRequest();
-		StringBuilder stringBuilder = new StringBuilder();
+		var stringBuilder = new StringBuilder();
 		stringBuilder.append( throwable.getMessage() ).append( " by " )
 				.append( request.getProtocol() ).append( " " )
 				.append( ( (ServletWebRequest) webRequest ).getHttpMethod() ).append( " " )
@@ -50,6 +59,43 @@ public class ExceptionHandlerAdvice implements ProblemHandling,
 			stringBuilder.append( "?" ).append( request.getQueryString() );
 		}
 		final String message = stringBuilder.toString();
-		logger.warn( message );
+		if (status.is5xxServerError())
+		{
+			logger.error( message, throwable );
+		}
+		else
+		{
+			logger.warn( message );
+		}
+	}
+
+	@Override
+	public ResponseEntity<Problem> fallback( Throwable throwable, Problem problem, NativeWebRequest request, HttpHeaders headers )
+	{
+		// Get status code
+		var fallback = AdviceTraits.fallback( problem, headers );
+
+		// Cannot represent a problem with the given acceptable content type, return an empty body
+		var acceptHeader = request.getHeader( "accept" );
+		if (acceptHeader != null && MediaType.APPLICATION_XML.isCompatibleWith( MediaType.valueOf( acceptHeader ) ) ) {
+
+		}
+		return ResponseEntity.status( fallback.getStatusCode() ).build();
+	}
+
+	@ExceptionHandler(value = { IllegalArgumentException.class, NotDocumentException.class })
+	public ResponseEntity<Problem> handle(
+			Exception exception,
+			NativeWebRequest request )
+	{
+		return create( BAD_REQUEST, exception, request );
+	}
+
+	@ExceptionHandler
+	public ResponseEntity<Problem> handle(
+			ResourceNotFoundException exception,
+			NativeWebRequest request )
+	{
+		return create( NOT_FOUND, exception, request );
 	}
 }
