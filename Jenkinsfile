@@ -28,7 +28,7 @@ pipeline {
                 stage('Build Project') {
                     steps {
                         withMaven {
-                            sh './mvnw clean install -Pdocker-compose'
+                            sh './mvnw clean install'
                         }
                     }
                     when { branch 'main' }
@@ -37,7 +37,7 @@ pipeline {
                 stage('Test Project') {
                     steps {
                         withMaven {
-                            sh './mvnw clean test -Pdocker-compose'
+                            sh './mvnw clean test'
                         }
                     }
                     when { not { branch 'main' } }
@@ -51,7 +51,7 @@ pipeline {
                     steps {
                         withSonarQubeEnv('cessda-sonar') {
                             withMaven {
-                                sh './mvnw sonar:sonar -Pdocker-compose'
+                                sh './mvnw sonar:sonar'
                             }
                         }
                         timeout(time: 1, unit: 'HOURS') {
@@ -65,7 +65,7 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 sh 'gcloud auth configure-docker'
-                sh "./mvnw docker:build docker:push -Pdocker-compose -D\"docker.registry.host\"=${docker_repo} -D\"docker.image.name\"=${productName}-${componentName} -D\"docker.image.tag\"=${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+                sh "./mvnw docker:build docker:push -D\"docker.registry.host\"=${docker_repo} -D\"docker.image.name\"=${productName}-${componentName} -D\"docker.image.tag\"=${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
                 sh "gcloud container images add-tag ${IMAGE_TAG} ${docker_repo}/${productName}-${componentName}:${env.BRANCH_NAME}-latest"
             }
             when { branch 'main' }

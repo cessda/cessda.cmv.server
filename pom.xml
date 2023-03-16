@@ -348,11 +348,7 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
-				<includes>
-					<include>application.properties</include>
-					<include>git.properties</include>
-					<include>static/**/*</include>
-				</includes>
+				<excludes><exclude>docker/**/*</exclude></excludes>
 			</resource>
 			<resource>
 				<directory>src/main/resources/docker</directory>
@@ -368,26 +364,12 @@
 		</resources>
 	</build>
 
-	<profiles>
-		<profile>
-			<id>docker-compose</id>
-			<properties>
-				<logging.file.name>application.log</logging.file.name>
-				<server.servlet.context-path/><!-- necessary for HEALTHCHECK -->
-				<vaadin.servlet.productionMode>true</vaadin.servlet.productionMode>
-				<management.endpoints.web.exposure.include>health</management.endpoints.web.exposure.include>
-				<management.endpoint.logfile.enabled>false</management.endpoint.logfile.enabled>
-				<management.info.git.mode>simple</management.info.git.mode>
-			</properties>
-		</profile>
-	</profiles>
-
-        <licenses>
-                <license>
-                        <name>Apache License, Version 2.0</name>
-                        <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-                </license>
-        </licenses>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
 	<organization>
 		<name>CESSDA ERIC</name>
 		<url>https://www.cessda.eu/</url>
