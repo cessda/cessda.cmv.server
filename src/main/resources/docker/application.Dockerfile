@@ -20,4 +20,4 @@ USER user:user
 
 HEALTHCHECK CMD exit $(echo $(echo $(wget http://localhost:8080/actuator/health -q -O -) | grep -cv UP))
 ENTRYPOINT ["/bin/sh", "./entrypoint.sh"]
-EXPOSE @server.port@
+EXPOSE 8080
