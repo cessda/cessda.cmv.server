@@ -14,10 +14,13 @@
 	</parent>
 
 	<properties>
-		<docker.image.name>cessda/${project.artifactId}</docker.image.name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>17</java.version>
+		<git.branch/>
 		<code-generation-comment>This file is generated, all changes will be overridden</code-generation-comment>
+		<docker.registry.host/>
+		<docker.image.name>cessda/${project.artifactId}</docker.image.name>
+		<docker.image.tag>${project.version}</docker.image.tag>
 		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
 		<vaadin.version>8.14.3</vaadin.version>
 		<sonar.exclusions>src/main/java/eu/cessda/cmv/server/ui/**/*.java</sonar.exclusions>
