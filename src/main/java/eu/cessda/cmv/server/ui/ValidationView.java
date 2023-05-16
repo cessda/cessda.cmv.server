@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -72,6 +72,11 @@ public class ValidationView extends VerticalLayout implements View
 		validationGateNameComboBox.setItems( ValidationGateName.values() );
 		validationGateNameComboBox.setValue( ValidationGateName.BASIC );
 
+		var validationReportLabel = new Label("Note that records with constraint violations will be visible in " +
+			"the CESSDA Data Catalogue (CDC) User Interface, but will be excluded from the OAI-PMH endpoint. " +
+			"Records with XSD Schema violations will be visible in the CDC User Interface and, " +
+			"for the time being, will also be included in the OAI-PMH endpoint." );
+
 		Grid<ValidationReport> validationReportGrid = new Grid<>();
 		validationReportGrid.setHeaderVisible( false );
 		validationReportGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
@@ -84,7 +89,11 @@ public class ValidationView extends VerticalLayout implements View
 				.setSortable( false )
 				.setHandleWidgetEvents( true );
 
-		var reportPanel = new Panel( "Reports", validationReportGrid );
+		var validationReportLayout = new VerticalLayout();
+		validationReportLayout.addComponent( validationReportLabel );
+		validationReportLayout.addComponent( validationReportGrid );
+
+		var reportPanel = new Panel( "Reports", validationReportLayout );
 
 		var validateButton = new Button( "Validate", listener ->
 		{

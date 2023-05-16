@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,11 +21,8 @@ package eu.cessda.cmv.server.ui;
 
 import com.vaadin.data.ValueProvider;
 import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Grid;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ConstraintViolationV0;
 import eu.cessda.cmv.server.ValidationReport;
@@ -53,7 +50,7 @@ public class ValidationReportGridValueProvider
 		this.documentResources = documentResources;
 	}
 
-	private static Grid<?> getStringGrid( String message )
+	private static Grid<String> getStringGrid( String message )
 	{
 		var stringGrid = new Grid<String>();
 		stringGrid.setItems( message );
@@ -66,13 +63,14 @@ public class ValidationReportGridValueProvider
 	{
 		var validationReport = report.validationReport();
 
+		var documentLabelString = documentResources.stream()
+			.filter( r -> r.getUri().equals( validationReport.getDocumentUri() ) ).findFirst()
+			.map( Resource.V10::getLabel )
+			.orElse( validationReport.getDocumentUri().toString() );
 
 		var documentLabel = new Label();
 		documentLabel.setCaption( "Document" );
-		documentResources.stream()
-				.filter( r -> r.getUri().equals( validationReport.getDocumentUri() ) ).findFirst()
-				.ifPresentOrElse( r -> documentLabel.setValue( r.getLabel() ),
-						() -> documentLabel.setValue( validationReport.getDocumentUri().toString() ) );
+		documentLabel.setValue( documentLabelString );
 
 		var constraintViolations = validationReport.getConstraintViolations();
 
@@ -88,7 +86,7 @@ public class ValidationReportGridValueProvider
 			// Display a message stating no schema violations were found
 			schemaViolationGrid = getStringGrid( "No schema violations found" );
 		}
-		schemaViolationGrid.setCaption( "Schema Violations" );
+		schemaViolationGrid.setCaption( "XSD Schema Violations" );
 		schemaViolationGrid.setHeaderVisible( false );
 		schemaViolationGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
 		schemaViolationGrid.setSizeFull();
@@ -114,10 +112,17 @@ public class ValidationReportGridValueProvider
 		constraintViolationGrid.setSelectionMode( SelectionMode.NONE );
 		constraintViolationGrid.setHeight( min( max( ( constraintViolations.size() + 1 ) * ELEMENT_SIZE, ELEMENT_SIZE ), 400 ), Unit.PIXELS );
 
-		var formLayout = new FormLayout();
-		formLayout.addComponent( documentLabel );
-		formLayout.addComponent( schemaViolationGrid );
-		formLayout.addComponent( constraintViolationGrid );
-		return new CustomComponent( formLayout );
+		var constraintViolationForm = new FormLayout();
+		constraintViolationForm.addComponent( documentLabel );
+		constraintViolationForm.addComponent( constraintViolationGrid );
+
+		var schemaViolationForm = new FormLayout();
+		schemaViolationForm.addComponent( schemaViolationGrid );
+
+		var verticalLayout = new VerticalLayout();
+		verticalLayout.addComponent( constraintViolationForm );
+		verticalLayout.addComponent( schemaViolationForm );
+
+		return new CustomComponent( verticalLayout );
 	}
 }
