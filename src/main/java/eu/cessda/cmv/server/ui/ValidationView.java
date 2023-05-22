@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
@@ -62,15 +63,19 @@ public class ValidationView extends VerticalLayout implements View
 						   @Autowired List<Resource.V10> demoProfiles,
 						   @Autowired CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory )
 	{
+		var bundle = ResourceBundle.getBundle( ValidationView.class.getName(), UI.getCurrent().getLocale() );
+
 		List<Resource.V10> profileResources = new ArrayList<>();
 		List<Resource.V10> documentResources = new ArrayList<>();
 		List<ValidationReport> validationReports = new ArrayList<>();
 
 		ComboBox<ValidationGateName> validationGateNameComboBox = new ComboBox<>();
-		validationGateNameComboBox.setCaption( "Validation Gate" );
+		validationGateNameComboBox.setCaption( bundle.getString( "configuration.validationGate" ) );
 		validationGateNameComboBox.setEmptySelectionAllowed( false );
 		validationGateNameComboBox.setItems( ValidationGateName.values() );
 		validationGateNameComboBox.setValue( ValidationGateName.BASIC );
+
+		var validationReportLabel = new Label( bundle.getString( "report.label" ) );
 
 		Grid<ValidationReport> validationReportGrid = new Grid<>();
 		validationReportGrid.setHeaderVisible( false );
@@ -84,18 +89,22 @@ public class ValidationView extends VerticalLayout implements View
 				.setSortable( false )
 				.setHandleWidgetEvents( true );
 
-		var reportPanel = new Panel( "Reports", validationReportGrid );
+		var validationReportLayout = new VerticalLayout();
+		validationReportLayout.addComponent( validationReportLabel );
+		validationReportLayout.addComponent( validationReportGrid );
 
-		var validateButton = new Button( "Validate", listener ->
+		var reportPanel = new Panel( bundle.getString( "report.panel.caption" ), validationReportLayout );
+
+		var validateButton = new Button( bundle.getString( "validate.button" ), listener ->
 		{
 			if ( profileResources.isEmpty() )
 			{
-				Notification.show( "No profile selected!" );
+				Notification.show( bundle.getString("validate.noProfileSelected") );
 				return;
 			}
 			if ( documentResources.isEmpty() )
 			{
-				Notification.show( "No documents selected!" );
+				Notification.show( bundle.getString("validate.noDocumentsSelected") );
 				return;
 			}
 
@@ -124,7 +133,7 @@ public class ValidationView extends VerticalLayout implements View
 				var validationExceptionString = validationExceptions.stream()
 						.map( Exception::toString )
 						.collect( Collectors.joining( "/n" ) );
-				Notification.show( "Some validations failed", validationExceptionString, Notification.Type.WARNING_MESSAGE );
+				Notification.show( bundle.getString("validate.validationErrors"), validationExceptionString, Notification.Type.WARNING_MESSAGE );
 			}
 
 			validationReportGrid.getDataProvider().refreshAll();
@@ -155,7 +164,7 @@ public class ValidationView extends VerticalLayout implements View
 					reportPanel.setVisible( false );
 				},
 				cessdaMetadataValidatorFactory );
-		profileSelection.setCaption( "Profile" );
+		profileSelection.setCaption( bundle.getString( "configuration.profileSelectionCaption" ) );
 		profileSelection.setWidthFull();
 
 		var documentSelection = new ResourceSelectionComponent(
@@ -171,7 +180,7 @@ public class ValidationView extends VerticalLayout implements View
 					reportPanel.setVisible( false );
 				},
 				cessdaMetadataValidatorFactory );
-		documentSelection.setCaption( "Documents" );
+		documentSelection.setCaption( bundle.getString( "configuration.documentSelectionCaption" ) );
 		documentSelection.setWidthFull();
 
 		var configurationFormLayout = new FormLayout();
@@ -179,7 +188,7 @@ public class ValidationView extends VerticalLayout implements View
 		configurationFormLayout.addComponent( validationGateNameComboBox );
 		configurationFormLayout.addComponent( profileSelection );
 		configurationFormLayout.addComponent( documentSelection );
-		var configurationPanel = new Panel( "Configuration", configurationFormLayout );
+		var configurationPanel = new Panel( bundle.getString( "configuration.configurationBoxCaption" ), configurationFormLayout );
 
 		this.setSizeFull();
 		addComponent( configurationPanel );
