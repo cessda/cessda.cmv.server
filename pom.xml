@@ -4,7 +4,7 @@
 
 	<groupId>eu.cessda.cmv</groupId>
 	<artifactId>cmv-server</artifactId>
-	<version>1.1.0-SNAPSHOT</version>
+	<version>1.1.0</version>
 	<name>CESSDA Metadata Validator</name>
 	<url>https://cmv.cessda.eu/</url>
 	<parent>
@@ -16,9 +16,9 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>17</java.version>
-		<git.branch/>
+		<git.branch />
 		<code-generation-comment>This file is generated, all changes will be overridden</code-generation-comment>
-		<docker.registry.host/>
+		<docker.registry.host />
 		<docker.image.name>cessda/${project.artifactId}</docker.image.name>
 		<docker.image.tag>${project.version}</docker.image.tag>
 		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
@@ -101,12 +101,12 @@
 		<dependency>
 			<groupId>eu.cessda.cmv</groupId>
 			<artifactId>cmv-documentation</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
+			<version>1.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.cessda.cmv</groupId>
 			<artifactId>cmv-core</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
+			<version>1.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -254,10 +254,10 @@
 							<!-- https://stackoverflow.com/a/44033580 -->
 							<exportAntProperties>true</exportAntProperties>
 							<target>
-								<condition property="isSnapshot"><contains string="${project.version}" substring="SNAPSHOT"/></condition>
-								<condition property="docker.registry.host" value="docker-private-snapshots.gesis.intra"><isset property="isSnapshot"/></condition>
+								<condition property="isSnapshot"><contains string="${project.version}" substring="SNAPSHOT" /></condition>
+								<condition property="docker.registry.host" value="docker-private-snapshots.gesis.intra"><isset property="isSnapshot" /></condition>
 								<property name="docker.registry.host" value="docker-private-releases.gesis.intra" />
-								<condition property="docker.image.tag" value="${git.branch}"><isset property="isSnapshot"/></condition>
+								<condition property="docker.image.tag" value="${git.branch}"><isset property="isSnapshot" /></condition>
 								<property name="docker.image.tag" value="${project.version}" />
 							</target>
 						</configuration>
@@ -344,8 +344,7 @@
 							<excludes>xslt/1.0/stylesheet.xsl</excludes>
 							<stylesheet>src/main/resources/static/profiles/xslt/1.0/stylesheet.xsl</stylesheet>
 							<fileMappers>
-								<fileMapper
-										implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
 									<targetExtension>.html</targetExtension>
 								</fileMapper>
 							</fileMappers>
@@ -388,7 +387,8 @@
 	<scm>
 		<url>https://github.com/cessda/cessda.cmv.server</url>
 		<developerConnection>scm:git:https://github.com/cessda/cessda.cmv.server.git</developerConnection>
-	</scm>
+	  <tag>1.1.0</tag>
+  </scm>
 	<ciManagement>
 		<system>Jenkins</system>
 		<url>https://jenkins.cessda.eu/</url>
