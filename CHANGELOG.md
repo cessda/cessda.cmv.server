@@ -14,6 +14,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - *Fixed (for any bug fixes)*  
 - *Security (in case of vulnerabilities)*
 
+## [1.1.0] - 2023-05-23
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7961907.svg)](https://doi.org/10.5281/zenodo.7961907)
+
+### Added
+
+- Added the ability to define a custom validation gate by specifying a list of constraints ([PR-107](https://github.com/cessda/cessda.cmv.server/pull/107))
+- Added constraint documentation to the `/Validation` and `/Constraints` endpoints ([PR-110](https://github.com/cessda/cessda.cmv.server/pull/110))
+
+### Changed
+
+- Rearrange XSD schema violations below constraint violations, add a note about CDC validator behavior ([PR-123](https://github.com/cessda/cessda.cmv.server/pull/123))
+- Updated the copyright statement in the Java source files ([PR-92](https://github.com/cessda/cessda.cmv.server/pull/92))
+- Updated the Matomo analytics code to use the CESSDA Matomo Cloud instance ([PR-115](https://github.com/cessda/cessda.cmv.server/pull/115))
+
+## Removed
+
+* Removed the stylesheet references from the profile XMLs ([PR-98](https://github.com/cessda/cessda.cmv.server/pull/98))
+
 ## [1.0.0] - 2023-01-24
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7545331.svg)](https://doi.org/10.5281/zenodo.7545331)
@@ -102,6 +121,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Show notification if DDI document recognition fails ([#19](https://github.com/cessda/cessda.cmv.server/issues/19))
 - Change endpoints urls to be consistent with other CESSDA products ([#18](https://github.com/cessda/cessda.cmv.server/issues/18))
 
+[1.1.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/1.0.1
 [1.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/v1.0.0
 [0.4.2]: https://github.com/cessda/cessda.cmv.server/releases/tag/v0.4.2
 [0.4.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/v0.4.1
