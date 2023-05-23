@@ -378,7 +378,8 @@
 		<url>https://www.cessda.eu/</url>
 	</organization>
 	<scm>
-		<url>https://github.com/cessda/cessda.cmv.server/</url>
+		<url>https://github.com/cessda/cessda.cmv.server</url>
+		<developerConnection>scm:git:https://github.com/cessda/cessda.cmv.server.git</developerConnection>
 	</scm>
 	<ciManagement>
 		<system>Jenkins</system>
