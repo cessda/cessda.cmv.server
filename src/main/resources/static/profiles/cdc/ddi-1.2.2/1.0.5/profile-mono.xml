@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--____________________________________________________________________________________
-© Copyright 2020, CESSDA ERIC
+<!--
+____________________________________________________________________________________
+© Copyright 2023, CESSDA ERIC
 Licence: This document is issued under a CC BY licence (https://creativecommons.org/licenses/by/4.0/)
 Author: Darren Bell - UK Data Archive
 Created: 2020-12-02
-Version: v1.0.4
-Change summary from v1.0.3: See https://github.com/cessda/cessda.metadata.profiles/blob/v1.0.4/CHANGELOG.md
-Last modified 2021-03-01 Darren Bell
+Version: v1.0.5
+Change summary from v1.0.4: See https://github.com/cessda/cessda.metadata.profiles/blob/v1.0.5/CHANGELOG.md
+Last modified 2023-05-31 Matthew Morris
 ____________________________________________________________________________________
 -->
 <pr:DDIProfile xmlns:r="ddi:reusable:3_2" xmlns:xhtml="http://www.w3.org/1999/xhtml"
     xmlns:pr="ddi:ddiprofile:3_2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="ddi:ddiprofile:3_2 https://ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/ddiprofile.xsd"
-    versionDate="2021-03-01">
+    versionDate="2023-05-31">
     <r:Agency>CESSDA</r:Agency>
-    <r:ID>CDC_DDI25_PROFILE_MONOLINGUAL</r:ID>
-    <r:Version>1.0.4</r:Version>
+    <r:ID>CDC_DDI122_PROFILE_MONOLINGUAL</r:ID>
+    <r:Version>1.0.5</r:Version>
     <r:VersionResponsibility>Darren Bell - UKDA</r:VersionResponsibility>
     <pr:DDIProfileName>
-        <r:String>CESSDA DATA CATALOGUE (CDC) DDI2.5 PROFILE - MONOLINGUAL</r:String>
+        <r:String>CESSDA DATA CATALOGUE (CDC) DDI 1.2.2 PROFILE - MONOLINGUAL</r:String>
     </pr:DDIProfileName>
     <pr:XPathVersion>1.0</pr:XPathVersion>
-    <pr:DDINamespace>2.5</pr:DDINamespace>
+    <pr:DDINamespace>1.22</pr:DDINamespace>
+    <!--NOTE THAT DDIPROFILE.XSD DOES NOT PERMIT FORMAT OF "1.2.2" IN THIS ELEMENT-->
     <pr:XMLPrefixMap>
         <pr:XMLPrefix/>
-        <pr:XMLNamespace>ddi:codebook:2_5</pr:XMLNamespace>
+        <pr:XMLNamespace>http://www.icpsr.umich.edu/DDI</pr:XMLNamespace>
     </pr:XMLPrefixMap>
     <pr:XMLPrefixMap>
         <pr:XMLPrefix>xsi</pr:XMLPrefix>
@@ -33,21 +35,21 @@ ________________________________________________________________________________
     <!--****************************************************************************************-->
     <!--ROOT ELEMENT-->
     <!--****************************************************************************************-->
-    <pr:Used xpath="/codeBook/@xml:lang" isRequired="true">
+    <pr:Used xpath="/codeBook/@xml-lang" isRequired="false">
         <r:Description>
-            <r:Content>Required: Mandatory</r:Content>
+            <r:Content>Required: Recommended</r:Content>
             <r:Content>ElementType: Attribute</r:Content>
             <r:Content>Usage: ISO 639-1 codes are strongly encouraged to be used</r:Content>
         </r:Description>
     </pr:Used>
     <pr:Used xpath="/codeBook/@xsi:schemaLocation"
-        defaultValue="ddi:codebook:2_5 http://www.ddialliance.org/Specification/DDI-Codebook/2.5/XMLSchema/codebook.xsd"
+        defaultValue="http://www.icpsr.umich.edu/DDI http://www.icpsr.umich.edu/DDI/Version1-2-2.xsd"
         fixedValue="true" isRequired="true">
         <r:Description>
             <r:Content>Required: Mandatory</r:Content>
             <r:Content>ElementType: Attribute</r:Content>
-            <r:Content>Usage: System-required information - always "ddi:codebook:2_5
-                codebook.xsd"</r:Content>
+            <r:Content>Usage: System-required information - always "http://www.icpsr.umich.edu/DDI
+                http://www.icpsr.umich.edu/DDI/Version1-2-2.xsd"</r:Content>
         </r:Description>
     </pr:Used>
     <!--****************************************************************************************-->
@@ -69,7 +71,7 @@ ________________________________________________________________________________
 			]]></r:Content>
         </pr:Instructions>
     </pr:Used>
-     <pr:Used xpath="/codeBook/stdyDscr/citation/titlStmt/titl" isRequired="true">
+        <pr:Used xpath="/codeBook/stdyDscr/citation/titlStmt/titl" isRequired="true">
         <r:Description>
             <r:Content>Required: Mandatory</r:Content>
             <r:Content>ElementType: Content element</r:Content>
@@ -112,10 +114,10 @@ ________________________________________________________________________________
         <r:Description>
             <r:Content>Required: Mandatory</r:Content>
             <r:Content>ElementType: Attribute</r:Content>
-            <r:Content>Usage: Agency responsible for the identifier of the study. If you are using
-                IDNo for a Persistent Identifer, value should be one of
-                https://vocabularies.cessda.eu/vocabulary/CessdaPersistentIdentifierTypes i.e. ARK or
-                DOI or Handle or URN </r:Content>
+            <r:Content>Usage: Agency responsible for the identifier of the study. If you are using IDNo for a
+                Persistent Identifer, value should be one of https://vocabularies.cessda.eu/vocabulary/CessdaPersistentIdentifierTypes i.e.
+                ARK or DOI or Handle or URN
+            </r:Content>
         </r:Description>
     </pr:Used>
     <pr:Used xpath="/codeBook/stdyDscr/citation/holdings/@URI" isRequired="true">
@@ -220,10 +222,10 @@ ________________________________________________________________________________
         <pr:Instructions>
             <r:Content>
                 <![CDATA[
-                <Constraints>
-                    <MandatoryNodeIfParentPresentConstraint/>
-                </Constraints>
-                ]]>
+        <Constraints>
+          <MandatoryNodeIfParentPresentConstraint/>
+        </Constraints>
+      ]]>
             </r:Content>
         </pr:Instructions>
     </pr:Used>
@@ -281,9 +283,9 @@ ________________________________________________________________________________
             <r:Content>Required: Recommended</r:Content>
             <r:Content>ElementType: Content element</r:Content>
             <r:Content>ElementRepeatable: Yes</r:Content>
-            <r:Content>Usage: Subject classifcation term for the study in the local language. Use
-                descriptive terms from https://vocabularies.cessda.eu/vocabulary/TopicClassification
-                if possible but other vocabularies are permitted.</r:Content>
+            <r:Content>Usage: Subject classifcation term for the study in the local language. Use descriptive
+                terms from https://vocabularies.cessda.eu/vocabulary/TopicClassification if
+                possible but other vocabularies are permitted.</r:Content>
             <r:Content>CDC_UI_Label: Topic</r:Content>
         </r:Description>
         <pr:Instructions>
@@ -345,8 +347,8 @@ ________________________________________________________________________________
             <r:Content>Required: Optional</r:Content>
             <r:Content>ElementType: Content element</r:Content>
             <r:Content>ElementRepeatable: Yes</r:Content>
-            <r:Content>Usage: This is the free text expression of the collection period. This
-                element may be empty.</r:Content>
+            <r:Content>Usage: This is the free text expression of the collection period.
+                This element may be empty.</r:Content>
             <r:Content>CDC_UI_Label: Data collection period</r:Content>
         </r:Description>
         <pr:Instructions>
@@ -369,10 +371,10 @@ ________________________________________________________________________________
         <pr:Instructions>
             <r:Content>
                 <![CDATA[
-                <Constraints>
-                    <MandatoryNodeIfParentPresentConstraint/>
-                </Constraints>
-                ]]>
+        <Constraints>
+          <MandatoryNodeIfParentPresentConstraint/>
+        </Constraints>
+      ]]>
             </r:Content>
         </pr:Instructions>
     </pr:Used>
@@ -451,8 +453,7 @@ ________________________________________________________________________________
             <r:Content>ElementRepeatable: No</r:Content>
             <r:Content>Analysis Unit Controlled Vocabulary "Code value" that is the same across
                 languages. e.g if the "anlyUnit" element is 'Kotitalous' for Finnish, the "concept"
-                element is 'Household'. See example at
-                https://vocabularies.cessda.eu/urn/urn:ddi:int.ddi.cv:AnalysisUnit.</r:Content>
+                element is 'Household'. See example at https://vocabularies.cessda.eu/urn/urn:ddi:int.ddi.cv:AnalysisUnit.</r:Content>
         </r:Description>
         <pr:Instructions>
             <r:Content><![CDATA[
@@ -545,8 +546,7 @@ ________________________________________________________________________________
 			]]></r:Content>
         </pr:Instructions>
     </pr:Used>
-    <pr:Used xpath="/codeBook/stdyDscr/method/dataColl/timeMeth/concept/@vocabURI"
-        isRequired="false">
+    <pr:Used xpath="/codeBook/stdyDscr/method/dataColl/timeMeth/concept/@vocabURI" isRequired="false">
         <r:Description>
             <r:Content>Required: Optional</r:Content>
             <r:Content>ElementType: Attribute</r:Content>
@@ -588,8 +588,7 @@ ________________________________________________________________________________
             <r:Content>ElementRepeatable: No</r:Content>
             <r:Content>Usage: Sampling Procedure Controlled Vocabulary "Code value" that is the same
                 across languages. e.g if the 'sampProc' element is 'Todennäköisyysotanta' for
-                Finnish, the 'concept' element is 'Probability'. See example at
-                https://vocabularies.cessda.eu/urn/urn:ddi:int.ddi.cv:SamplingProcedure </r:Content>
+                Finnish, the 'concept' element is 'Probability'. See example at https://vocabularies.cessda.eu/urn/urn:ddi:int.ddi.cv:SamplingProcedure </r:Content>
         </r:Description>
         <pr:Instructions>
             <r:Content><![CDATA[
@@ -658,8 +657,7 @@ ________________________________________________________________________________
             <r:Content>ElementRepeatable: No</r:Content>
             <r:Content>Usage: Mode of Collection Controlled Vocabulary "Code value" that is the same
                 across languages. e.g if the 'collMode' element is 'Haastattelu' for Finnish, the
-                'concept' element is 'Interview'. See example at
-                https://vocabularies.cessda.eu/urn/urn:ddi:int.ddi.cv:ModeOfCollection </r:Content>
+                'concept' element is 'Interview' See https://vocabularies.cessda.eu/urn/urn:ddi:int.ddi.cv:ModeOfCollection </r:Content>
         </r:Description>
         <pr:Instructions>
             <r:Content><![CDATA[

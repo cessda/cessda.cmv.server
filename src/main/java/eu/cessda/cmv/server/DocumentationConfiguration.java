@@ -85,13 +85,13 @@ public class DocumentationConfiguration implements WebMvcConfigurer
 		// CDC profile redirects
 		registry.addRedirectViewController( "/profiles/cdc/ddi-1.2.2/latest/profile.xml", "/profiles/cdc/ddi-1.2.2/1.0.4/profile.xml" );
 		registry.addRedirectViewController( "/profiles/cdc/ddi-1.2.2/latest/profile.html", "/profiles/cdc/ddi-1.2.2/1.0.4/profile.html" );
-		registry.addRedirectViewController( "/profiles/cdc/ddi-1.2.2/latest/profile-mono.xml", "/profiles/cdc/ddi-1.2.2/1.0.4/profile-mono.xml" );
-		registry.addRedirectViewController( "/profiles/cdc/ddi-1.2.2/latest/profile-mono.html", "/profiles/cdc/ddi-1.2.2/1.0.4/profile-mono.html" );
+		registry.addRedirectViewController( "/profiles/cdc/ddi-1.2.2/latest/profile-mono.xml", "/profiles/cdc/ddi-1.2.2/1.0.5/profile-mono.xml" );
+		registry.addRedirectViewController( "/profiles/cdc/ddi-1.2.2/latest/profile-mono.html", "/profiles/cdc/ddi-1.2.2/1.0.5/profile-mono.html" );
 
 		registry.addRedirectViewController( "/profiles/cdc/ddi-2.5/latest/profile.xml", "/profiles/cdc/ddi-2.5/1.0.4/profile.xml" );
 		registry.addRedirectViewController( "/profiles/cdc/ddi-2.5/latest/profile.html", "/profiles/cdc/ddi-2.5/1.0.4/profile.html" );
-		registry.addRedirectViewController( "/profiles/cdc/ddi-2.5/latest/profile-mono.xml", "/profiles/cdc/ddi-2.5/1.0.4/profile-mono.xml" );
-		registry.addRedirectViewController( "/profiles/cdc/ddi-2.5/latest/profile-mono.html", "/profiles/cdc/ddi-2.5/1.0.4/profile-mono.html" );
+		registry.addRedirectViewController( "/profiles/cdc/ddi-2.5/latest/profile-mono.xml", "/profiles/cdc/ddi-2.5/1.0.5/profile-mono.xml" );
+		registry.addRedirectViewController( "/profiles/cdc/ddi-2.5/latest/profile-mono.html", "/profiles/cdc/ddi-2.5/1.0.5/profile-mono.html" );
 
 		registry.addRedirectViewController( "/profiles/cdc/ddi-3.2/latest/profile.xml", "/profiles/cdc/ddi-3.2/0.1.1/profile.xml" );
 		registry.addRedirectViewController( "/profiles/cdc/ddi-3.2/latest/profile.html", "/profiles/cdc/ddi-3.2/0.1.1/profile.html" );

@@ -4,18 +4,18 @@
 Licence: This document is issued under a CC BY licence (https://creativecommons.org/licenses/by/4.0/)
 Author: Darren Bell - UK Data Archive
 Created: 2020-12-02
-Version: v1.0.4
-Change summary from v1.0.3: See https://github.com/cessda/cessda.metadata.profiles/blob/v1.0.4/CHANGELOG.md
-Last modified 2021-03-01 Darren Bell
+Version: v1.0.5
+Change summary from v1.0.4: See https://github.com/cessda/cessda.metadata.profiles/blob/v1.0.5/CHANGELOG.md
+Last modified 2023-05-31 Matthew Morris
 ____________________________________________________________________________________
 -->
 <pr:DDIProfile xmlns:r="ddi:reusable:3_2" xmlns:xhtml="http://www.w3.org/1999/xhtml"
     xmlns:pr="ddi:ddiprofile:3_2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="ddi:ddiprofile:3_2 https://ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/ddiprofile.xsd"
-    versionDate="2021-03-01">
+    versionDate="2023-05-31">
     <r:Agency>CESSDA</r:Agency>
     <r:ID>CDC_DDI25_PROFILE_MONOLINGUAL</r:ID>
-    <r:Version>1.0.4</r:Version>
+    <r:Version>1.0.5</r:Version>
     <r:VersionResponsibility>Darren Bell - UKDA</r:VersionResponsibility>
     <pr:DDIProfileName>
         <r:String>CESSDA DATA CATALOGUE (CDC) DDI2.5 PROFILE - MONOLINGUAL</r:String>
@@ -33,9 +33,9 @@ ________________________________________________________________________________
     <!--****************************************************************************************-->
     <!--ROOT ELEMENT-->
     <!--****************************************************************************************-->
-    <pr:Used xpath="/codeBook/@xml:lang" isRequired="true">
+    <pr:Used xpath="/codeBook/@xml:lang" isRequired="false">
         <r:Description>
-            <r:Content>Required: Mandatory</r:Content>
+            <r:Content>Required: Recommended</r:Content>
             <r:Content>ElementType: Attribute</r:Content>
             <r:Content>Usage: ISO 639-1 codes are strongly encouraged to be used</r:Content>
         </r:Description>
