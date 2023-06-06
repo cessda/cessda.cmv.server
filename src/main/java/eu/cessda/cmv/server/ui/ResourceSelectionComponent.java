@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,6 +35,7 @@ import java.io.Serial;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 import static com.vaadin.shared.ui.grid.HeightMode.ROW;
@@ -53,6 +54,7 @@ public class ResourceSelectionComponent extends CustomComponent
 	private static final long serialVersionUID = 8381371322203425719L;
 
 	private final List<Resource.V10> selectedResources;
+	private final ResourceBundle bundle = ResourceBundle.getBundle( ResourceSelectionComponent.class.getName(), UI.getCurrent().getLocale() );
 
 	public enum SelectionMode
 	{
@@ -80,6 +82,7 @@ public class ResourceSelectionComponent extends CustomComponent
 		requireNonNull( provisioningOptions );
 		requireNonNull( predefinedResources );
 		requireNonNull( selectedResources );
+
 		this.selectedResources = selectedResources;
 
 		MultiFileUpload multiFileUpload = newMultiFileUpload( selectionMode );
@@ -87,7 +90,7 @@ public class ResourceSelectionComponent extends CustomComponent
 				selectedProvisioningOption );
 
 		ComboBox<Resource.V10> comboBox = new ComboBox<>();
-		comboBox.setPlaceholder( "Select resource" );
+		comboBox.setPlaceholder( bundle.getString( "comboBox.select" ) );
 		comboBox.setItemCaptionGenerator( Resource.V10::getLabel );
 		comboBox.setWidth( 100, Unit.PERCENTAGE );
 		comboBox.setTextInputAllowed( false );
@@ -95,11 +98,11 @@ public class ResourceSelectionComponent extends CustomComponent
 
 		TextField textField = new TextField();
 		textField.setWidthFull();
-		textField.setPlaceholder( "Paste url" );
+		textField.setPlaceholder( bundle.getString( "pasteUrl" ) );
 		textField.setWidth( 100, Unit.PERCENTAGE );
 		// TODO https://vaadin.com/forum/thread/15426235/vaadin8-field-validation-without-binders
 
-		Button clearButton = new Button( "Clear" );
+		Button clearButton = new Button( bundle.getString("clear") );
 		Grid<Resource.V10> grid = newGrid();
 		grid.setItems( selectedResources );
 
@@ -145,7 +148,7 @@ public class ResourceSelectionComponent extends CustomComponent
 				}
 				else
 				{
-					Notification.show( "Input is not a valid url", Type.WARNING_MESSAGE );
+					Notification.show( bundle.getString("invalidURL"), Type.WARNING_MESSAGE );
 					textField.clear();
 				}
 			} )
@@ -197,9 +200,7 @@ public class ResourceSelectionComponent extends CustomComponent
 			if ( resource.getUri().getScheme().startsWith( "http" ) )
 			{
 				label.setContentMode( ContentMode.HTML );
-				label.setValue(
-						"<a href='" + resource.getUri().toString() + "' target='_blank'>" + resource.getLabel() +
-								"</a>" );
+				label.setValue( "<a href='" + resource.getUri() + "' target='_blank'>" + resource.getLabel() + "</a>" );
 			}
 			else
 			{
@@ -234,10 +235,10 @@ public class ResourceSelectionComponent extends CustomComponent
 		uploadStateWindow.setResizable( true );
 		MultiFileUpload multiFileUpload = new MultiFileUpload( null, uploadStateWindow, selectionMode.equals( MULTI ) );
 		multiFileUpload.setMaxFileSize( 100_000_000 );
-		multiFileUpload.setSizeErrorMsgPattern( "File is too big (max = {0}): {2} ({1})" );
-		multiFileUpload.setPanelCaption( "Files" );
+		multiFileUpload.setSizeErrorMsgPattern( bundle.getString("upload.fileTooBigPattern") );
+		multiFileUpload.setPanelCaption( bundle.getString("upload.caption") );
 		multiFileUpload.setMaxFileCount( 100 );
-		multiFileUpload.getSmartUpload().setUploadButtonCaptions( "Upload File", "Upload Files" );
+		multiFileUpload.getSmartUpload().setUploadButtonCaptions( bundle.getString("upload.singleFile"), bundle.getString("upload.multipleFiles") );
 		multiFileUpload.getSmartUpload().setUploadButtonIcon( VaadinIcons.UPLOAD );
 		return multiFileUpload;
 	}
