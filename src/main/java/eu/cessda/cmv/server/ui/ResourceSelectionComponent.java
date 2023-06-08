@@ -31,6 +31,7 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.gesis.commons.resource.Resource;
 
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.util.Collections;
 import java.util.List;
@@ -51,10 +52,9 @@ import static org.gesis.commons.resource.Resource.newResource;
 public class ResourceSelectionComponent extends CustomComponent
 {
 	@Serial
-	private static final long serialVersionUID = 8381371322203425719L;
+	private static final long serialVersionUID = -808880272310582714L;
 
-	private final List<Resource.V10> selectedResources;
-	private final ResourceBundle bundle = ResourceBundle.getBundle( ResourceSelectionComponent.class.getName(), UI.getCurrent().getLocale() );
+	private transient List<Resource.V10> selectedResources;
 
 	public enum SelectionMode
 	{
@@ -85,7 +85,9 @@ public class ResourceSelectionComponent extends CustomComponent
 
 		this.selectedResources = selectedResources;
 
-		MultiFileUpload multiFileUpload = newMultiFileUpload( selectionMode );
+		var bundle = ResourceBundle.getBundle( ResourceSelectionComponent.class.getName(), UI.getCurrent().getLocale() );
+
+		MultiFileUpload multiFileUpload = newMultiFileUpload( selectionMode, bundle );
 		RadioButtonGroup<ProvisioningOptions> buttonGroup = newButtonGroup( provisioningOptions,
 				selectedProvisioningOption );
 
@@ -227,7 +229,7 @@ public class ResourceSelectionComponent extends CustomComponent
 		return buttonGroup;
 	}
 
-	private MultiFileUpload newMultiFileUpload( SelectionMode selectionMode )
+	private static MultiFileUpload newMultiFileUpload( SelectionMode selectionMode, ResourceBundle bundle )
 	{
 		UploadStateWindow uploadStateWindow = new UploadStateWindow();
 		uploadStateWindow.setWindowPosition( UploadStateWindow.WindowPosition.CENTER );
@@ -258,5 +260,14 @@ public class ResourceSelectionComponent extends CustomComponent
 			Notification.show( e.getMessage(), Type.WARNING_MESSAGE );
 			return Optional.empty();
 		}
+	}
+
+	/**
+	 * Reset the transient field {@code selectedResources} to a valid state.
+	 */
+	@Serial
+	private void readObject( ObjectInputStream stream )
+	{
+		this.selectedResources = Collections.emptyList();
 	}
 }
