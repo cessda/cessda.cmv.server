@@ -4,7 +4,7 @@
 
 	<groupId>eu.cessda.cmv</groupId>
 	<artifactId>cmv-server</artifactId>
-	<version>1.1.1-SNAPSHOT</version>
+	<version>1.1.1</version>
 	<name>CESSDA Metadata Validator</name>
 	<url>https://cmv.cessda.eu/</url>
 	<parent>
@@ -101,12 +101,12 @@
 		<dependency>
 			<groupId>eu.cessda.cmv</groupId>
 			<artifactId>cmv-documentation</artifactId>
-			<version>1.1.1-SNAPSHOT</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.cessda.cmv</groupId>
 			<artifactId>cmv-core</artifactId>
-			<version>1.1.1-SNAPSHOT</version>
+			<version>1.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -387,7 +387,7 @@
 	<scm>
 		<url>https://github.com/cessda/cessda.cmv.server</url>
 		<developerConnection>scm:git:https://github.com/cessda/cessda.cmv.server.git</developerConnection>
-	  <tag>HEAD</tag>
+	  <tag>1.1.1</tag>
   </scm>
 	<ciManagement>
 		<system>Jenkins</system>
