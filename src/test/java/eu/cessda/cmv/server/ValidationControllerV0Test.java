@@ -206,9 +206,8 @@ class ValidationControllerV0Test
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder("")
 				.path(ValidationControllerV0.BASE_PATH)
 				.path("/Validation");
-		String content = null; // violates @NotNull
 		ValidationRequestV0 validationRequest = new ValidationRequestV0();
-		validationRequest.setDocument(content);
+		validationRequest.setDocument( (String) null ); // violates @NotNull
 		validationRequest.setProfile(new TextResource(newResource(PROFILE_URI)).toString());
 		validationRequest.setValidationGateName(ValidationGateName.STANDARD);
 		MediaType mediaType = MediaType.APPLICATION_JSON;

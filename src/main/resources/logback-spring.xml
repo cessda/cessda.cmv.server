@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+	<springProperty name="jsonEnabled" source="logging.json.enabled" defaultValue="false"/>
+	<if condition='p("jsonEnabled").equals("true")'>
+		<then>
+			<appender name="jsonConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+				<encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+			</appender>
+			<root level="INFO">
+				<appender-ref ref="jsonConsoleAppender"/>
+			</root>
+		</then>
+		<else>
+			<include resource="org/springframework/boot/logging/logback/base.xml"/>
+		</else>
+	</if>
+</configuration>

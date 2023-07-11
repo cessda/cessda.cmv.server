@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.ValidationService;
@@ -32,7 +33,6 @@ import org.gesis.commons.resource.Resource;
 import org.gesis.commons.xml.XercesXalanDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -43,7 +43,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.zalando.problem.jackson.ProblemModule;
 
-import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -55,14 +54,10 @@ public class Server extends SpringBootServletInitializer
 {
 	private static final Logger log = LoggerFactory.getLogger( Server.class );
 
-	@Autowired
-	private ObjectMapper objectMapper;
-
 	public static void main( String[] args )
 	{
 		SpringApplication.run( Server.class, args  );
 	}
-
 
 	@Override
 	protected SpringApplicationBuilder configure( SpringApplicationBuilder application )
@@ -70,14 +65,15 @@ public class Server extends SpringBootServletInitializer
 		return application.sources( Server.class );
 	}
 
-	@PostConstruct
-	public void postConstruct()
-	{
-		objectMapper.configure( MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true );
-		objectMapper.configure( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true );
-		objectMapper.registerModule( new JaxbAnnotationModule().setPriority( JaxbAnnotationModule.Priority.SECONDARY ) );
-		objectMapper.registerModule( new ProblemModule().withStackTraces( false ) );
-		objectMapper.enable( SerializationFeature.INDENT_OUTPUT );
+	@Bean
+	public ObjectMapper objectMapper() {
+		return JsonMapper.builder()
+				.configure( MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true )
+				.configure( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true )
+				.addModule( new JaxbAnnotationModule().setPriority( JaxbAnnotationModule.Priority.SECONDARY ) )
+				.addModule( new ProblemModule().withStackTraces( false ) )
+				.enable( SerializationFeature.INDENT_OUTPUT )
+				.build();
 	}
 
 	@Bean
