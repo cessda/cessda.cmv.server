@@ -284,7 +284,7 @@ public class ResourceSelectionComponent extends CustomComponent
 			cessdaMetadataValidatorFactory.newDocument( resource );
 			return Optional.of( resource );
 		}
-		catch (Exception e)
+		catch ( RuntimeException e)
 		{
 			Notification.show( e.getMessage(), Type.WARNING_MESSAGE );
 			return Optional.empty();

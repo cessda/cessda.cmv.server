@@ -39,6 +39,20 @@
 	</dependencyManagement>
 
 	<dependencies>
+
+		<!-- Core CMV Dependencies -->
+		<dependency>
+			<groupId>eu.cessda.cmv</groupId>
+			<artifactId>cmv-documentation</artifactId>
+			<version>1.1.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.cessda.cmv</groupId>
+			<artifactId>cmv-core</artifactId>
+			<version>1.1.1-SNAPSHOT</version>
+		</dependency>
+
+		<!-- Spring Boot -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -48,12 +62,14 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-spring-boot-starter</artifactId>
-		</dependency>
-		<dependency>
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<!-- Vaadin -->
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-spring-boot-starter</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
@@ -79,6 +95,8 @@
 		    <artifactId>viritin</artifactId>
 		    <version>2.14.1</version>
 		</dependency>
+
+		<!-- JSON API Dependencies -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>
 			<artifactId>jackson-module-jaxb-annotations</artifactId>
@@ -98,16 +116,32 @@
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>1.7.0</version>
 		</dependency>
+
+		<!-- JSON Logging Support -->
 		<dependency>
-			<groupId>eu.cessda.cmv</groupId>
-			<artifactId>cmv-documentation</artifactId>
-			<version>1.1.2-SNAPSHOT</version>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>5.3</version>
 		</dependency>
 		<dependency>
-			<groupId>eu.cessda.cmv</groupId>
-			<artifactId>cmv-core</artifactId>
-			<version>1.1.1-SNAPSHOT</version>
+			<groupId>org.codehaus.janino</groupId>
+			<artifactId>janino</artifactId>
+			<version>3.1.8</version>
 		</dependency>
+
+		<!-- Dependency overrides -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.16.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>2.0</version>
+		</dependency>
+
+		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
