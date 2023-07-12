@@ -78,7 +78,7 @@ $v-selection-item-border-radius: 0;
 	  font-family: "Source Sans Pro",sans-serif;
 	  font-size: 19px;
     }
-    
+
 #viewcont > .v-slot {
 	margin-left:-15px;
 	margin-right:-15px;
@@ -104,7 +104,7 @@ font-size:17px;
 	}
 	.invis, .v-csslayout-header-cessda {
 		height:0;
-		
+
 			  }
 
 	.v-tabsheet-mainSheet{
@@ -139,7 +139,7 @@ font-size:17px;
 	    margin: 0 0 10px 0 !important;
 	    font-family: 'Open Sans', sans-serif;
 	}
-	
+
 	.v-button{
 		background-image:none;
 		text-shadow:none;
@@ -247,7 +247,7 @@ font-size:17px;
 	    border-bottom-left-radius:3px !important;
     	border-top-left-radius:3px !important;
   	}
-  	
+
   	.v-filterselect {
 		 height:40px;
 		 -webkit-box-shadow:none;
@@ -262,11 +262,11 @@ font-size:17px;
 		border-radius:0;
 		height:40px;
 	}
-	
+
 	.v-filterselect.v-readonly [class*="input"], .v-textfield-readonly, .v-textarea-readonly{
 		color:#6b6b6b;
 	}
-	
+
 	.v-filterselect [class*="input"]{
 		height:40px;
 		font-size:18px;
@@ -1021,13 +1021,13 @@ font-size:17px;
 		    width: 100%;
 		    background: #17191b;
 		}
-		
+
 		#footerlogo {
 		    padding: 20px 0 0 0;
 		    width: 200px;
 		    height: auto;
 		}
-		
+
 		.logo, .contact, .menu-footer{
 		    vertical-align: top;
 		}
@@ -1559,7 +1559,7 @@ font-size:17px;
     	letter-spacing: 0;
     	margin-top: 16px !important;
    	}
- 
+
 
 	.tags ul {
 	    padding: 0px;
@@ -2606,7 +2606,7 @@ font-size:17px;
     	width:250px;
     	float:right;
     }
-    .social>.email 
+    .social>.email
     {
     	a{
 		    color: #fff;
@@ -2621,7 +2621,7 @@ font-size:17px;
 	}
 	.login-bt{
 		margin: 0;
-   	 	padding: 0 15px;	
+   	 	padding: 0 15px;
 	}
 	.v-checkbox > label:before, .v-checkbox > label:after {
     	top: 4px !important;
@@ -2630,14 +2630,21 @@ font-size:17px;
 		border:1px solid #eee;
    }
 	.secondary-footer .privacy {
-		
+
 		font-size:15px;
 		line-height:60px;
 	}
-	
+
 	.secondary-footer .privacy a {
 	color:white;
 	}
-	
 
+	.multiselect {
+        display: flex;
+        justify-content: space-between;
+        .v-button {
+			height: auto;
+			font-size: 16px;
+        }
+	}
 }

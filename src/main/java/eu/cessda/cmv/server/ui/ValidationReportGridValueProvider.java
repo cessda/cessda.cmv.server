@@ -26,12 +26,10 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.themes.ValoTheme;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ConstraintViolationV0;
 import eu.cessda.cmv.server.ValidationReport;
-import org.gesis.commons.resource.Resource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import java.io.Serial;
-import java.util.List;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -42,13 +40,6 @@ public class ValidationReportGridValueProvider
 	@Serial
 	private static final long serialVersionUID = 5087782841088695356L;
 	private static final int ELEMENT_SIZE = 30;
-
-	private final List<Resource.V10> documentResources;
-
-	public ValidationReportGridValueProvider( List<Resource.V10> documentResources )
-	{
-		this.documentResources = documentResources;
-	}
 
 	private static Grid<String> getStringGrid( String message )
 	{
@@ -62,11 +53,7 @@ public class ValidationReportGridValueProvider
 	public CustomComponent apply( ValidationReport report )
 	{
 		var validationReport = report.validationReport();
-
-		var documentLabelString = documentResources.stream()
-			.filter( r -> r.getUri().equals( validationReport.getDocumentUri() ) ).findFirst()
-			.map( Resource.V10::getLabel )
-			.orElse( validationReport.getDocumentUri().toString() );
+		var documentLabelString =  report.documentResource().getLabel();
 
 		var documentLabel = new Label();
 		documentLabel.setCaption( "Document" );
