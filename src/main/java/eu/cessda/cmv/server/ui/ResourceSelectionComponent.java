@@ -35,6 +35,7 @@ import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 import static com.vaadin.shared.ui.grid.HeightMode.ROW;
 import static com.vaadin.ui.Grid.SelectionMode.NONE;
@@ -49,7 +50,7 @@ import static org.gesis.commons.resource.Resource.newResource;
 public class ResourceSelectionComponent extends CustomComponent
 {
 	@Serial
-	private static final long serialVersionUID = 8381371322203425719L;
+	private static final long serialVersionUID = -808880272310582714L;
 
 	private final ArrayList<Resource.V10> selectedResources = new ArrayList<>(1);
 	private final ComboBox<Resource.V10> comboBox;
@@ -61,6 +62,7 @@ public class ResourceSelectionComponent extends CustomComponent
 	private final SelectionMode selectionMode;
 	private final transient Runnable refreshEvent;
 	private final transient CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory;
+	private final ResourceBundle bundle;
 
 	public enum SelectionMode
 	{
@@ -85,6 +87,8 @@ public class ResourceSelectionComponent extends CustomComponent
 		requireNonNull( selectionMode );
 		requireNonNull( predefinedResources );
 
+		this.bundle = ResourceBundle.getBundle( ResourceSelectionComponent.class.getName(), UI.getCurrent().getLocale() );
+
 		this.cessdaMetadataValidatorFactory = cessdaMetadataValidatorFactory;
 		this.refreshEvent = refreshEvent;
 		this.selectionMode = selectionMode;
@@ -93,7 +97,7 @@ public class ResourceSelectionComponent extends CustomComponent
 		this.provisioningOptions.addSelectionListener( listener -> refreshComponents() );
 
 		this.comboBox = new ComboBox<>();
-		this.comboBox.setPlaceholder( "Select resource" );
+		this.comboBox.setPlaceholder( bundle.getString( "comboBox.select" ) );
 		this.comboBox.setItemCaptionGenerator( Resource.V10::getLabel );
 		this.comboBox.setWidth( 100, Unit.PERCENTAGE );
 		this.comboBox.setTextInputAllowed( false );
@@ -104,7 +108,7 @@ public class ResourceSelectionComponent extends CustomComponent
 
 		this.textField = new TextField();
 		this.textField.setWidthFull();
-		this.textField.setPlaceholder( "Paste url" );
+		this.textField.setPlaceholder( bundle.getString( "pasteUrl" ) );
 		this.textField.setWidth( 100, Unit.PERCENTAGE );
 		// TODO https://vaadin.com/forum/thread/15426235/vaadin8-field-validation-without-binders
 		this.textField.addBlurListener( listener ->
@@ -118,7 +122,7 @@ public class ResourceSelectionComponent extends CustomComponent
 				}
 				else
 				{
-					Notification.show( "Input is not a valid url", Type.WARNING_MESSAGE );
+					Notification.show( bundle.getString("invalidURL"), Type.WARNING_MESSAGE );
 					this.textField.clear();
 				}
 			} )
@@ -137,8 +141,8 @@ public class ResourceSelectionComponent extends CustomComponent
 		this.clearButton = new Button();
 		this.clearButton.setCaption( switch ( selectionMode )
 		{
-			case SINGLE -> "Clear";
-			case MULTI -> "Clear All";
+			case SINGLE -> bundle.getString("clear");
+			case MULTI -> bundle.getString("clearAll");
 		} );
 		this.clearButton.addClickListener( listener ->
 		{
@@ -213,7 +217,7 @@ public class ResourceSelectionComponent extends CustomComponent
 			if ( resource.getUri().getScheme().startsWith( "http" ) )
 			{
 				label.setContentMode( ContentMode.HTML );
-				label.setValue( "<a href='" + resource.getUri().toString() + "' target='_blank'>" + resource.getLabel() + "</a>" );
+				label.setValue( "<a href='" + resource.getUri() + "' target='_blank'>" + resource.getLabel() + "</a>" );
 			}
 			else
 			{
@@ -223,7 +227,7 @@ public class ResourceSelectionComponent extends CustomComponent
 			if (selectionMode.equals( MULTI ))
 			{
 				// If this is a multi select component, add a remove button on each element
-				var button = new Button( "Remove" );
+				var button = new Button( bundle.getString("clear") );
 				// right: 2px
 				button.addClickListener( event ->
 				{
@@ -264,10 +268,10 @@ public class ResourceSelectionComponent extends CustomComponent
 		uploadStateWindow.setResizable( true );
 		MultiFileUpload multiFileUpload = new MultiFileUpload( null, uploadStateWindow, selectionMode.equals( MULTI ) );
 		multiFileUpload.setMaxFileSize( 100_000_000 );
-		multiFileUpload.setSizeErrorMsgPattern( "File is too big (max = {0}): {2} ({1})" );
-		multiFileUpload.setPanelCaption( "Files" );
+		multiFileUpload.setSizeErrorMsgPattern( bundle.getString("upload.fileTooBigPattern") );
+		multiFileUpload.setPanelCaption( bundle.getString("upload.caption") );
 		multiFileUpload.setMaxFileCount( 100 );
-		multiFileUpload.getSmartUpload().setUploadButtonCaptions( "Upload File", "Upload Files" );
+		multiFileUpload.getSmartUpload().setUploadButtonCaptions( bundle.getString("upload.singleFile"), bundle.getString("upload.multipleFiles") );
 		multiFileUpload.getSmartUpload().setUploadButtonIcon( VaadinIcons.UPLOAD );
 		return multiFileUpload;
 	}

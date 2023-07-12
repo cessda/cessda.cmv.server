@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +25,7 @@ import com.vaadin.ui.*;
 import java.io.PrintWriter;
 import java.io.Serial;
 import java.io.StringWriter;
+import java.util.ResourceBundle;
 
 import static com.vaadin.ui.Alignment.MIDDLE_RIGHT;
 import static com.vaadin.ui.Notification.Type.ERROR_MESSAGE;
@@ -38,7 +39,12 @@ class ErrorWindow extends Window
 
 	ErrorWindow( com.vaadin.server.ErrorEvent event )
 	{
-		super( "Oops, something went wrong!" );
+		this( event, ResourceBundle.getBundle( ErrorWindow.class.getName(), UI.getCurrent().getLocale() ) );
+	}
+
+	private ErrorWindow( com.vaadin.server.ErrorEvent event, ResourceBundle bundle ) {
+		super( bundle.getString( "title" ) );
+
 		setHeight( 80, Unit.PERCENTAGE );
 		setWidth( 80, Unit.PERCENTAGE );
 		setResizable( false );
@@ -46,13 +52,13 @@ class ErrorWindow extends Window
 		center();
 
 		TextField textField = new TextField();
-		textField.setCaption( "Message" );
-		textField.setValue( getMessage( event.getThrowable() ) );
+		textField.setCaption( bundle.getString( "message.caption" ) );
+		textField.setValue( getMessage( event.getThrowable(), bundle.getString( "message.unknown" ) ) );
 		textField.setReadOnly( true );
 		textField.setWidthFull();
 
 		TextArea textArea = new TextArea();
-		textArea.setCaption( "StackTrace" );
+		textArea.setCaption( bundle.getString( "stacktrace.caption" ) );
 		textArea.setValue( getStackTrace( event.getThrowable() ) );
 		textArea.setSizeFull();
 		textArea.setId( "tocopie" );
@@ -61,10 +67,10 @@ class ErrorWindow extends Window
 		HorizontalLayout horizontalLayout = new HorizontalLayout();
 		horizontalLayout.setWidthFull();
 		Button clipBoardButton = new Button();
-		clipBoardButton.setCaption( "Copy to clipboard" );
+		clipBoardButton.setCaption( bundle.getString( "copyToClipboard.caption" ) );
 		JSClipboard clipboard = new JSClipboard();
 		clipboard.apply( clipBoardButton, textArea );
-		clipboard.addErrorListener( () -> show( "Copy to clipboard failed", ERROR_MESSAGE ) );
+		clipboard.addErrorListener( () -> show( bundle.getString( "copyToClipboard.failureMessage" ), ERROR_MESSAGE ) );
 		horizontalLayout.addComponent( clipBoardButton );
 		horizontalLayout.setComponentAlignment( clipBoardButton, MIDDLE_RIGHT );
 		horizontalLayout.setExpandRatio( clipBoardButton, 1.0f );
@@ -84,7 +90,7 @@ class ErrorWindow extends Window
 		verticalLayout.setExpandRatio( textArea, 1.0f );
 	}
 
-	private String getMessage( Throwable throwable )
+	private String getMessage( Throwable throwable, String unknownMessage )
 	{
 		for ( Throwable t = throwable; t != null; t = t.getCause() )
 		{
@@ -93,7 +99,7 @@ class ErrorWindow extends Window
 				return t.getClass().getName() + ": " + t.getMessage();
 			}
 		}
-		return "Unknown";
+		return unknownMessage;
 	}
 
 	private String getStackTrace( Throwable throwable )
