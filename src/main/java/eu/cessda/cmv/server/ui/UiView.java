@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -66,16 +66,6 @@ public class UiView extends UI
 
 	private VerticalLayout newViewContainer()
 	{
-		ComboBox<String> countryBox = new ComboBox<>();
-		countryBox.setTextInputAllowed( false );
-		countryBox.setItems( "English", "German" );
-		countryBox.setEmptySelectionAllowed( false );
-		countryBox.setStyleName( "language-option" );
-		countryBox.setValue( "English" );
-		countryBox.setWidth( "100px" );
-		countryBox.addValueChangeListener( e -> setLocale( new Locale( e.getValue() ) ) );
-		countryBox.setItemCaptionGenerator( item -> item.charAt( 0 ) + item.substring( 1 ).toLowerCase() );
-		countryBox.setVisible( false );
 		Embedded embeddedLogo = new Embedded( null, new ThemeResource( "img/logo/cessda_logo_cmv.svg" ) );
 		embeddedLogo.setWidth( "100%" );
 		MCssLayout headerMiddleContent = new MCssLayout()

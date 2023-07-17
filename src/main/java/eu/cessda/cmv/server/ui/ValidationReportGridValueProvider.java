@@ -32,6 +32,7 @@ import org.xml.sax.SAXParseException;
 
 import java.io.Serial;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -43,7 +44,7 @@ public class ValidationReportGridValueProvider
 	private static final long serialVersionUID = 5087782841088695356L;
 	private static final int ELEMENT_SIZE = 30;
 
-	private final List<Resource.V10> documentResources;
+	private final transient List<Resource.V10> documentResources;
 
 	public ValidationReportGridValueProvider( List<Resource.V10> documentResources )
 	{
@@ -61,6 +62,8 @@ public class ValidationReportGridValueProvider
 	@Override
 	public CustomComponent apply( ValidationReport report )
 	{
+		var bundle = ResourceBundle.getBundle( ValidationReportGridValueProvider.class.getName(), UI.getCurrent().getLocale() );
+
 		var validationReport = report.validationReport();
 
 		var documentLabelString = documentResources.stream()
@@ -69,7 +72,7 @@ public class ValidationReportGridValueProvider
 			.orElse( validationReport.getDocumentUri().toString() );
 
 		var documentLabel = new Label();
-		documentLabel.setCaption( "Document" );
+		documentLabel.setCaption( bundle.getString("document.title") );
 		documentLabel.setValue( documentLabelString );
 
 		var constraintViolations = validationReport.getConstraintViolations();
@@ -84,9 +87,9 @@ public class ValidationReportGridValueProvider
 			schemaViolationGrid = saxExceptionGrid;
 		} else {
 			// Display a message stating no schema violations were found
-			schemaViolationGrid = getStringGrid( "No schema violations found" );
+			schemaViolationGrid = getStringGrid( bundle.getString( "result.noXSDSchemaViolations" ) );
 		}
-		schemaViolationGrid.setCaption( "XSD Schema Violations" );
+		schemaViolationGrid.setCaption( bundle.getString("result.XSDSchemaViolations") );
 		schemaViolationGrid.setHeaderVisible( false );
 		schemaViolationGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
 		schemaViolationGrid.setSizeFull();
@@ -103,9 +106,9 @@ public class ValidationReportGridValueProvider
 			constraintViolationGrid = constraintGrid;
 		} else {
 			// Display a message stating no constraint violations were found
-			constraintViolationGrid = getStringGrid( "No constraint violations found" );
+			constraintViolationGrid = getStringGrid( bundle.getString("result.noConstraintViolations") );
 		}
-		constraintViolationGrid.setCaption( "Constraint Violations" );
+		constraintViolationGrid.setCaption( bundle.getString("result.constraintViolations") );
 		constraintViolationGrid.setHeaderVisible( false );
 		constraintViolationGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
 		constraintViolationGrid.setSizeFull();

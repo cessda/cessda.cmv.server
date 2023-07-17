@@ -31,10 +31,12 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.gesis.commons.resource.Resource;
 
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 import static com.vaadin.shared.ui.grid.HeightMode.ROW;
@@ -50,9 +52,9 @@ import static org.gesis.commons.resource.Resource.newResource;
 public class ResourceSelectionComponent extends CustomComponent
 {
 	@Serial
-	private static final long serialVersionUID = 8381371322203425719L;
+	private static final long serialVersionUID = -808880272310582714L;
 
-	private final List<Resource.V10> selectedResources;
+	private transient List<Resource.V10> selectedResources;
 
 	public enum SelectionMode
 	{
@@ -80,14 +82,17 @@ public class ResourceSelectionComponent extends CustomComponent
 		requireNonNull( provisioningOptions );
 		requireNonNull( predefinedResources );
 		requireNonNull( selectedResources );
+
 		this.selectedResources = selectedResources;
 
-		MultiFileUpload multiFileUpload = newMultiFileUpload( selectionMode );
+		var bundle = ResourceBundle.getBundle( ResourceSelectionComponent.class.getName(), UI.getCurrent().getLocale() );
+
+		MultiFileUpload multiFileUpload = newMultiFileUpload( selectionMode, bundle );
 		RadioButtonGroup<ProvisioningOptions> buttonGroup = newButtonGroup( provisioningOptions,
 				selectedProvisioningOption );
 
 		ComboBox<Resource.V10> comboBox = new ComboBox<>();
-		comboBox.setPlaceholder( "Select resource" );
+		comboBox.setPlaceholder( bundle.getString( "comboBox.select" ) );
 		comboBox.setItemCaptionGenerator( Resource.V10::getLabel );
 		comboBox.setWidth( 100, Unit.PERCENTAGE );
 		comboBox.setTextInputAllowed( false );
@@ -95,11 +100,11 @@ public class ResourceSelectionComponent extends CustomComponent
 
 		TextField textField = new TextField();
 		textField.setWidthFull();
-		textField.setPlaceholder( "Paste url" );
+		textField.setPlaceholder( bundle.getString( "pasteUrl" ) );
 		textField.setWidth( 100, Unit.PERCENTAGE );
 		// TODO https://vaadin.com/forum/thread/15426235/vaadin8-field-validation-without-binders
 
-		Button clearButton = new Button( "Clear" );
+		Button clearButton = new Button( bundle.getString("clear") );
 		Grid<Resource.V10> grid = newGrid();
 		grid.setItems( selectedResources );
 
@@ -145,7 +150,7 @@ public class ResourceSelectionComponent extends CustomComponent
 				}
 				else
 				{
-					Notification.show( "Input is not a valid url", Type.WARNING_MESSAGE );
+					Notification.show( bundle.getString("invalidURL"), Type.WARNING_MESSAGE );
 					textField.clear();
 				}
 			} )
@@ -197,9 +202,7 @@ public class ResourceSelectionComponent extends CustomComponent
 			if ( resource.getUri().getScheme().startsWith( "http" ) )
 			{
 				label.setContentMode( ContentMode.HTML );
-				label.setValue(
-						"<a href='" + resource.getUri().toString() + "' target='_blank'>" + resource.getLabel() +
-								"</a>" );
+				label.setValue( "<a href='" + resource.getUri() + "' target='_blank'>" + resource.getLabel() + "</a>" );
 			}
 			else
 			{
@@ -226,7 +229,7 @@ public class ResourceSelectionComponent extends CustomComponent
 		return buttonGroup;
 	}
 
-	private MultiFileUpload newMultiFileUpload( SelectionMode selectionMode )
+	private static MultiFileUpload newMultiFileUpload( SelectionMode selectionMode, ResourceBundle bundle )
 	{
 		UploadStateWindow uploadStateWindow = new UploadStateWindow();
 		uploadStateWindow.setWindowPosition( UploadStateWindow.WindowPosition.CENTER );
@@ -234,10 +237,10 @@ public class ResourceSelectionComponent extends CustomComponent
 		uploadStateWindow.setResizable( true );
 		MultiFileUpload multiFileUpload = new MultiFileUpload( null, uploadStateWindow, selectionMode.equals( MULTI ) );
 		multiFileUpload.setMaxFileSize( 100_000_000 );
-		multiFileUpload.setSizeErrorMsgPattern( "File is too big (max = {0}): {2} ({1})" );
-		multiFileUpload.setPanelCaption( "Files" );
+		multiFileUpload.setSizeErrorMsgPattern( bundle.getString("upload.fileTooBigPattern") );
+		multiFileUpload.setPanelCaption( bundle.getString("upload.caption") );
 		multiFileUpload.setMaxFileCount( 100 );
-		multiFileUpload.getSmartUpload().setUploadButtonCaptions( "Upload File", "Upload Files" );
+		multiFileUpload.getSmartUpload().setUploadButtonCaptions( bundle.getString("upload.singleFile"), bundle.getString("upload.multipleFiles") );
 		multiFileUpload.getSmartUpload().setUploadButtonIcon( VaadinIcons.UPLOAD );
 		return multiFileUpload;
 	}
@@ -257,5 +260,14 @@ public class ResourceSelectionComponent extends CustomComponent
 			Notification.show( e.getMessage(), Type.WARNING_MESSAGE );
 			return Optional.empty();
 		}
+	}
+
+	/**
+	 * Reset the transient field {@code selectedResources} to a valid state.
+	 */
+	@Serial
+	private void readObject( ObjectInputStream stream )
+	{
+		this.selectedResources = Collections.emptyList();
 	}
 }
