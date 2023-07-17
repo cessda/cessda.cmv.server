@@ -30,7 +30,6 @@ import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.server.ValidationReport;
 import eu.cessda.cmv.server.ValidatorEngine;
-import eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions;
 import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.SAXException;
@@ -46,7 +45,6 @@ import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOpt
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.MULTI;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.SINGLE;
-import static java.util.Arrays.asList;
 
 @UIScope
 @SpringView( name = ValidationView.VIEW_NAME )
@@ -65,8 +63,6 @@ public class ValidationView extends VerticalLayout implements View
 	{
 		var bundle = ResourceBundle.getBundle( ValidationView.class.getName(), UI.getCurrent().getLocale() );
 
-		List<Resource.V10> profileResources = new ArrayList<>();
-		List<Resource.V10> documentResources = new ArrayList<>();
 		List<ValidationReport> validationReports = new ArrayList<>();
 
 		ComboBox<ValidationGateName> validationGateNameComboBox = new ComboBox<>();
@@ -85,7 +81,7 @@ public class ValidationView extends VerticalLayout implements View
 		validationReportGrid.setRowHeight( 700 );
 		validationReportGrid.setItems( validationReports );
 		validationReportGrid
-				.addColumn( new ValidationReportGridValueProvider( documentResources ), new ComponentRenderer() )
+				.addColumn( new ValidationReportGridValueProvider(), new ComponentRenderer() )
 				.setSortable( false )
 				.setHandleWidgetEvents( true );
 
@@ -95,8 +91,36 @@ public class ValidationView extends VerticalLayout implements View
 
 		var reportPanel = new Panel( bundle.getString( "report.panel.caption" ), validationReportLayout );
 
+		Runnable refreshEvent = () ->
+		{
+			validationReports.clear();
+			validationReportGrid.getDataProvider().refreshAll();
+			reportPanel.setVisible( false );
+		};
+
+		var profileSelection = new ResourceSelectionComponent(
+			SINGLE,
+			BY_PREDEFINED,
+			demoProfiles,
+			refreshEvent,
+			cessdaMetadataValidatorFactory );
+		profileSelection.setCaption( bundle.getString( "configuration.profileSelectionCaption" ) );
+		profileSelection.setWidthFull();
+
+		var documentSelection = new ResourceSelectionComponent(
+			MULTI,
+			BY_UPLOAD,
+			demoDocuments,
+			refreshEvent,
+			cessdaMetadataValidatorFactory );
+		documentSelection.setCaption( bundle.getString( "configuration.documentSelectionCaption" ) );
+		documentSelection.setWidthFull();
+
 		var validateButton = new Button( bundle.getString( "validate.button" ), listener ->
 		{
+			var profileResources = profileSelection.getResources();
+			var documentResources = documentSelection.getResources();
+
 			if ( profileResources.isEmpty() )
 			{
 				Notification.show( bundle.getString("validate.noProfileSelected") );
@@ -150,38 +174,6 @@ public class ValidationView extends VerticalLayout implements View
 			validationReportGrid.getDataProvider().refreshAll();
 			reportPanel.setVisible( false );
 		} );
-
-		var profileSelection = new ResourceSelectionComponent(
-				SINGLE,
-				asList( ProvisioningOptions.values() ),
-				BY_PREDEFINED,
-				demoProfiles,
-				profileResources,
-				() ->
-				{
-					validationReports.clear();
-					validationReportGrid.getDataProvider().refreshAll();
-					reportPanel.setVisible( false );
-				},
-				cessdaMetadataValidatorFactory );
-		profileSelection.setCaption( bundle.getString( "configuration.profileSelectionCaption" ) );
-		profileSelection.setWidthFull();
-
-		var documentSelection = new ResourceSelectionComponent(
-				MULTI,
-				asList( ProvisioningOptions.values() ),
-				BY_UPLOAD,
-				demoDocuments,
-				documentResources,
-				() ->
-				{
-					validationReports.clear();
-					validationReportGrid.getDataProvider().refreshAll();
-					reportPanel.setVisible( false );
-				},
-				cessdaMetadataValidatorFactory );
-		documentSelection.setCaption( bundle.getString( "configuration.documentSelectionCaption" ) );
-		documentSelection.setWidthFull();
 
 		var configurationFormLayout = new FormLayout();
 		configurationFormLayout.setMargin( true );

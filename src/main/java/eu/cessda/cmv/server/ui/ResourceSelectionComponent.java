@@ -31,13 +31,11 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.gesis.commons.resource.Resource;
 
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.Serial;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 
 import static com.vaadin.shared.ui.grid.HeightMode.ROW;
 import static com.vaadin.ui.Grid.SelectionMode.NONE;
@@ -54,7 +52,17 @@ public class ResourceSelectionComponent extends CustomComponent
 	@Serial
 	private static final long serialVersionUID = -808880272310582714L;
 
-	private transient List<Resource.V10> selectedResources;
+	private final ArrayList<Resource.V10> selectedResources = new ArrayList<>(1);
+	private final ComboBox<Resource.V10> comboBox;
+	private final TextField textField;
+	private final Button clearButton;
+	private final Grid<Resource.V10> selectedResourcesGrid;
+	private final MultiFileUpload fileUpload;
+	private final RadioButtonGroup<ProvisioningOptions> provisioningOptions;
+	private final SelectionMode selectionMode;
+	private final transient Runnable refreshEvent;
+	private final transient CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory;
+	private final ResourceBundle bundle;
 
 	public enum SelectionMode
 	{
@@ -71,125 +79,132 @@ public class ResourceSelectionComponent extends CustomComponent
 
 	public ResourceSelectionComponent(
 			SelectionMode selectionMode,
-			List<ProvisioningOptions> provisioningOptions,
 			ProvisioningOptions selectedProvisioningOption,
 			List<Resource.V10> predefinedResources,
-			List<Resource.V10> selectedResources,
 			Runnable refreshEvent,
 			CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory )
 	{
 		requireNonNull( selectionMode );
-		requireNonNull( provisioningOptions );
 		requireNonNull( predefinedResources );
-		requireNonNull( selectedResources );
 
-		this.selectedResources = selectedResources;
+		this.bundle = ResourceBundle.getBundle( ResourceSelectionComponent.class.getName(), UI.getCurrent().getLocale() );
 
-		var bundle = ResourceBundle.getBundle( ResourceSelectionComponent.class.getName(), UI.getCurrent().getLocale() );
+		this.cessdaMetadataValidatorFactory = cessdaMetadataValidatorFactory;
+		this.refreshEvent = refreshEvent;
+		this.selectionMode = selectionMode;
 
-		MultiFileUpload multiFileUpload = newMultiFileUpload( selectionMode, bundle );
-		RadioButtonGroup<ProvisioningOptions> buttonGroup = newButtonGroup( provisioningOptions,
-				selectedProvisioningOption );
+		this.provisioningOptions = provisioningOptionsButtonGroup( selectedProvisioningOption );
+		this.provisioningOptions.addSelectionListener( listener -> refreshComponents() );
 
-		ComboBox<Resource.V10> comboBox = new ComboBox<>();
-		comboBox.setPlaceholder( bundle.getString( "comboBox.select" ) );
-		comboBox.setItemCaptionGenerator( Resource.V10::getLabel );
-		comboBox.setWidth( 100, Unit.PERCENTAGE );
-		comboBox.setTextInputAllowed( false );
-		comboBox.setItems( predefinedResources );
+		this.comboBox = new ComboBox<>();
+		this.comboBox.setPlaceholder( bundle.getString( "comboBox.select" ) );
+		this.comboBox.setItemCaptionGenerator( Resource.V10::getLabel );
+		this.comboBox.setWidth( 100, Unit.PERCENTAGE );
+		this.comboBox.setTextInputAllowed( false );
+		this.comboBox.setItems( predefinedResources );
+		this.comboBox.addSelectionListener( listener -> listener.getSelectedItem()
+				.flatMap( this::recognizeDdiDocument )
+				.ifPresent( this::selectResource ) );
 
-		TextField textField = new TextField();
-		textField.setWidthFull();
-		textField.setPlaceholder( bundle.getString( "pasteUrl" ) );
-		textField.setWidth( 100, Unit.PERCENTAGE );
+		this.textField = new TextField();
+		this.textField.setWidthFull();
+		this.textField.setPlaceholder( bundle.getString( "pasteUrl" ) );
+		this.textField.setWidth( 100, Unit.PERCENTAGE );
 		// TODO https://vaadin.com/forum/thread/15426235/vaadin8-field-validation-without-binders
-
-		Button clearButton = new Button( bundle.getString("clear") );
-		Grid<Resource.V10> grid = newGrid();
-		grid.setItems( selectedResources );
-
-		Runnable refreshComponents = () ->
-		{
-			comboBox.setVisible( buttonGroup.getValue().equals( BY_PREDEFINED )
-					&& ( selectionMode.equals( MULTI )
-					|| ( selectionMode.equals( SINGLE ) && selectedResources.isEmpty() ) ) );
-			comboBox.clear();
-			textField.setVisible( buttonGroup.getValue().equals( BY_URL )
-					&& ( selectionMode.equals( MULTI )
-					|| ( selectionMode.equals( SINGLE ) && selectedResources.isEmpty() ) ) );
-			textField.clear();
-			multiFileUpload.setVisible( buttonGroup.getValue().equals( BY_UPLOAD )
-					&& ( selectionMode.equals( MULTI )
-					|| ( selectionMode.equals( SINGLE ) && selectedResources.isEmpty() ) ) );
-			clearButton.setVisible( !selectedResources.isEmpty() );
-			grid.getDataProvider().refreshAll();
-			grid.setVisible( !selectedResources.isEmpty() );
-			if ( !selectedResources.isEmpty() )
-			{
-				grid.setHeightByRows( selectedResources.size() );
-			}
-			refreshEvent.run();
-		};
-		Consumer<Resource.V10> selectResource = resource ->
-		{
-			if ( selectionMode.equals( SINGLE ) )
-			{
-				selectedResources.clear();
-			}
-			selectedResources.add( resource );
-			refreshComponents.run();
-		};
-		textField.addBlurListener( listener ->
+		this.textField.addBlurListener( listener ->
 			// See https://bitbucket.org/cessda/cessda.cmv/issues/89
-			textField.getOptionalValue().ifPresent( value ->
+			this.textField.getOptionalValue().ifPresent( value ->
 			{
 				UrlValidator urlValidator = UrlValidator.getInstance();
 				if ( urlValidator.isValid( value ) )
 				{
-					recognizeDdiDocument( cessdaMetadataValidatorFactory, newResource( value ) ).ifPresent( selectResource );
+					recognizeDdiDocument( newResource( value ) ).ifPresent( this::selectResource );
 				}
 				else
 				{
 					Notification.show( bundle.getString("invalidURL"), Type.WARNING_MESSAGE );
-					textField.clear();
+					this.textField.clear();
 				}
 			} )
 		);
-		comboBox.addSelectionListener( listener ->
-				listener.getSelectedItem()
-						.flatMap( selectedItem -> recognizeDdiDocument( cessdaMetadataValidatorFactory, selectedItem ) )
-						.ifPresent( selectResource )
-		);
-		multiFileUpload.getUploadStatePanel().setFinishedHandler( ( InputStream inputStream, String fileName, String mimeType, long length, int filesLeftInQueue ) ->
+
+		this.selectedResourcesGrid = newGrid();
+		this.selectedResourcesGrid.setItems( this.selectedResources );
+
+		this.fileUpload = newMultiFileUpload( this.selectionMode );
+		this.fileUpload.getUploadStatePanel().setFinishedHandler( ( InputStream inputStream, String fileName, String mimeType, long length, int filesLeftInQueue ) ->
 		{
 			Resource.V10 uploadedResource = newResource( inputStream, fileName );
-			recognizeDdiDocument( cessdaMetadataValidatorFactory, uploadedResource ).ifPresent( selectResource );
+			recognizeDdiDocument( uploadedResource ).ifPresent( this::selectResource );
 		} );
 
-		buttonGroup.addSelectionListener( listener -> refreshComponents.run() );
-		clearButton.addClickListener( listener ->
+		this.clearButton = new Button();
+		this.clearButton.setCaption( switch ( selectionMode )
 		{
-			selectedResources.clear();
-			refreshComponents.run();
+			case SINGLE -> bundle.getString("clear");
+			case MULTI -> bundle.getString("clearAll");
+		} );
+		this.clearButton.addClickListener( listener ->
+		{
+			this.selectedResources.clear();
+			refreshComponents();
 		} );
 
+		// Create the VerticalLayout that will serve as the composition root
 		VerticalLayout verticalLayout = new VerticalLayout();
 		verticalLayout.setMargin( false );
 		verticalLayout.setWidth( 100, Unit.PERCENTAGE );
-		verticalLayout.addComponent( buttonGroup );
-		verticalLayout.addComponent( textField );
-		verticalLayout.addComponent( comboBox );
-		verticalLayout.addComponent( multiFileUpload );
-		verticalLayout.addComponent( grid );
-		verticalLayout.addComponent( clearButton );
+		verticalLayout.addComponent( this.provisioningOptions );
+		verticalLayout.addComponent( this.textField );
+		verticalLayout.addComponent( this.comboBox );
+		verticalLayout.addComponent( this.fileUpload );
+		verticalLayout.addComponent( this.selectedResourcesGrid );
+		verticalLayout.addComponent( this.clearButton );
+
 		setCompositionRoot( verticalLayout );
 		setWidthFull();
-		refreshComponents.run();
+		refreshComponents();
 	}
 
-	public List<Resource> getResources()
+	private void refreshComponents()
 	{
-		return Collections.unmodifiableList( selectedResources );
+		comboBox.setVisible( provisioningOptions.getValue().equals( BY_PREDEFINED )
+				&& ( selectionMode.equals( MULTI )
+				|| ( selectionMode.equals( SINGLE ) && selectedResources.isEmpty() ) ) );
+		comboBox.clear();
+		textField.setVisible( provisioningOptions.getValue().equals( BY_URL )
+				&& ( selectionMode.equals( MULTI )
+				|| ( selectionMode.equals( SINGLE ) && selectedResources.isEmpty() ) ) );
+		textField.clear();
+		fileUpload.setVisible( provisioningOptions.getValue().equals( BY_UPLOAD )
+				&& ( selectionMode.equals( MULTI )
+				|| ( selectionMode.equals( SINGLE ) && selectedResources.isEmpty() ) ) );
+		clearButton.setVisible( !selectedResources.isEmpty() );
+		selectedResourcesGrid.getDataProvider().refreshAll();
+		selectedResourcesGrid.setVisible( !selectedResources.isEmpty() );
+		if ( !selectedResources.isEmpty() )
+		{
+			selectedResourcesGrid.setHeightByRows( selectedResources.size() );
+		}
+		refreshEvent.run();
+	}
+
+	private void selectResource( Resource.V10 resource )
+	{
+		if ( selectionMode.equals( SINGLE ) )
+		{
+			selectedResources.clear();
+		}
+		selectedResources.add( resource );
+		refreshComponents();
+	}
+
+	/**
+	 * Return the list of selected resources from this component. The returned list is unmodifiable.
+	 */
+	public List<Resource.V10> getResources()
+	{
+		return List.copyOf( selectedResources );
 	}
 
 	private Grid<Resource.V10> newGrid()
@@ -208,7 +223,25 @@ public class ResourceSelectionComponent extends CustomComponent
 			{
 				label.setValue( resource.getLabel() );
 			}
-			return label;
+
+			if (selectionMode.equals( MULTI ))
+			{
+				// If this is a multi select component, add a remove button on each element
+				var button = new Button( bundle.getString("clear") );
+				// right: 2px
+				button.addClickListener( event ->
+				{
+					selectedResources.remove( resource );
+					refreshComponents();
+				} );
+				var layout = new HorizontalLayout( label, button );
+				layout.addStyleName( "multiselect" );
+				return layout;
+			}
+			else
+			{
+				return label;
+			}
 		}, new ComponentRenderer() ).setCaption( "Label" );
 		grid.setSelectionMode( NONE );
 		grid.setWidthFull();
@@ -218,18 +251,16 @@ public class ResourceSelectionComponent extends CustomComponent
 		return grid;
 	}
 
-	private RadioButtonGroup<ProvisioningOptions> newButtonGroup(
-			List<ProvisioningOptions> provisioningOptions,
-			ProvisioningOptions selectedProvisioningOption )
+	private RadioButtonGroup<ProvisioningOptions> provisioningOptionsButtonGroup( ProvisioningOptions selectedProvisioningOption )
 	{
 		RadioButtonGroup<ProvisioningOptions> buttonGroup = new RadioButtonGroup<>();
-		buttonGroup.setItems( provisioningOptions );
+		buttonGroup.setItems( ProvisioningOptions.values() );
 		buttonGroup.addStyleName( OPTIONGROUP_HORIZONTAL );
 		buttonGroup.setValue( selectedProvisioningOption );
 		return buttonGroup;
 	}
 
-	private static MultiFileUpload newMultiFileUpload( SelectionMode selectionMode, ResourceBundle bundle )
+	private MultiFileUpload newMultiFileUpload( SelectionMode selectionMode )
 	{
 		UploadStateWindow uploadStateWindow = new UploadStateWindow();
 		uploadStateWindow.setWindowPosition( UploadStateWindow.WindowPosition.CENTER );
@@ -245,9 +276,7 @@ public class ResourceSelectionComponent extends CustomComponent
 		return multiFileUpload;
 	}
 
-	private Optional<Resource.V10> recognizeDdiDocument(
-			CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory,
-			Resource.V10 resource )
+	private Optional<Resource.V10> recognizeDdiDocument( Resource.V10 resource )
 	{
 		try
 		{
@@ -260,14 +289,5 @@ public class ResourceSelectionComponent extends CustomComponent
 			Notification.show( e.getMessage(), Type.WARNING_MESSAGE );
 			return Optional.empty();
 		}
-	}
-
-	/**
-	 * Reset the transient field {@code selectedResources} to a valid state.
-	 */
-	@Serial
-	private void readObject( ObjectInputStream stream )
-	{
-		this.selectedResources = Collections.emptyList();
 	}
 }

@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -91,7 +91,7 @@ public class ValidatorEngine
 	 * @throws IOException if an IO error occurred when parsing the document.
 	 * @throws SAXException if the XML document was invalid.
 	 */
-	public ValidationReport validate( Resource validationRequest, Resource profile, ValidationGateName validationGate ) throws IOException, SAXException
+	public ValidationReport validate( Resource.V10 validationRequest, Resource profile, ValidationGateName validationGate ) throws IOException, SAXException
 	{
 		// Validate XML
 		var validator = xmlValidators.get();
@@ -103,7 +103,7 @@ public class ValidatorEngine
 		errorHandler.reset();
 
 		// Validate against profile
-		return new ValidationReport( errors, validationService.validate( validationRequest, profile, validationGate ) );
+		return new ValidationReport( validationRequest, errors, validationService.validate( validationRequest, profile, validationGate ) );
 	}
 
 	/**
