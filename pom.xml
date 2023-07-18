@@ -76,6 +76,10 @@
 			<artifactId>vaadin-themes</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-push</artifactId>
+		</dependency>
+		<dependency>
 		    <groupId>com.vaadin</groupId>
 		    <artifactId>vaadin-sass-compiler</artifactId>
 		    <version>0.9.13</version>

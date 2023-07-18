@@ -2647,4 +2647,13 @@ font-size:17px;
 			font-size: 16px;
         }
 	}
+
+	.validate-button-layout {
+		.v-progressbar {
+			.v-progressbar-wrapper {
+        		height: 40px;
+        	}
+			width: 1030px;
+		}
+	}
 }
