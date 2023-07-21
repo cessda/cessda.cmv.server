@@ -25,7 +25,6 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.ValidationGateName;
-import eu.cessda.cmv.server.ValidationReport;
 import eu.cessda.cmv.server.ValidatorEngine;
 import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -205,7 +204,7 @@ public class ValidationView extends VerticalLayout implements View
 		);
 	}
 
-	private void updateView( List<ValidationReport> validationReportList, Map<String, Exception> validationExceptions )
+	private void updateView( List<eu.cessda.cmv.server.ValidationReport> validationReportList, Map<String, Exception> validationExceptions )
 	{
 		// If any errors were encountered, present them to the user
 		if ( !validationExceptions.isEmpty() )
@@ -217,7 +216,7 @@ public class ValidationView extends VerticalLayout implements View
 		}
 
 		// Update the UI with the validation reports
-		validationReportList.stream().map( ValidationReportGridValueProvider::createResultsPanel ).forEach( validationReports::addComponent );
+		validationReportList.stream().map( ResultsPanel::createResultsPanel ).forEach( validationReports::addComponent );
 		this.reportPanel.setVisible( true );
 	}
 

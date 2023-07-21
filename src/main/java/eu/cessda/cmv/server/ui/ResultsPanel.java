@@ -25,16 +25,15 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.themes.ValoTheme;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ConstraintViolationV0;
-import eu.cessda.cmv.server.ValidationReport;
 
 import java.util.Collection;
 import java.util.ResourceBundle;
 
 import static java.lang.Math.min;
 
-public class ValidationReportGridValueProvider
+public class ResultsPanel
 {
-	private ValidationReportGridValueProvider()
+	private ResultsPanel()
 	{
 	}
 
@@ -46,9 +45,9 @@ public class ValidationReportGridValueProvider
 		return stringGrid;
 	}
 
-	public static Panel createResultsPanel( ValidationReport report )
+	public static Panel createResultsPanel( eu.cessda.cmv.server.ValidationReport report )
 	{
-		var bundle = ResourceBundle.getBundle( ValidationReportGridValueProvider.class.getName(), UI.getCurrent().getLocale() );
+		var bundle = ResourceBundle.getBundle( ResultsPanel.class.getName(), UI.getCurrent().getLocale() );
 
 		var validationReport = report.validationReport();
 		var documentLabelString =  report.documentResource().getLabel();
