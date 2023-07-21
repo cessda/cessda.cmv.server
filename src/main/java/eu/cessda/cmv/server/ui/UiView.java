@@ -55,7 +55,7 @@ public class UiView extends UI
 	@Override
 	protected void init( VaadinRequest request )
 	{
-		setErrorHandler( new ErrorHandler() );
+		setErrorHandler( new ErrorHandler(this) );
 		Navigator navigator = new Navigator( this, newViewContainer() );
 		navigator.addProvider( viewProvider );
 		this.setNavigator( navigator );

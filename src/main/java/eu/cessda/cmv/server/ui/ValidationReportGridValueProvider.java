@@ -20,27 +20,23 @@
 package eu.cessda.cmv.server.ui;
 
 import com.vaadin.data.ValueProvider;
-import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.server.Sizeable;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.themes.ValoTheme;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ConstraintViolationV0;
 import eu.cessda.cmv.server.ValidationReport;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
-import java.io.Serial;
+import java.util.Collection;
 import java.util.ResourceBundle;
 
-import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class ValidationReportGridValueProvider
-		implements ValueProvider<ValidationReport, CustomComponent>
 {
-	@Serial
-	private static final long serialVersionUID = 5087782841088695356L;
-	private static final int ELEMENT_SIZE = 30;
+	private ValidationReportGridValueProvider()
+	{
+	}
 
 	private static Grid<String> getStringGrid( String message )
 	{
@@ -50,8 +46,7 @@ public class ValidationReportGridValueProvider
 		return stringGrid;
 	}
 
-	@Override
-	public CustomComponent apply( ValidationReport report )
+	public static Panel createResultsPanel( ValidationReport report )
 	{
 		var bundle = ResourceBundle.getBundle( ValidationReportGridValueProvider.class.getName(), UI.getCurrent().getLocale() );
 
@@ -62,57 +57,68 @@ public class ValidationReportGridValueProvider
 		documentLabel.setCaption( bundle.getString("document.title") );
 		documentLabel.setValue( documentLabelString );
 
-		var constraintViolations = validationReport.getConstraintViolations();
+		/*
+		 * Schema Violations
+		 */
+		var schemaViolations = report.validationErrors();
 
 		// Configure the schema violation grid
-		final Grid<?> schemaViolationGrid;
-		if (!report.validationErrors().isEmpty())
-		{
-			var saxExceptionGrid = new Grid<SAXParseException>();
-			saxExceptionGrid.setItems( report.validationErrors() );
-			saxExceptionGrid.addColumn( SAXException::toString );
-			schemaViolationGrid = saxExceptionGrid;
-		} else {
-			// Display a message stating no schema violations were found
-			schemaViolationGrid = getStringGrid( bundle.getString( "result.noXSDSchemaViolations" ) );
-		}
-		schemaViolationGrid.setCaption( bundle.getString("result.XSDSchemaViolations") );
-		schemaViolationGrid.setHeaderVisible( false );
-		schemaViolationGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
-		schemaViolationGrid.setSizeFull();
-		schemaViolationGrid.setSelectionMode( SelectionMode.NONE );
-		schemaViolationGrid.setHeight( min( max( ( report.validationErrors().size() + 1 ) * ELEMENT_SIZE, ELEMENT_SIZE ), 200 ), Unit.PIXELS );
+		var schemaViolationGrid = createResultsGrid(
+			schemaViolations,
+			e -> {
+				// Remove org.xml.sax.SAXException from the message
+				var exception = e.toString();
+				return exception.substring( exception.indexOf( ';' ) + 1 );
+			},
+			5,
+			bundle.getString("result.XSDSchemaViolations"),
+			bundle.getString( "result.noXSDSchemaViolations" )
+		);
+
+		/*
+		 * Constraint Violations
+		 */
+		var constraintViolations = validationReport.getConstraintViolations();
 
 		// Configure the constraint violation grid
-		final Grid<?> constraintViolationGrid;
-		if (!report.validationErrors().isEmpty())
+		var constraintViolationGrid = createResultsGrid(
+			constraintViolations,
+			ConstraintViolationV0::getMessage,
+			10,
+			bundle.getString("result.constraintViolations"),
+			bundle.getString("result.noConstraintViolations")
+		);
+
+		var resultsForm = new FormLayout();
+		resultsForm.addComponent( documentLabel );
+		resultsForm.addComponent( constraintViolationGrid );
+		resultsForm.addComponent( schemaViolationGrid );
+
+		return new Panel( new VerticalLayout( resultsForm ) );
+	}
+
+	private static <T> Grid<?> createResultsGrid( Collection<T> results, ValueProvider<T, String> valueProvider, int maxSize, String caption, String noResults )
+	{
+		final Grid<?> resultsGrid;
+		if (!results.isEmpty())
 		{
-			var constraintGrid = new Grid<ConstraintViolationV0>();
-			constraintGrid.setItems( constraintViolations );
-			constraintGrid.addColumn( ConstraintViolationV0::getMessage );
-			constraintViolationGrid = constraintGrid;
+			var resultsGridWithData = new Grid<T>();
+			resultsGridWithData.setItems( results );
+			resultsGridWithData.addColumn( valueProvider );
+			resultsGridWithData.setHeightByRows( min( results.size(), maxSize ) );
+			resultsGrid = resultsGridWithData;
 		} else {
-			// Display a message stating no constraint violations were found
-			constraintViolationGrid = getStringGrid( bundle.getString("result.noConstraintViolations") );
+			// Display a message stating no results were found
+			resultsGrid = getStringGrid( noResults );
+			resultsGrid.setHeightByRows( 1 );
 		}
-		constraintViolationGrid.setCaption( bundle.getString("result.constraintViolations") );
-		constraintViolationGrid.setHeaderVisible( false );
-		constraintViolationGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
-		constraintViolationGrid.setSizeFull();
-		constraintViolationGrid.setSelectionMode( SelectionMode.NONE );
-		constraintViolationGrid.setHeight( min( max( ( constraintViolations.size() + 1 ) * ELEMENT_SIZE, ELEMENT_SIZE ), 400 ), Unit.PIXELS );
 
-		var constraintViolationForm = new FormLayout();
-		constraintViolationForm.addComponent( documentLabel );
-		constraintViolationForm.addComponent( constraintViolationGrid );
+		resultsGrid.setCaption( caption );
+		resultsGrid.setHeaderVisible( false );
+		resultsGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
+		resultsGrid.setWidth(1020, Sizeable.Unit.PIXELS );
+		resultsGrid.setSelectionMode( SelectionMode.NONE );
 
-		var schemaViolationForm = new FormLayout();
-		schemaViolationForm.addComponent( schemaViolationGrid );
-
-		var verticalLayout = new VerticalLayout();
-		verticalLayout.addComponent( constraintViolationForm );
-		verticalLayout.addComponent( schemaViolationForm );
-
-		return new CustomComponent( verticalLayout );
+		return resultsGrid;
 	}
 }

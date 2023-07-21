@@ -23,9 +23,6 @@ import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
-import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.renderers.ComponentRenderer;
-import com.vaadin.ui.themes.ValoTheme;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.server.ValidationReport;
@@ -34,7 +31,6 @@ import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serial;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -64,7 +60,7 @@ public class ValidationView extends VerticalLayout implements View
 	private final ValidatorEngine validationService;
 
 	private final ComboBox<ValidationGateName> validationGateNameComboBox;
-	private final Grid<ValidationReport> validationReportGrid;
+	private final VerticalLayout validationReports;
 	private final Panel reportPanel;
 	private final ResourceSelectionComponent profileSelectionComponent;
 	private final ResourceSelectionComponent documentSelectionComponent;
@@ -87,23 +83,11 @@ public class ValidationView extends VerticalLayout implements View
 		this.validationGateNameComboBox.setItems( ValidationGateName.values() );
 		this.validationGateNameComboBox.setValue( ValidationGateName.BASIC );
 
-		var validationReportLabel = new Label( bundle.getString( "report.label" ) );
-
-		this.validationReportGrid = new Grid<>();
-		this.validationReportGrid.setHeaderVisible( false );
-		this.validationReportGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
-		this.validationReportGrid.setSizeFull();
-		this.validationReportGrid.setSelectionMode( SelectionMode.NONE );
-		this.validationReportGrid.setRowHeight( 700 );
-		this.validationReportGrid.setItems( Collections.emptyList() );
-		this.validationReportGrid
-				.addColumn( new ValidationReportGridValueProvider(), new ComponentRenderer() )
-				.setSortable( false )
-				.setHandleWidgetEvents( true );
+		this.validationReports = new VerticalLayout();
 
 		var validationReportLayout = new VerticalLayout();
-		validationReportLayout.addComponent( validationReportLabel );
-		validationReportLayout.addComponent( this.validationReportGrid );
+		validationReportLayout.addComponent( new Label( bundle.getString( "report.label" ) ) );
+		validationReportLayout.addComponent( this.validationReports );
 
 		this.validateButton = new Button( bundle.getString( "validate.button" ), listener -> validate() );
 
@@ -233,18 +217,14 @@ public class ValidationView extends VerticalLayout implements View
 		}
 
 		// Update the UI with the validation reports
-		this.validationReportGrid.setItems( validationReportList );
-		if ( !validationReportList.isEmpty() )
-		{
-			this.validationReportGrid.setHeightByRows( validationReportList.size() );
-		}
+		validationReportList.stream().map( ValidationReportGridValueProvider::createResultsPanel ).forEach( validationReports::addComponent );
 		this.reportPanel.setVisible( true );
 	}
 
 	private void refresh()
 	{
-		validationReportGrid.setItems( Collections.emptyList() );
 		reportPanel.setVisible( false );
+		validationReports.removeAllComponents();
 		resetPostValidation();
 	}
 

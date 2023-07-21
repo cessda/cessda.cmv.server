@@ -25,6 +25,7 @@ import com.vaadin.ui.*;
 import java.io.PrintWriter;
 import java.io.Serial;
 import java.io.StringWriter;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static com.vaadin.ui.Alignment.MIDDLE_RIGHT;
@@ -37,9 +38,9 @@ class ErrorWindow extends Window
 	@Serial
 	private static final long serialVersionUID = -7126192827853434568L;
 
-	ErrorWindow( com.vaadin.server.ErrorEvent event )
+	ErrorWindow( com.vaadin.server.ErrorEvent event, Locale locale )
 	{
-		this( event, ResourceBundle.getBundle( ErrorWindow.class.getName(), UI.getCurrent().getLocale() ) );
+		this( event, ResourceBundle.getBundle( ErrorWindow.class.getName(), locale ) );
 	}
 
 	private ErrorWindow( com.vaadin.server.ErrorEvent event, ResourceBundle bundle ) {
