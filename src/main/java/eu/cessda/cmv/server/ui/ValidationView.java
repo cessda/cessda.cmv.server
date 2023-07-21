@@ -34,7 +34,7 @@ import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serial;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -62,8 +62,6 @@ public class ValidationView extends VerticalLayout implements View
 	// Localisation bundle
 	private final ResourceBundle bundle;
 	private final ValidatorEngine validationService;
-
-	private final ArrayList<ValidationReport> validationReports = new ArrayList<>();
 
 	private final ComboBox<ValidationGateName> validationGateNameComboBox;
 	private final Grid<ValidationReport> validationReportGrid;
@@ -97,7 +95,7 @@ public class ValidationView extends VerticalLayout implements View
 		this.validationReportGrid.setSizeFull();
 		this.validationReportGrid.setSelectionMode( SelectionMode.NONE );
 		this.validationReportGrid.setRowHeight( 700 );
-		this.validationReportGrid.setItems( validationReports );
+		this.validationReportGrid.setItems( Collections.emptyList() );
 		this.validationReportGrid
 				.addColumn( new ValidationReportGridValueProvider(), new ComponentRenderer() )
 				.setSortable( false )
@@ -225,9 +223,6 @@ public class ValidationView extends VerticalLayout implements View
 
 	private void updateView( List<ValidationReport> validationReportList, Map<String, Exception> validationExceptions )
 	{
-		// Copy the validation reports into the UI's list
-		this.validationReports.addAll( validationReportList );
-
 		// If any errors were encountered, present them to the user
 		if ( !validationExceptions.isEmpty() )
 		{
@@ -238,18 +233,17 @@ public class ValidationView extends VerticalLayout implements View
 		}
 
 		// Update the UI with the validation reports
-		this.validationReportGrid.getDataProvider().refreshAll();
-		if ( !this.validationReports.isEmpty() )
+		this.validationReportGrid.setItems( validationReportList );
+		if ( !validationReportList.isEmpty() )
 		{
-			this.validationReportGrid.setHeightByRows( this.validationReports.size() );
+			this.validationReportGrid.setHeightByRows( validationReportList.size() );
 		}
 		this.reportPanel.setVisible( true );
 	}
 
 	private void refresh()
 	{
-		validationReports.clear();
-		validationReportGrid.getDataProvider().refreshAll();
+		validationReportGrid.setItems( Collections.emptyList() );
 		reportPanel.setVisible( false );
 		resetPostValidation();
 	}
