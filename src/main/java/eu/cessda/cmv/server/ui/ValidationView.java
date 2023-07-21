@@ -70,6 +70,7 @@ public class ValidationView extends VerticalLayout implements View
 	private final Panel reportPanel;
 	private final ResourceSelectionComponent profileSelectionComponent;
 	private final ResourceSelectionComponent documentSelectionComponent;
+	private final Button validateButton;
 	private final ProgressBar progressBar;
 
 
@@ -106,7 +107,7 @@ public class ValidationView extends VerticalLayout implements View
 		validationReportLayout.addComponent( validationReportLabel );
 		validationReportLayout.addComponent( this.validationReportGrid );
 
-		var validateButton = new Button( bundle.getString( "validate.button" ), listener -> validate() );
+		this.validateButton = new Button( bundle.getString( "validate.button" ), listener -> validate() );
 
 		this.progressBar = new ProgressBar();
 		this.progressBar.setVisible( false );
@@ -149,8 +150,13 @@ public class ValidationView extends VerticalLayout implements View
 		addComponent( reportPanel );
 	}
 
+	/**
+	 * Run the validation using the currently selected profile and documents.
+	 *
+	 * @implNote This method is synchronized to ensure that only one validation can occur per UI instance.
+	 */
 	@SuppressWarnings( "java:S3958" )
-	private void validate()
+	private synchronized void validate()
 	{
 		var profileResources = this.profileSelectionComponent.getResources();
 		var documentResources = this.documentSelectionComponent.getResources();
@@ -168,6 +174,12 @@ public class ValidationView extends VerticalLayout implements View
 
 		// Refresh the view before proceeding
 		refresh();
+
+		// Enable the progress bar
+		this.progressBar.setVisible( true );
+
+		// Disable the validation button whilst validation is running
+		this.validateButton.setEnabled( false );
 
 		// Get the validation gate and validation profile to be used
 		var validationGate = this.validationGateNameComboBox.getValue();
@@ -200,15 +212,15 @@ public class ValidationView extends VerticalLayout implements View
 			}
 		} );
 
-		// Enable the progress bar
-		this.progressBar.setVisible( true );
-
 		CompletableFuture.runAsync( () ->
 		{
 			// Accumulate the stream in an asynchronous context so that the UI is not blocked
 			var completedList = validationReportList.toList();
 			this.getUI().access( () -> updateView( completedList, validationExceptions ) );
-		} );
+		} ).whenComplete(
+			// Re-enable the button regardless if any exceptions were encountered
+			(v, e) -> this.getUI().access( this::resetPostValidation )
+		);
 	}
 
 	private void updateView( List<ValidationReport> validationReportList, Map<String, Exception> validationExceptions )
@@ -232,8 +244,6 @@ public class ValidationView extends VerticalLayout implements View
 			this.validationReportGrid.setHeightByRows( this.validationReports.size() );
 		}
 		this.reportPanel.setVisible( true );
-		this.progressBar.setValue( 0 );
-		this.progressBar.setVisible( false );
 	}
 
 	private void refresh()
@@ -241,7 +251,19 @@ public class ValidationView extends VerticalLayout implements View
 		validationReports.clear();
 		validationReportGrid.getDataProvider().refreshAll();
 		reportPanel.setVisible( false );
+		resetPostValidation();
+	}
+
+	/**
+	 * Reset the progress bar and the validation button.
+	 */
+	private void resetPostValidation()
+	{
+		// Reset the state of the progress bar
 		progressBar.setValue( 0 );
 		progressBar.setVisible( false );
+
+		// Enable the validation button again
+		validateButton.setEnabled( true );
 	}
 }
