@@ -64,9 +64,9 @@ public class ResultsPanel
 		// Configure the schema violation grid
 		var schemaViolationGrid = createResultsGrid(
 			schemaViolations,
-			e -> {
+			saxException -> {
 				// Remove org.xml.sax.SAXException from the message
-				var exception = e.toString();
+				var exception = saxException.toString();
 				return exception.substring( exception.indexOf( ';' ) + 1 );
 			},
 			5,
