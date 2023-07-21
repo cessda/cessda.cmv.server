@@ -51,7 +51,7 @@ import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.S
 
 @UIScope
 @SpringView( name = ValidationView.VIEW_NAME )
-@SuppressWarnings( "java:S110" )
+@SuppressWarnings( { "java:S110", "java:S1948", "java:S2160" } )
 public class ValidationView extends VerticalLayout implements View
 {
 	public static final String VIEW_NAME = "validation";
@@ -59,12 +59,15 @@ public class ValidationView extends VerticalLayout implements View
 	@Serial
 	private static final long serialVersionUID = -5924926837826583950L;
 
+	// Localisation bundle
 	private final ResourceBundle bundle;
+	private final ValidatorEngine validationService;
+
 	private final ArrayList<ValidationReport> validationReports = new ArrayList<>();
+
 	private final ComboBox<ValidationGateName> validationGateNameComboBox;
 	private final Grid<ValidationReport> validationReportGrid;
 	private final Panel reportPanel;
-	private final ValidatorEngine validationService;
 	private final ResourceSelectionComponent profileSelectionComponent;
 	private final ResourceSelectionComponent documentSelectionComponent;
 	private final ProgressBar progressBar;
@@ -146,6 +149,7 @@ public class ValidationView extends VerticalLayout implements View
 		addComponent( reportPanel );
 	}
 
+	@SuppressWarnings( "java:S3958" )
 	private void validate()
 	{
 		var profileResources = this.profileSelectionComponent.getResources();
@@ -199,8 +203,12 @@ public class ValidationView extends VerticalLayout implements View
 		// Enable the progress bar
 		this.progressBar.setVisible( true );
 
-		CompletableFuture.supplyAsync( validationReportList::toList )
-			.thenAcceptAsync( completedList -> this.getUI().access( () -> updateView( completedList, validationExceptions ) ) );
+		CompletableFuture.runAsync( () ->
+		{
+			// Accumulate the stream in an asynchronous context so that the UI is not blocked
+			var completedList = validationReportList.toList();
+			this.getUI().access( () -> updateView( completedList, validationExceptions ) );
+		} );
 	}
 
 	private void updateView( List<ValidationReport> validationReportList, Map<String, Exception> validationExceptions )
