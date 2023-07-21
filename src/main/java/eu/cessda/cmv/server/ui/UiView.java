@@ -106,7 +106,6 @@ public class UiView extends UI
 		this.setId( "main-container" );
 		this.setContent( root );
 		this.setLocale( Locale.ENGLISH );
-		getCurrent().setPollInterval( 2000 );
 		return viewContainer;
 	}
 }
