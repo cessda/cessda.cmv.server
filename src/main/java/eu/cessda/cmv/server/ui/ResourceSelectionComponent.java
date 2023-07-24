@@ -201,6 +201,9 @@ public class ResourceSelectionComponent extends CustomComponent
 
 	/**
 	 * Return the list of selected resources from this component. The returned list is unmodifiable.
+	 * <p>
+	 * For a ResourceSelectionComponent constructed with {@link SelectionMode#SINGLE},
+	 * this will contain zero or one elements.
 	 */
 	public List<Resource.V10> getResources()
 	{

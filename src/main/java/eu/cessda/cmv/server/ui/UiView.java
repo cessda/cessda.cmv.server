@@ -20,9 +20,7 @@
 package eu.cessda.cmv.server.ui;
 
 import com.vaadin.annotations.JavaScript;
-import com.vaadin.annotations.StyleSheet;
-import com.vaadin.annotations.Theme;
-import com.vaadin.annotations.Title;
+import com.vaadin.annotations.*;
 import com.vaadin.navigator.NavigationStateManager;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewProvider;
@@ -41,7 +39,8 @@ import java.util.Locale;
 @StyleSheet( { "https://fonts.googleapis.com/css?family=Source+Sans+Pro:100,200,300,400,500,600,700,800,900" } )
 @JavaScript( { "https://code.jquery.com/jquery-3.6.0.min.js", "theme://helpdesk.js" } )
 @Theme( "cmv" )
-@SpringUI( path = "/" )
+@SpringUI
+@Push
 @SuppressWarnings( "java:S2160" )
 public class UiView extends UI
 {
@@ -56,7 +55,7 @@ public class UiView extends UI
 	@Override
 	protected void init( VaadinRequest request )
 	{
-		setErrorHandler( new ErrorHandler() );
+		setErrorHandler( new ErrorHandler(this) );
 		Navigator navigator = new Navigator( this, newViewContainer() );
 		navigator.addProvider( viewProvider );
 		this.setNavigator( navigator );
@@ -107,7 +106,6 @@ public class UiView extends UI
 		this.setId( "main-container" );
 		this.setContent( root );
 		this.setLocale( Locale.ENGLISH );
-		getCurrent().setPollInterval( 2000 );
 		return viewContainer;
 	}
 }

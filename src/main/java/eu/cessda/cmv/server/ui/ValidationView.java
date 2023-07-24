@@ -23,23 +23,21 @@ import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
-import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.renderers.ComponentRenderer;
-import com.vaadin.ui.themes.ValoTheme;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.ValidationGateName;
-import eu.cessda.cmv.server.ValidationReport;
 import eu.cessda.cmv.server.ValidatorEngine;
 import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.xml.sax.SAXException;
 
-import java.io.IOException;
 import java.io.Serial;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
@@ -48,7 +46,7 @@ import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.S
 
 @UIScope
 @SpringView( name = ValidationView.VIEW_NAME )
-@SuppressWarnings( "java:S110" )
+@SuppressWarnings( { "java:S110", "java:S1948", "java:S2160" } )
 public class ValidationView extends VerticalLayout implements View
 {
 	public static final String VIEW_NAME = "validation";
@@ -56,135 +54,189 @@ public class ValidationView extends VerticalLayout implements View
 	@Serial
 	private static final long serialVersionUID = -5924926837826583950L;
 
+	// Localisation bundle
+	private final ResourceBundle bundle;
+	private final ValidatorEngine validationService;
+
+	private final ComboBox<ValidationGateName> validationGateNameComboBox;
+	private final VerticalLayout validationReports;
+	private final Panel reportPanel;
+	private final ResourceSelectionComponent profileSelectionComponent;
+	private final ResourceSelectionComponent documentSelectionComponent;
+	private final Button validateButton;
+	private final ProgressBar progressBar;
+
+
 	public ValidationView( @Autowired ValidatorEngine validationService,
 						   @Autowired List<Resource.V10> demoDocuments,
 						   @Autowired List<Resource.V10> demoProfiles,
 						   @Autowired CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory )
 	{
-		var bundle = ResourceBundle.getBundle( ValidationView.class.getName(), UI.getCurrent().getLocale() );
+		this.validationService = validationService;
 
-		List<ValidationReport> validationReports = new ArrayList<>();
+		this.bundle = ResourceBundle.getBundle( ValidationView.class.getName(), UI.getCurrent().getLocale() );
 
-		ComboBox<ValidationGateName> validationGateNameComboBox = new ComboBox<>();
-		validationGateNameComboBox.setCaption( bundle.getString( "configuration.validationGate" ) );
-		validationGateNameComboBox.setEmptySelectionAllowed( false );
-		validationGateNameComboBox.setItems( ValidationGateName.values() );
-		validationGateNameComboBox.setValue( ValidationGateName.BASIC );
+		this.validationGateNameComboBox = new ComboBox<>();
+		this.validationGateNameComboBox.setCaption( bundle.getString( "configuration.validationGate" ) );
+		this.validationGateNameComboBox.setEmptySelectionAllowed( false );
+		this.validationGateNameComboBox.setItems( ValidationGateName.values() );
+		this.validationGateNameComboBox.setValue( ValidationGateName.BASIC );
 
-		var validationReportLabel = new Label( bundle.getString( "report.label" ) );
-
-		Grid<ValidationReport> validationReportGrid = new Grid<>();
-		validationReportGrid.setHeaderVisible( false );
-		validationReportGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
-		validationReportGrid.setSizeFull();
-		validationReportGrid.setSelectionMode( SelectionMode.NONE );
-		validationReportGrid.setRowHeight( 700 );
-		validationReportGrid.setItems( validationReports );
-		validationReportGrid
-				.addColumn( new ValidationReportGridValueProvider(), new ComponentRenderer() )
-				.setSortable( false )
-				.setHandleWidgetEvents( true );
+		this.validationReports = new VerticalLayout();
 
 		var validationReportLayout = new VerticalLayout();
-		validationReportLayout.addComponent( validationReportLabel );
-		validationReportLayout.addComponent( validationReportGrid );
+		validationReportLayout.addComponent( new Label( bundle.getString( "report.label" ) ) );
+		validationReportLayout.addComponent( this.validationReports );
 
-		var reportPanel = new Panel( bundle.getString( "report.panel.caption" ), validationReportLayout );
+		this.validateButton = new Button( bundle.getString( "validate.button" ), listener -> validate() );
 
-		Runnable refreshEvent = () ->
-		{
-			validationReports.clear();
-			validationReportGrid.getDataProvider().refreshAll();
-			reportPanel.setVisible( false );
-		};
+		this.progressBar = new ProgressBar();
+		this.progressBar.setVisible( false );
 
-		var profileSelection = new ResourceSelectionComponent(
+		var validateLayout = new HorizontalLayout( validateButton, this.progressBar );
+		validateLayout.setStyleName( "validate-button-layout" );
+
+		this.reportPanel = new Panel( bundle.getString( "report.panel.caption" ), validationReportLayout );
+
+		this.profileSelectionComponent = new ResourceSelectionComponent(
 			SINGLE,
 			BY_PREDEFINED,
 			demoProfiles,
-			refreshEvent,
+			this::refresh,
 			cessdaMetadataValidatorFactory );
-		profileSelection.setCaption( bundle.getString( "configuration.profileSelectionCaption" ) );
-		profileSelection.setWidthFull();
+		this.profileSelectionComponent.setCaption( bundle.getString( "configuration.profileSelectionCaption" ) );
+		this.profileSelectionComponent.setWidthFull();
 
-		var documentSelection = new ResourceSelectionComponent(
+		this.documentSelectionComponent = new ResourceSelectionComponent(
 			MULTI,
 			BY_UPLOAD,
 			demoDocuments,
-			refreshEvent,
+			this::refresh,
 			cessdaMetadataValidatorFactory );
-		documentSelection.setCaption( bundle.getString( "configuration.documentSelectionCaption" ) );
-		documentSelection.setWidthFull();
+		this.documentSelectionComponent.setCaption( bundle.getString( "configuration.documentSelectionCaption" ) );
+		this.documentSelectionComponent.setWidthFull();
 
-		var validateButton = new Button( bundle.getString( "validate.button" ), listener ->
-		{
-			var profileResources = profileSelection.getResources();
-			var documentResources = documentSelection.getResources();
-
-			if ( profileResources.isEmpty() )
-			{
-				Notification.show( bundle.getString("validate.noProfileSelected") );
-				return;
-			}
-			if ( documentResources.isEmpty() )
-			{
-				Notification.show( bundle.getString("validate.noDocumentsSelected") );
-				return;
-			}
-
-			validationReports.clear();
-			validationReportGrid.getDataProvider().refreshAll();
-
-			var validationExceptions = new ArrayList<Exception>();
-
-			for ( var documentResource : documentResources )
-			{
-				try
-				{
-					var validationReport = validationService.validate( documentResource,
-							profileResources.get( 0 ),
-							validationGateNameComboBox.getSelectedItem().orElseThrow() );
-					validationReports.add( validationReport );
-				}
-				catch ( IOException | SAXException e )
-				{
-					validationExceptions.add( e );
-				}
-			}
-
-			if ( !validationExceptions.isEmpty() )
-			{
-				var validationExceptionString = validationExceptions.stream()
-						.map( Exception::toString )
-						.collect( Collectors.joining( "/n" ) );
-				Notification.show( bundle.getString("validate.validationErrors"), validationExceptionString, Notification.Type.WARNING_MESSAGE );
-			}
-
-			validationReportGrid.getDataProvider().refreshAll();
-			if ( !documentResources.isEmpty() )
-			{
-				validationReportGrid.setHeightByRows( documentResources.size() );
-			}
-			reportPanel.setVisible( true );
-		} );
-
-		validationGateNameComboBox.addSelectionListener( listener ->
-		{
-			validationReports.clear();
-			validationReportGrid.getDataProvider().refreshAll();
-			reportPanel.setVisible( false );
-		} );
+		this.validationGateNameComboBox.addSelectionListener( listener -> refresh() );
 
 		var configurationFormLayout = new FormLayout();
 		configurationFormLayout.setMargin( true );
 		configurationFormLayout.addComponent( validationGateNameComboBox );
-		configurationFormLayout.addComponent( profileSelection );
-		configurationFormLayout.addComponent( documentSelection );
+		configurationFormLayout.addComponent( profileSelectionComponent );
+		configurationFormLayout.addComponent( documentSelectionComponent );
 		var configurationPanel = new Panel( bundle.getString( "configuration.configurationBoxCaption" ), configurationFormLayout );
 
 		this.setSizeFull();
 		addComponent( configurationPanel );
-		addComponent( validateButton );
+		addComponent( validateLayout );
 		addComponent( reportPanel );
+	}
+
+	/**
+	 * Run the validation using the currently selected profile and documents.
+	 *
+	 * @implNote This method is synchronized to ensure that only one validation can occur per UI instance.
+	 */
+	@SuppressWarnings( "java:S3958" )
+	private synchronized void validate()
+	{
+		var profileResources = this.profileSelectionComponent.getResources();
+		var documentResources = this.documentSelectionComponent.getResources();
+
+		if ( profileResources.isEmpty() )
+		{
+			Notification.show( this.bundle.getString("validate.noProfileSelected") );
+			return;
+		}
+		if ( documentResources.isEmpty() )
+		{
+			Notification.show( this.bundle.getString("validate.noDocumentsSelected") );
+			return;
+		}
+
+		// Refresh the view before proceeding
+		refresh();
+
+		// Enable the progress bar
+		this.progressBar.setVisible( true );
+
+		// Disable the validation button whilst validation is running
+		this.validateButton.setEnabled( false );
+
+		// Get the validation gate and validation profile to be used
+		var validationGate = this.validationGateNameComboBox.getValue();
+		var profile = profileResources.get( 0 );
+
+		// Container for any validation errors encountered
+		var validationExceptions = new ConcurrentHashMap<String, Exception>(0);
+
+		var documentsValidated = new AtomicInteger();
+		int documentsToValidate = documentResources.size();
+
+		// Validate all documents using a parallel stream
+		var validationReportList = documentResources.parallelStream().flatMap( documentResource ->
+		{
+			try
+			{
+				var validationReport = this.validationService.validate( documentResource, profile, validationGate );
+				return Stream.of( validationReport );
+			}
+			catch ( Exception e )
+			{
+				// Report all exceptions encountered to the user
+				validationExceptions.put( documentResource.getLabel(), e );
+				return Stream.empty();
+			}
+			finally
+			{
+				// Update the progress bar
+				this.getUI().access( () -> this.progressBar.setValue( (float) documentsValidated.incrementAndGet() / documentsToValidate ) );
+			}
+		} );
+
+		CompletableFuture.runAsync( () ->
+		{
+			// Accumulate the stream in an asynchronous context so that the UI is not blocked
+			var completedList = validationReportList.toList();
+			this.getUI().access( () -> updateView( completedList, validationExceptions ) );
+		} ).whenComplete(
+			// Re-enable the button regardless if any exceptions were encountered
+			(v, e) -> this.getUI().access( this::resetPostValidation )
+		);
+	}
+
+	private void updateView( List<eu.cessda.cmv.server.ValidationReport> validationReportList, Map<String, Exception> validationExceptions )
+	{
+		// If any errors were encountered, present them to the user
+		if ( !validationExceptions.isEmpty() )
+		{
+			var validationExceptionString = validationExceptions.entrySet().stream()
+					.map( e -> e.getKey() + ": " + e.getValue() )
+					.collect( Collectors.joining( "/n" ) );
+			Notification.show( this.bundle.getString("validate.validationErrors"), validationExceptionString, Notification.Type.WARNING_MESSAGE );
+		}
+
+		// Update the UI with the validation reports
+		validationReportList.stream().map( ResultsPanel::createResultsPanel ).forEach( validationReports::addComponent );
+		this.reportPanel.setVisible( true );
+	}
+
+	private void refresh()
+	{
+		reportPanel.setVisible( false );
+		validationReports.removeAllComponents();
+		resetPostValidation();
+	}
+
+	/**
+	 * Reset the progress bar and the validation button.
+	 */
+	private void resetPostValidation()
+	{
+		// Reset the state of the progress bar
+		progressBar.setValue( 0 );
+		progressBar.setVisible( false );
+
+		// Enable the validation button again
+		validateButton.setEnabled( true );
 	}
 }
