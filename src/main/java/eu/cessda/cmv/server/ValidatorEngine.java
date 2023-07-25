@@ -21,6 +21,7 @@ package eu.cessda.cmv.server;
 
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.core.ValidationService;
+import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
 import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -103,7 +104,9 @@ public class ValidatorEngine
 		errorHandler.reset();
 
 		// Validate against profile
-		return new ValidationReport( validationRequest, errors, validationService.validate( validationRequest, profile, validationGate ) );
+		ValidationReportV0 validationReport = validationService.validate( validationRequest, profile, validationGate );
+		var validationErrors = errors.stream().map( SchemaViolation::new ).toList();
+		return new ValidationReport( validationErrors, validationReport.getConstraintViolations() );
 	}
 
 	/**

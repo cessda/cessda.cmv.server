@@ -25,6 +25,7 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.ValidationGateName;
+import eu.cessda.cmv.server.ValidationReport;
 import eu.cessda.cmv.server.ValidatorEngine;
 import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,10 +85,6 @@ public class ValidationView extends VerticalLayout implements View
 
 		this.validationReports = new VerticalLayout();
 
-		var validationReportLayout = new VerticalLayout();
-		validationReportLayout.addComponent( new Label( bundle.getString( "report.label" ) ) );
-		validationReportLayout.addComponent( this.validationReports );
-
 		this.validateButton = new Button( bundle.getString( "validate.button" ), listener -> validate() );
 
 		this.progressBar = new ProgressBar();
@@ -96,7 +93,8 @@ public class ValidationView extends VerticalLayout implements View
 		var validateLayout = new HorizontalLayout( validateButton, this.progressBar );
 		validateLayout.setStyleName( "validate-button-layout" );
 
-		this.reportPanel = new Panel( bundle.getString( "report.panel.caption" ), validationReportLayout );
+		this.reportPanel = new Panel( bundle.getString( "report.panel.caption" ) );
+		this.reportPanel.setVisible( false );
 
 		this.profileSelectionComponent = new ResourceSelectionComponent(
 			SINGLE,
@@ -178,7 +176,7 @@ public class ValidationView extends VerticalLayout implements View
 			try
 			{
 				var validationReport = this.validationService.validate( documentResource, profile, validationGate );
-				return Stream.of( validationReport );
+				return Stream.of( Map.entry( documentResource.getLabel(), validationReport ) );
 			}
 			catch ( Exception e )
 			{
@@ -196,7 +194,7 @@ public class ValidationView extends VerticalLayout implements View
 		CompletableFuture.runAsync( () ->
 		{
 			// Accumulate the stream in an asynchronous context so that the UI is not blocked
-			var completedList = validationReportList.toList();
+			var completedList = validationReportList.collect( Collectors.toMap( Map.Entry::getKey, Map.Entry::getValue ) );
 			this.getUI().access( () -> updateView( completedList, validationExceptions ) );
 		} ).whenComplete(
 			// Re-enable the button regardless if any exceptions were encountered
@@ -204,7 +202,7 @@ public class ValidationView extends VerticalLayout implements View
 		);
 	}
 
-	private void updateView( List<eu.cessda.cmv.server.ValidationReport> validationReportList, Map<String, Exception> validationExceptions )
+	private void updateView( Map<String, ValidationReport> validationReportList, Map<String, Exception> validationExceptions )
 	{
 		// If any errors were encountered, present them to the user
 		if ( !validationExceptions.isEmpty() )
@@ -216,7 +214,13 @@ public class ValidationView extends VerticalLayout implements View
 		}
 
 		// Update the UI with the validation reports
-		validationReportList.stream().map( ResultsPanel::createResultsPanel ).forEach( validationReports::addComponent );
+		var reportComponent = new ResultsComponent( validationReportList );
+
+		var reportLayout = new VerticalLayout();
+		reportLayout.addComponent( new Label( bundle.getString( "report.label" ) ) );
+		reportLayout.addComponent( this.validationReports );
+
+		this.reportPanel.setContent( reportComponent );
 		this.reportPanel.setVisible( true );
 	}
 

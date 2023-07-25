@@ -2658,4 +2658,13 @@ font-size:17px;
 			width: 1030px;
 		}
 	}
+
+	.results-label-layout {
+		display: flex;
+		justify-content: space-between;
+		.v-button {
+			height: auto;
+            font-size: 16px;
+		}
+	}
 }
