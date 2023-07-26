@@ -30,12 +30,14 @@ import com.vaadin.ui.themes.ValoTheme;
 import eu.cessda.cmv.core.mediatype.validationreport.v0.ConstraintViolationV0;
 import eu.cessda.cmv.server.SchemaViolation;
 import eu.cessda.cmv.server.ValidationReport;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.MediaType;
 
-import java.io.ByteArrayInputStream;
-import java.io.Serial;
-import java.io.UncheckedIOException;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -57,12 +59,18 @@ public class ResultsComponent extends CustomComponent
 		var downloadAllButton = new Button( bundle.getString("results.downloadAllReports") );
 		createJSONFileDownloader( "Reports", reports ).extend( downloadAllButton );
 
+		// TODO: Generate a CSV for constraint violations, apply this per entry
+		// This could be done using a ZIP bundle?
+		var csvButton = new Button("Download CSV");
+		createCSVFileDownloader( "Report", reports.values().stream().findFirst().orElseThrow().schemaViolations()).extend( csvButton );
+
 		// Configure the panels
 		var resultsPanels = reports.entrySet().stream().map( ResultsComponent::createResultsPanel ).toArray(Panel[]::new);
 
 		// Configure the layout
 		var layout = new VerticalLayout();
 		layout.addComponent( downloadAllButton );
+		layout.addComponents( csvButton );
 		layout.addComponents( resultsPanels );
 
 		super.setCompositionRoot( layout );
@@ -152,7 +160,7 @@ public class ResultsComponent extends CustomComponent
 		return resultsGrid;
 	}
 
-	private static <T> FileDownloader createJSONFileDownloader( String fileName, T download )
+	private static FileDownloader createJSONFileDownloader( String fileName, Object download )
 	{
 		var resource = new StreamResource(
 			() ->
@@ -172,6 +180,80 @@ public class ResultsComponent extends CustomComponent
 
 		// Set the MIME type of the resource
 		resource.setMIMEType( MediaType.APPLICATION_JSON_VALUE );
+
+		var fileDownloader = new FileDownloader( resource );
+		fileDownloader.setOverrideContentType( false );
+		return fileDownloader;
+	}
+
+	private static FileDownloader createCSVFileDownloader( String fileName, Iterable<? extends Record> entries )
+	{
+		var resource = new StreamResource(
+			() ->
+			{
+				var iterator = entries.iterator();
+				if (!iterator.hasNext()) {
+					return InputStream.nullInputStream();
+				}
+
+				// Get the first entry, this allows the record components to be discovered
+				var entry = iterator.next();
+				var clazz = entry.getClass();
+
+				var recordComponents = clazz.getRecordComponents();
+
+				// Set the header names based of the record component names
+				var fieldNames = new String[recordComponents.length];
+				for ( int i = 0; i < recordComponents.length ; i++ )
+				{
+					fieldNames[i] = recordComponents[i].getName();
+				}
+
+				var csvFormat = CSVFormat.RFC4180.builder().setHeader( fieldNames ).build();
+
+				// Configure the CSV printer
+				var outputStream = new ByteArrayOutputStream();
+				try (
+					var writer = new OutputStreamWriter( outputStream, StandardCharsets.UTF_8 );
+					var csvPrinter = new CSVPrinter( writer, csvFormat )
+				)
+				{
+					// Iterate through the list of entries
+					while ( true )
+					{
+						// Get all the components of the record and convert them into strings
+						var entryStringArray = new String[recordComponents.length];
+						for ( int i = 0; i < recordComponents.length; i++ )
+						{
+							entryStringArray[i] = String.valueOf( recordComponents[i].getAccessor().invoke( entry ) );
+						}
+
+						// Print the string representation to the CSV file
+						csvPrinter.printRecord( (Object[]) entryStringArray );
+
+						// Are there more entries?
+						if ( !iterator.hasNext() )
+						{
+							break;
+						}
+
+						// Get the next entry
+						entry = iterator.next();
+					}
+				}
+				catch ( IOException | IllegalAccessException | InvocationTargetException e )
+				{
+					throw new CSVException( e );
+				}
+
+
+				return new ByteArrayInputStream( outputStream.toByteArray() );
+			},
+			fileName + ".csv"
+		);
+
+		// Set the MIME type of the resource
+		resource.setMIMEType( "text/csv" );
 
 		var fileDownloader = new FileDownloader( resource );
 		fileDownloader.setOverrideContentType( false );
