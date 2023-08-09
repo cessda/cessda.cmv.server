@@ -1,6 +1,8 @@
 # cessda.cmv.server
 
-[![SQA badge](https://api.eu.badgr.io/public/assertions/SSQHSCmuQg2tZF2qNstYtA/image)](https://api.eu.badgr.io/public/assertions/SJzx32-FSzOi8dds5E6XbQ)
+[![SQAaaS badge](https://github.com/EOSC-synergy/SQAaaS/raw/master/badges/badges_150x116/badge_software_silver.png)](https://api.eu.badgr.io/public/assertions/IhnYnj1ZRXGXuwPDvnUpkw "SQAaaS silver badge achieved")
+
+[![SQAaaS badge shields.io](https://img.shields.io/badge/sqaaas%20software-silver-lightgrey)](https://api.eu.badgr.io/public/assertions/IhnYnj1ZRXGXuwPDvnUpkw "SQAaaS silver badge achieved")
 
 [![Build Status](https://jenkins.cessda.eu/buildStatus/icon?job=cessda.cmv.server%2Fmaster)](https://jenkins.cessda.eu/job/cessda.cmv.server/job/master/)
 [![Quality Gate Status](https://sonarqube.cessda.eu/api/project_badges/measure?project=eu.cessda.cmv%3Acmv-server&metric=alert_status)](https://sonarqube.cessda.eu/dashboard?id=eu.cessda.cmv%3Acmv-server)
