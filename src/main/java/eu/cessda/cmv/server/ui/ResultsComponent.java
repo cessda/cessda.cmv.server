@@ -36,11 +36,13 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.MediaType;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Function;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static java.lang.Math.min;
 
@@ -56,21 +58,21 @@ public class ResultsComponent extends CustomComponent
 		var bundle = ResourceBundle.getBundle( ResultsComponent.class.getName(), UI.getCurrent().getLocale() );
 
 		// Configure the download all reports button
-		var downloadAllButton = new Button( bundle.getString("results.downloadAllReports") );
-		createJSONFileDownloader( "Reports", reports ).extend( downloadAllButton );
+		var jsonButton = new Button( bundle.getString( "results.downloadAllReports" ) );
+		createJSONFileDownloader( "Reports", reports ).extend( jsonButton );
 
-		// TODO: Generate a CSV for constraint violations, apply this per entry
-		// This could be done using a ZIP bundle?
-		var csvButton = new Button("Download CSV");
-		createCSVFileDownloader( "Report", reports.values().stream().findFirst().orElseThrow().schemaViolations()).extend( csvButton );
+		var csvButton = new Button( bundle.getString("results.downloadCSVBundle") );
+		createCSVFileDownloader( reports ).extend( csvButton );
+
+		// Add the buttons to a single horizontal layout
+		var buttonLayout = new HorizontalLayout( jsonButton, csvButton );
 
 		// Configure the panels
-		var resultsPanels = reports.entrySet().stream().map( ResultsComponent::createResultsPanel ).toArray(Panel[]::new);
+		var resultsPanels = reports.entrySet().stream().map( ResultsComponent::createResultsPanel ).toArray( Panel[]::new );
 
 		// Configure the layout
 		var layout = new VerticalLayout();
-		layout.addComponent( downloadAllButton );
-		layout.addComponents( csvButton );
+		layout.addComponent( buttonLayout );
 		layout.addComponents( resultsPanels );
 
 		super.setCompositionRoot( layout );
@@ -87,16 +89,22 @@ public class ResultsComponent extends CustomComponent
 	private static Panel createResultsPanel( Map.Entry<String, ValidationReport> report )
 	{
 		var bundle = ResourceBundle.getBundle( ResultsComponent.class.getName(), UI.getCurrent().getLocale() );
-		var documentLabelString =  report.getKey();
+		var documentLabelString = report.getKey();
 
 		var documentLabel = new Label( documentLabelString );
 
-		// Export button
-		var downloadButton = new Button( bundle.getString("result.downloadReport") );
-		createJSONFileDownloader( FilenameUtils.removeExtension( report.getKey() ), report.getValue() ).extend( downloadButton );
+		// Export buttons
+		var downloadJSONButton = new Button( bundle.getString( "results.downloadReport" ) );
+		createJSONFileDownloader( FilenameUtils.removeExtension( report.getKey() ), report.getValue() ).extend( downloadJSONButton );
 
-		var documentLayout = new HorizontalLayout( documentLabel, downloadButton );
-		documentLayout.setCaption( bundle.getString("document.title") );
+		var csvButton = new Button( bundle.getString("results.downloadCSV") );
+		createCSVFileDownloader(  FilenameUtils.removeExtension( report.getKey() ), report.getValue() ).extend( csvButton );
+
+		// Combine buttons into their own layout
+		var buttonLayout = new HorizontalLayout(downloadJSONButton, csvButton);
+
+		var documentLayout = new HorizontalLayout( documentLabel, buttonLayout );
+		documentLayout.setCaption( bundle.getString( "document.title" ) );
 		documentLayout.addStyleName( "results-label-layout" );
 
 		/*
@@ -109,7 +117,7 @@ public class ResultsComponent extends CustomComponent
 			schemaViolations,
 			SchemaViolation::toString,
 			5,
-			bundle.getString("result.XSDSchemaViolations"),
+			bundle.getString( "result.XSDSchemaViolations" ),
 			bundle.getString( "result.noXSDSchemaViolations" )
 		);
 
@@ -123,8 +131,8 @@ public class ResultsComponent extends CustomComponent
 			constraintViolations,
 			ConstraintViolationV0::getMessage,
 			10,
-			bundle.getString("result.constraintViolations"),
-			bundle.getString("result.noConstraintViolations")
+			bundle.getString( "result.constraintViolations" ),
+			bundle.getString( "result.noConstraintViolations" )
 		);
 
 		var resultsForm = new FormLayout();
@@ -138,14 +146,16 @@ public class ResultsComponent extends CustomComponent
 	private static <T> Grid<?> createResultsGrid( Collection<T> results, ValueProvider<T, String> valueProvider, int maxSize, String caption, String noResults )
 	{
 		final Grid<?> resultsGrid;
-		if (!results.isEmpty())
+		if ( !results.isEmpty() )
 		{
 			var resultsGridWithData = new Grid<T>();
 			resultsGridWithData.setItems( results );
 			resultsGridWithData.addColumn( valueProvider );
 			resultsGridWithData.setHeightByRows( min( results.size(), maxSize ) );
 			resultsGrid = resultsGridWithData;
-		} else {
+		}
+		else
+		{
 			// Display a message stating no results were found
 			resultsGrid = getStringGrid( noResults );
 			resultsGrid.setHeightByRows( 1 );
@@ -154,20 +164,26 @@ public class ResultsComponent extends CustomComponent
 		resultsGrid.setCaption( caption );
 		resultsGrid.setHeaderVisible( false );
 		resultsGrid.setStyleName( ValoTheme.TABLE_BORDERLESS );
-		resultsGrid.setWidth(100, Unit.PERCENTAGE );
+		resultsGrid.setWidth( 100, Unit.PERCENTAGE );
 		resultsGrid.setSelectionMode( SelectionMode.NONE );
 
 		return resultsGrid;
 	}
 
-	private static FileDownloader createJSONFileDownloader( String fileName, Object download )
+	/**
+	 * Create a downloader that returns a JSON representation of the given object.
+	 *
+	 * @param fileName the file name without extension.
+	 * @param object the object to serialise.
+	 */
+	private static FileDownloader createJSONFileDownloader( String fileName, Object object )
 	{
 		var resource = new StreamResource(
 			() ->
 			{
 				try
 				{
-					byte[] jsonByteArray = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsBytes( download );
+                    byte[] jsonByteArray = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsBytes( object );
 					return new ByteArrayInputStream( jsonByteArray );
 				}
 				catch ( JsonProcessingException e )
@@ -186,77 +202,144 @@ public class ResultsComponent extends CustomComponent
 		return fileDownloader;
 	}
 
-	private static FileDownloader createCSVFileDownloader( String fileName, Iterable<? extends Record> entries )
+	/**
+	 * Create a downloader that returns a ZIP file containing CSVs detaining any schema or constraint violations found.
+	 * @param fileName the name of the ZIP containing the CSVs.
+	 * @param validationReport the report to convert into CSVs.
+	 */
+	private static FileDownloader createCSVFileDownloader( String fileName, ValidationReport validationReport)
 	{
 		var resource = new StreamResource(
 			() ->
 			{
-				var iterator = entries.iterator();
-				if (!iterator.hasNext()) {
-					return InputStream.nullInputStream();
-				}
-
-				// Get the first entry, this allows the record components to be discovered
-				var entry = iterator.next();
-				var clazz = entry.getClass();
-
-				var recordComponents = clazz.getRecordComponents();
-
-				// Set the header names based of the record component names
-				var fieldNames = new String[recordComponents.length];
-				for ( int i = 0; i < recordComponents.length ; i++ )
-				{
-					fieldNames[i] = recordComponents[i].getName();
-				}
-
-				var csvFormat = CSVFormat.RFC4180.builder().setHeader( fieldNames ).build();
-
-				// Configure the CSV printer
 				var outputStream = new ByteArrayOutputStream();
-				try (
-					var writer = new OutputStreamWriter( outputStream, StandardCharsets.UTF_8 );
-					var csvPrinter = new CSVPrinter( writer, csvFormat )
-				)
+				try ( var zip = new ZipOutputStream( outputStream ) )
 				{
-					// Iterate through the list of entries
-					while ( true )
-					{
-						// Get all the components of the record and convert them into strings
-						var entryStringArray = new String[recordComponents.length];
-						for ( int i = 0; i < recordComponents.length; i++ )
-						{
-							entryStringArray[i] = String.valueOf( recordComponents[i].getAccessor().invoke( entry ) );
+					// Schema violations
+					zip.putNextEntry( new ZipEntry(  "Schema violations.csv" ) );
+					generateCSV( validationReport.schemaViolations(), zip,
+						schemaViolation -> new String[] {
+							String.valueOf( schemaViolation.lineNumber() ),
+							String.valueOf( schemaViolation.columnNumber() ),
+							schemaViolation.message()
 						}
+					);
 
-						// Print the string representation to the CSV file
-						csvPrinter.printRecord( (Object[]) entryStringArray );
-
-						// Are there more entries?
-						if ( !iterator.hasNext() )
-						{
-							break;
+					// Constraint violations
+					zip.putNextEntry( new ZipEntry(  "Constraint violations.csv" ) );
+					generateCSV( validationReport.constraintViolations(), zip,
+						constraintViolation -> new String[] {
+							String.valueOf( constraintViolation.getLocationInfo().getLineNumber() ),
+							String.valueOf( constraintViolation.getLocationInfo().getColumnNumber() ),
+							constraintViolation.getMessage()
 						}
-
-						// Get the next entry
-						entry = iterator.next();
-					}
+					);
 				}
-				catch ( IOException | IllegalAccessException | InvocationTargetException e )
+				catch ( IOException e )
 				{
 					throw new CSVException( e );
 				}
 
-
 				return new ByteArrayInputStream( outputStream.toByteArray() );
 			},
-			fileName + ".csv"
+			fileName + ".zip"
 		);
 
 		// Set the MIME type of the resource
-		resource.setMIMEType( "text/csv" );
+		resource.setMIMEType( "application/zip" );
 
 		var fileDownloader = new FileDownloader( resource );
 		fileDownloader.setOverrideContentType( false );
 		return fileDownloader;
+	}
+
+	/**
+	 * Create a downloader that returns a ZIP file containing CSVs detaining any schema or constraint violations found.
+	 * @param reports the reports to convert into CSVs.
+	 */
+	private static FileDownloader createCSVFileDownloader( Map<String, ValidationReport> reports )
+	{
+		var resource = new StreamResource(
+			() ->
+			{
+				var outputStream = new ByteArrayOutputStream();
+				try ( var zip = new ZipOutputStream( outputStream ) )
+				{
+					for ( var report : reports.entrySet() )
+					{
+						var sourceFileName = FilenameUtils.removeExtension( report.getKey() );
+
+						// Schema violations
+						zip.putNextEntry( new ZipEntry( sourceFileName + " - schema violations.csv" ) );
+						generateCSV( report.getValue().schemaViolations(), zip,
+							schemaViolation -> new String[] {
+								String.valueOf( schemaViolation.lineNumber() ),
+								String.valueOf( schemaViolation.columnNumber() ),
+								schemaViolation.message()
+							}
+						);
+
+						// Constraint violations
+						zip.putNextEntry( new ZipEntry( sourceFileName + " - constraint violations.csv" ) );
+						generateCSV( report.getValue().constraintViolations(), zip,
+							constraintViolation -> new String[] {
+								String.valueOf( constraintViolation.getLocationInfo().getLineNumber() ),
+								String.valueOf( constraintViolation.getLocationInfo().getColumnNumber() ),
+								constraintViolation.getMessage()
+							}
+						);
+					}
+				}
+				catch ( IOException e )
+				{
+					throw new CSVException( e );
+				}
+
+				return new ByteArrayInputStream( outputStream.toByteArray() );
+			},
+			"Report" + ".zip"
+		);
+
+		// Set the MIME type of the resource
+		resource.setMIMEType( "application/zip" );
+
+		var fileDownloader = new FileDownloader( resource );
+		fileDownloader.setOverrideContentType( false );
+		return fileDownloader;
+	}
+
+	/**
+	 * Prints a series of values to a CSV.
+	 *
+	 * @param values the source of values.
+	 * @param outputStream the stream to write the CSV to.
+	 * @param stringMapper a function to map an {@link T} to a string array
+	 */
+	private static <T> void generateCSV( Iterable<T> values, OutputStream outputStream, Function<T, String[]> stringMapper )
+	{
+		// Add headers to the CSV
+		var csvFormat = CSVFormat.RFC4180.builder().setHeader( "lineNumber", "columnNumber", "message" ).build();
+
+		try
+		{
+			// Configure the CSV printer
+			var writer = new BufferedWriter( new OutputStreamWriter( outputStream, StandardCharsets.UTF_8 ) );
+			var csvPrinter = new CSVPrinter( writer, csvFormat );
+
+			// Iterate through the list of entries
+			for( var entry : values )
+			{
+				// Print the string representation to the CSV file
+				var entryStrings = stringMapper.apply( entry );
+				csvPrinter.printRecord( (Object[]) entryStrings );
+			}
+
+			// Flush the output from the writer
+			writer.flush();
+		}
+		catch ( IOException e )
+		{
+			throw new CSVException( e );
+		}
 	}
 }
