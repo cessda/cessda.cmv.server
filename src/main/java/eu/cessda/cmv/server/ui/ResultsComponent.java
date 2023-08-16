@@ -203,7 +203,8 @@ public class ResultsComponent extends CustomComponent
 	}
 
 	/**
-	 * Create a downloader that returns a ZIP file containing CSVs detaining any schema or constraint violations found.
+	 * Create a downloader that returns a ZIP file containing CSVs detailing any schema or constraint violations found.
+  	 *
 	 * @param fileName the name of the ZIP containing the CSVs.
 	 * @param validationReport the report to convert into CSVs.
 	 */
@@ -254,7 +255,8 @@ public class ResultsComponent extends CustomComponent
 	}
 
 	/**
-	 * Create a downloader that returns a ZIP file containing CSVs detaining any schema or constraint violations found.
+	 * Create a downloader that returns a ZIP file containing CSVs detailing any schema or constraint violations found.
+  	 *
 	 * @param reports the reports to convert into CSVs.
 	 */
 	private static FileDownloader createCSVFileDownloader( Map<String, ValidationReport> reports )
