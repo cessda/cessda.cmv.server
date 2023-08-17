@@ -133,6 +133,13 @@
 			<version>3.1.10</version>
 		</dependency>
 
+		<!-- CSV Export Support -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-csv</artifactId>
+			<version>1.10.0</version>
+		</dependency>
+
 		<!-- Dependency overrides -->
 		<dependency>
 			<groupId>org.jsoup</groupId>
