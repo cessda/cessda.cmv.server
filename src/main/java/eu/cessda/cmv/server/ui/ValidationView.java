@@ -60,7 +60,6 @@ public class ValidationView extends VerticalLayout implements View
 	private final ValidatorEngine validationService;
 
 	private final ComboBox<ValidationGateName> validationGateNameComboBox;
-	private final VerticalLayout validationReports;
 	private final Panel reportPanel;
 	private final ResourceSelectionComponent profileSelectionComponent;
 	private final ResourceSelectionComponent documentSelectionComponent;
@@ -83,8 +82,6 @@ public class ValidationView extends VerticalLayout implements View
 		this.validationGateNameComboBox.setItems( ValidationGateName.values() );
 		this.validationGateNameComboBox.setValue( ValidationGateName.BASIC );
 
-		this.validationReports = new VerticalLayout();
-
 		this.validateButton = new Button( bundle.getString( "validate.button" ), listener -> validate() );
 
 		this.progressBar = new ProgressBar();
@@ -100,7 +97,6 @@ public class ValidationView extends VerticalLayout implements View
 			SINGLE,
 			BY_PREDEFINED,
 			demoProfiles,
-			this::refresh,
 			cessdaMetadataValidatorFactory );
 		this.profileSelectionComponent.setCaption( bundle.getString( "configuration.profileSelectionCaption" ) );
 		this.profileSelectionComponent.setWidthFull();
@@ -109,12 +105,9 @@ public class ValidationView extends VerticalLayout implements View
 			MULTI,
 			BY_UPLOAD,
 			demoDocuments,
-			this::refresh,
 			cessdaMetadataValidatorFactory );
 		this.documentSelectionComponent.setCaption( bundle.getString( "configuration.documentSelectionCaption" ) );
 		this.documentSelectionComponent.setWidthFull();
-
-		this.validationGateNameComboBox.addSelectionListener( listener -> refresh() );
 
 		var configurationFormLayout = new FormLayout();
 		configurationFormLayout.setMargin( true );
@@ -150,9 +143,6 @@ public class ValidationView extends VerticalLayout implements View
 			Notification.show( this.bundle.getString("validate.noDocumentsSelected") );
 			return;
 		}
-
-		// Refresh the view before proceeding
-		refresh();
 
 		// Enable the progress bar
 		this.progressBar.setVisible( true );
@@ -215,20 +205,8 @@ public class ValidationView extends VerticalLayout implements View
 
 		// Update the UI with the validation reports
 		var reportComponent = new ResultsComponent( validationReportList );
-
-		var reportLayout = new VerticalLayout();
-		reportLayout.addComponent( new Label( bundle.getString( "report.label" ) ) );
-		reportLayout.addComponent( this.validationReports );
-
 		this.reportPanel.setContent( reportComponent );
 		this.reportPanel.setVisible( true );
-	}
-
-	private void refresh()
-	{
-		reportPanel.setVisible( false );
-		validationReports.removeAllComponents();
-		resetPostValidation();
 	}
 
 	/**
