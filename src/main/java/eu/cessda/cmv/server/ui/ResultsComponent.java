@@ -315,7 +315,7 @@ public class ResultsComponent extends CustomComponent
 	 *
 	 * @param values the source of values.
 	 * @param outputStream the stream to write the CSV to.
-	 * @param stringMapper a function to map an {@link T} to a string array
+	 * @param stringMapper a function to map a {@link T} to a string array.
 	 */
 	private static <T> void generateCSV( Iterable<T> values, OutputStream outputStream, Function<T, String[]> stringMapper )
 	{
