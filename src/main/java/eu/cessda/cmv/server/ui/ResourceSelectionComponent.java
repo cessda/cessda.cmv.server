@@ -60,7 +60,6 @@ public class ResourceSelectionComponent extends CustomComponent
 	private final MultiFileUpload fileUpload;
 	private final RadioButtonGroup<ProvisioningOptions> provisioningOptions;
 	private final SelectionMode selectionMode;
-	private final transient Runnable refreshEvent;
 	private final transient CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory;
 	private final ResourceBundle bundle;
 
@@ -81,7 +80,6 @@ public class ResourceSelectionComponent extends CustomComponent
 			SelectionMode selectionMode,
 			ProvisioningOptions selectedProvisioningOption,
 			List<Resource.V10> predefinedResources,
-			Runnable refreshEvent,
 			CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory )
 	{
 		requireNonNull( selectionMode );
@@ -90,7 +88,6 @@ public class ResourceSelectionComponent extends CustomComponent
 		this.bundle = ResourceBundle.getBundle( ResourceSelectionComponent.class.getName(), UI.getCurrent().getLocale() );
 
 		this.cessdaMetadataValidatorFactory = cessdaMetadataValidatorFactory;
-		this.refreshEvent = refreshEvent;
 		this.selectionMode = selectionMode;
 
 		this.provisioningOptions = provisioningOptionsButtonGroup( selectedProvisioningOption );
@@ -186,7 +183,6 @@ public class ResourceSelectionComponent extends CustomComponent
 		{
 			selectedResourcesGrid.setHeightByRows( selectedResources.size() );
 		}
-		refreshEvent.run();
 	}
 
 	private void selectResource( Resource.V10 resource )
