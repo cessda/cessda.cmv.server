@@ -83,7 +83,7 @@ public class Server extends SpringBootServletInitializer
 	}
 
 	@Bean
-	public ValidationService.V10 validationService()
+	public ValidationService validationService()
 	{
 		return cessdaMetadataValidatorFactory().newValidationService();
 	}

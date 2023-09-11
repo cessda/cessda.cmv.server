@@ -21,8 +21,7 @@ package eu.cessda.cmv.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.cessda.cmv.core.ValidationGateName;
-import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
-import eu.cessda.cmv.core.mediatype.validationrequest.v0.ValidationRequestV0;
+import eu.cessda.cmv.core.mediatype.validationrequest.ValidationRequest;
 import eu.cessda.cmv.server.api.ValidationControllerV0;
 import org.gesis.commons.resource.SpringUriBuilder;
 import org.gesis.commons.resource.TextResource;
@@ -65,7 +64,7 @@ class ValidationControllerV0Test
 	@Test
 	void validateWithBasicValidationGate() throws Exception {
 		String responseBody;
-		ValidationReportV0 validationReport;
+		eu.cessda.cmv.core.mediatype.validationreport.ValidationReport validationReport;
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder("")
 				.path(ValidationControllerV0.BASE_PATH)
 				.path("/Validation")
@@ -78,7 +77,7 @@ class ValidationControllerV0Test
 				.accept( MediaType.APPLICATION_XML ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
-		validationReport = ValidationReportV0.read( responseBody );
+		validationReport = eu.cessda.cmv.core.mediatype.validationreport.ValidationReport.read( responseBody );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 7 ) );
 
 		// JSON
@@ -86,14 +85,14 @@ class ValidationControllerV0Test
 				.accept( MediaType.APPLICATION_JSON ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
-		validationReport = objectMapper.readValue( responseBody, ValidationReportV0.class );
+		validationReport = objectMapper.readValue( responseBody, eu.cessda.cmv.core.mediatype.validationreport.ValidationReport.class );
 		assertThat( validationReport.getConstraintViolations(), hasSize(7));
 	}
 
 	@Test
 	void validateWithStandardValidationGate() throws Exception {
 		String responseBody;
-		ValidationReportV0 validationReport;
+		eu.cessda.cmv.core.mediatype.validationreport.ValidationReport validationReport;
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder("")
 				.path(ValidationControllerV0.BASE_PATH)
 				.path("/Validation")
@@ -106,7 +105,7 @@ class ValidationControllerV0Test
 				.accept( MediaType.APPLICATION_XML ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
-		validationReport = ValidationReportV0.read( responseBody );
+		validationReport = eu.cessda.cmv.core.mediatype.validationreport.ValidationReport.read( responseBody );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
 		assertThat( validationReport.getDocumentUri().toString(), equalTo( DOCUMENT_URI ) );
 
@@ -115,7 +114,7 @@ class ValidationControllerV0Test
 				.accept( MediaType.APPLICATION_JSON ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
-		validationReport = objectMapper.readValue( responseBody, ValidationReportV0.class );
+		validationReport = objectMapper.readValue( responseBody, eu.cessda.cmv.core.mediatype.validationreport.ValidationReport.class );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
 		assertThat( validationReport.getDocumentUri().toString(), equalTo( DOCUMENT_URI));
 	}
@@ -124,11 +123,11 @@ class ValidationControllerV0Test
 	void validateWithStandardValidationGateByValidationRequestV0() throws Exception {
 		String responseBody;
 		MediaType mediaType;
-		ValidationReportV0 validationReport;
+		eu.cessda.cmv.core.mediatype.validationreport.ValidationReport validationReport;
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder("")
 				.path(ValidationControllerV0.BASE_PATH)
 				.path("/Validation");
-		ValidationRequestV0 validationRequest = new ValidationRequestV0();
+		var validationRequest = new ValidationRequest();
 		validationRequest.setDocument(URI.create(DOCUMENT_URI));
 		validationRequest.setProfile(new TextResource(newResource(PROFILE_URI)).toString());
 		validationRequest.setValidationGateName(ValidationGateName.STANDARD );
@@ -140,7 +139,7 @@ class ValidationControllerV0Test
 						.content( objectMapper.writeValueAsString( validationRequest ) ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
-		validationReport = objectMapper.readValue( responseBody, ValidationReportV0.class );
+		validationReport = objectMapper.readValue( responseBody, eu.cessda.cmv.core.mediatype.validationreport.ValidationReport.class );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
 		assertThat( validationReport.getDocumentUri().toString(), equalTo( DOCUMENT_URI ) );
 
@@ -151,7 +150,7 @@ class ValidationControllerV0Test
 				.content( validationRequest.toString() ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
-		validationReport = ValidationReportV0.read( responseBody );
+		validationReport = eu.cessda.cmv.core.mediatype.validationreport.ValidationReport.read( responseBody );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
 		assertThat( validationReport.getDocumentUri().toString(), equalTo( DOCUMENT_URI));
 	}
@@ -160,13 +159,13 @@ class ValidationControllerV0Test
 	void validateWithCustomValidationGateByValidationRequestV0() throws Exception {
 		String responseBody;
 		MediaType mediaType;
-		ValidationReportV0 validationReport;
+		eu.cessda.cmv.core.mediatype.validationreport.ValidationReport validationReport;
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder("")
 				.path(ValidationControllerV0.BASE_PATH)
 				.path("/Validation");
 
 		var requestJSON = this.getClass().getResource( "/request.json" );
-		var validationRequest = objectMapper.readValue( requestJSON, ValidationRequestV0.class );
+		var validationRequest = objectMapper.readValue( requestJSON, ValidationRequest.class );
 
 		mediaType = MediaType.APPLICATION_JSON;
 		responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
@@ -175,7 +174,7 @@ class ValidationControllerV0Test
 						.content( objectMapper.writeValueAsString( validationRequest ) ) )
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
-		validationReport = objectMapper.readValue( responseBody, ValidationReportV0.class );
+		validationReport = objectMapper.readValue( responseBody, eu.cessda.cmv.core.mediatype.validationreport.ValidationReport.class );
 		assertThat( validationReport.getConstraintViolations(), hasSize( 22 ) );
 		assertThat( validationReport.getDocumentUri().toString(), startsWith( "urn:uuid:" ) );
 	}
@@ -187,7 +186,7 @@ class ValidationControllerV0Test
 				.path(ValidationControllerV0.BASE_PATH)
 				.path("/Validation")
 				.queryParameter("validationGateName", ValidationGateName.STANDARD.toString());
-		ValidationRequestV0 validationRequest = new ValidationRequestV0();
+		var validationRequest = new ValidationRequest();
 		validationRequest.setDocument(URI.create(DOCUMENT_URI));
 		validationRequest.setProfile(new TextResource(newResource(PROFILE_URI)).toString());
 		validationRequest.setValidationGateName(ValidationGateName.STANDARD);
@@ -206,7 +205,7 @@ class ValidationControllerV0Test
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder("")
 				.path(ValidationControllerV0.BASE_PATH)
 				.path("/Validation");
-		ValidationRequestV0 validationRequest = new ValidationRequestV0();
+		var validationRequest = new ValidationRequest();
 		validationRequest.setDocument( (String) null ); // violates @NotNull
 		validationRequest.setProfile(new TextResource(newResource(PROFILE_URI)).toString());
 		validationRequest.setValidationGateName(ValidationGateName.STANDARD);
@@ -226,7 +225,7 @@ class ValidationControllerV0Test
 		UriBuilder.V10 uriBuilder = new SpringUriBuilder("")
 				.path(ValidationControllerV0.BASE_PATH)
 				.path("/Validation");
-		ValidationRequestV0 validationRequest = new ValidationRequestV0();
+		var validationRequest = new ValidationRequest();
 		validationRequest.setDocument(URI.create(DOCUMENT_URI));
 		validationRequest.setProfile(new TextResource(newResource(PROFILE_URI)).toString());
 		MediaType mediaType = MediaType.APPLICATION_JSON;
@@ -247,7 +246,7 @@ class ValidationControllerV0Test
 				.path("/Validation");
 
 		var requestJSON = this.getClass().getResource( "/invalidRequest.json" );
-		var validationRequest = objectMapper.readValue( requestJSON, ValidationRequestV0.class );
+		var validationRequest = objectMapper.readValue( requestJSON, ValidationRequest.class );
 
 		MediaType mediaType = MediaType.APPLICATION_JSON;
 		String responseBody = mockMvc.perform(post(uriBuilder.toEncodedString() )
@@ -267,7 +266,7 @@ class ValidationControllerV0Test
 				.path("/Validation");
 
 		var requestJSON = this.getClass().getResource( "/invalidRequest.json" );
-		var validationRequest = objectMapper.readValue( requestJSON, ValidationRequestV0.class );
+		var validationRequest = objectMapper.readValue( requestJSON, ValidationRequest.class );
 
 		validationRequest.setConstraints( Collections.singleton( validationRequest.getConstraints().get( 0 ) ) );
 

@@ -127,7 +127,7 @@ public class ValidationView extends VerticalLayout implements View
 	 *
 	 * @implNote This method is synchronized to ensure that only one validation can occur per UI instance.
 	 */
-	@SuppressWarnings( "java:S3958" )
+	@SuppressWarnings( { "java:S3958", "OverlyBroadCatchBlock" } )
 	private synchronized void validate()
 	{
 		var profileResources = this.profileSelectionComponent.getResources();

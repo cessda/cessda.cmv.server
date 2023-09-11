@@ -19,9 +19,9 @@
  */
 package eu.cessda.cmv.server;
 
+import eu.cessda.cmv.core.NotDocumentException;
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.core.ValidationService;
-import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
 import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,10 +40,10 @@ import java.util.List;
 public class ValidatorEngine
 {
 	private final ThreadLocal<javax.xml.validation.Validator> xmlValidators;
-	private final ValidationService.V10 validationService;
+	private final ValidationService validationService;
 
 	@Autowired
-	public ValidatorEngine( ValidationService.V10 validationService )
+	public ValidatorEngine( ValidationService validationService )
 	{
 		this.validationService = validationService;
 		this.xmlValidators = ThreadLocal.withInitial( () ->
@@ -92,7 +92,7 @@ public class ValidatorEngine
 	 * @throws IOException if an IO error occurred when parsing the document.
 	 * @throws SAXException if the XML document was invalid.
 	 */
-	public ValidationReport validate( Resource.V10 validationRequest, Resource profile, ValidationGateName validationGate ) throws IOException, SAXException
+	public ValidationReport validate( Resource.V10 validationRequest, Resource profile, ValidationGateName validationGate ) throws IOException, SAXException, NotDocumentException
 	{
 		// Validate XML
 		var validator = xmlValidators.get();
@@ -104,7 +104,7 @@ public class ValidatorEngine
 		errorHandler.reset();
 
 		// Validate against profile
-		ValidationReportV0 validationReport = validationService.validate( validationRequest, profile, validationGate );
+		var validationReport = validationService.validate( validationRequest, profile, validationGate );
 		var validationErrors = errors.stream().map( SchemaViolation::new ).toList();
 		return new ValidationReport( validationErrors, validationReport.getConstraintViolations() );
 	}
