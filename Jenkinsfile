@@ -28,19 +28,9 @@ pipeline {
                 stage('Build Project') {
                     steps {
                         withMaven {
-                            sh './mvnw clean install'
+                            sh './mvnw clean verify'
                         }
                     }
-                    when { branch 'main' }
-                }
-                // Not running on master - test only (for PRs and integration branches)
-                stage('Test Project') {
-                    steps {
-                        withMaven {
-                            sh './mvnw clean test'
-                        }
-                    }
-                    when { not { branch 'main' } }
                 }
                 stage('Record Issues') {
                     steps {

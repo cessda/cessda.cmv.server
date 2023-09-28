@@ -27,7 +27,7 @@ import com.vaadin.server.StreamResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.themes.ValoTheme;
-import eu.cessda.cmv.core.mediatype.validationreport.v0.ConstraintViolationV0;
+import eu.cessda.cmv.core.mediatype.validationreport.ConstraintViolation;
 import eu.cessda.cmv.server.SchemaViolation;
 import eu.cessda.cmv.server.ValidationReport;
 import org.apache.commons.csv.CSVFormat;
@@ -129,7 +129,7 @@ public class ResultsComponent extends CustomComponent
 		// Configure the constraint violation grid
 		var constraintViolationGrid = createResultsGrid(
 			constraintViolations,
-			ConstraintViolationV0::getMessage,
+			ConstraintViolation::getMessage,
 			10,
 			bundle.getString( "result.constraintViolations" ),
 			bundle.getString( "result.noConstraintViolations" )

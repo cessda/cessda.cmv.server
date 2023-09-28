@@ -19,11 +19,11 @@
  */
 package eu.cessda.cmv.server;
 
-import eu.cessda.cmv.core.mediatype.validationreport.v0.ConstraintViolationV0;
+import eu.cessda.cmv.core.mediatype.validationreport.ConstraintViolation;
 
 import java.util.List;
 
 public record ValidationReport (
 	List<SchemaViolation> schemaViolations,
-	List<ConstraintViolationV0> constraintViolations
+	List<ConstraintViolation> constraintViolations
 ) {}

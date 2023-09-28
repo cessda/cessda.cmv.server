@@ -20,8 +20,8 @@
 package eu.cessda.cmv.server.api;
 
 import eu.cessda.cmv.core.*;
-import eu.cessda.cmv.core.mediatype.validationreport.v0.ValidationReportV0;
-import eu.cessda.cmv.core.mediatype.validationrequest.v0.ValidationRequestV0;
+import eu.cessda.cmv.core.mediatype.validationreport.ValidationReport;
+import eu.cessda.cmv.core.mediatype.validationrequest.ValidationRequest;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 import org.zalando.problem.Problem;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Set;
 
@@ -49,7 +50,7 @@ public class ValidationControllerV0
 	public static final String BASE_PATH = "/api/V0";
 
 	@Autowired
-	private ValidationService.V10 validationService;
+	private ValidationService validationService;
 
 	@PostMapping(
 			path = "/Validation",
@@ -82,11 +83,11 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 					@ApiResponse( responseCode = "200" ),
 					@ApiResponse( responseCode = "400", content = @Content( schema = @Schema( implementation = Problem.class ) ) )
 			} )
-	public ValidationReportV0 validate(
+	public ValidationReport validate(
 			@RequestParam( required = false ) URI documentUri,
 			@RequestParam( required = false ) URI profileUri,
 			@RequestParam( required = false ) ValidationGateName validationGateName,
-			@RequestBody( required = false ) @Valid ValidationRequestV0 validationRequest )
+			@RequestBody( required = false ) @Valid ValidationRequest validationRequest ) throws IOException, NotDocumentException
 	{
 		boolean hasRequestParams = documentUri != null || profileUri != null || validationGateName != null;
 		boolean hasRequestBody = validationRequest != null;
@@ -130,7 +131,7 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 		return CessdaMetadataValidatorFactory.getConstraints();
 	}
 
-	private ValidationReportV0 validateUsingGate( ValidationRequestV0 validationRequest )
+	private ValidationReport validateUsingGate( ValidationRequest validationRequest ) throws IOException, NotDocumentException
 	{
 		return validationService.validate(
 				validationRequest.getDocument().toResource(),
@@ -139,7 +140,7 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 		);
 	}
 
-	private ValidationReportV0 validateUsingConstraints( ValidationRequestV0 validationRequest )
+	private ValidationReport validateUsingConstraints( ValidationRequest validationRequest ) throws IOException, NotDocumentException
 	{
 		try
 		{

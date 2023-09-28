@@ -27,9 +27,11 @@ import com.vaadin.ui.renderers.ComponentRenderer;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStateWindow;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
+import eu.cessda.cmv.core.NotDocumentException;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.gesis.commons.resource.Resource;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
 import java.util.ArrayList;
@@ -283,7 +285,7 @@ public class ResourceSelectionComponent extends CustomComponent
 			cessdaMetadataValidatorFactory.newDocument( resource );
 			return Optional.of( resource );
 		}
-		catch ( RuntimeException e)
+		catch ( IOException | NotDocumentException e)
 		{
 			Notification.show( e.getMessage(), Type.WARNING_MESSAGE );
 			return Optional.empty();

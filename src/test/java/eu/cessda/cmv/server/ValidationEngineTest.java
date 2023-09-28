@@ -20,6 +20,7 @@
 package eu.cessda.cmv.server;
 
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
+import eu.cessda.cmv.core.NotDocumentException;
 import org.gesis.commons.resource.Resource;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
@@ -32,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ValidationEngineTest
 {
 	@Test
-	void shouldValidateDocument() throws IOException, SAXException
+	void shouldValidateDocument() throws IOException, SAXException, NotDocumentException
 	{
 		// Init
 		var validationService = new CessdaMetadataValidatorFactory().newValidationService();
