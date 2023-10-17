@@ -158,7 +158,9 @@ public class ValidationView extends VerticalLayout implements View
 		var validationExceptions = new ConcurrentHashMap<String, Exception>(0);
 
 		var documentsValidated = new AtomicInteger();
-		int documentsToValidate = documentResources.size();
+
+		// Make sure documentsToValidate is at least 1 to avoid a potential divide-by-zero
+		int documentsToValidate = Math.max(documentResources.size(), 1);
 
 		// Validate all documents using a parallel stream
 		var validationReportList = documentResources.parallelStream().flatMap( documentResource ->
