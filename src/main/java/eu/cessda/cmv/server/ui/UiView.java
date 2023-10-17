@@ -26,7 +26,6 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewProvider;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.shared.ui.ui.Transport;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ import java.util.Locale;
 @JavaScript( { "https://code.jquery.com/jquery-3.6.0.min.js", "theme://helpdesk.js" } )
 @Theme( "cmv" )
 @SpringUI
-@Push(transport = Transport.LONG_POLLING)
+@Push
 @SuppressWarnings( "java:S2160" )
 public class UiView extends UI
 {
