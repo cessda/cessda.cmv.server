@@ -55,7 +55,9 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 sh 'gcloud auth configure-docker'
-                sh "./mvnw docker:build docker:push -D\"docker.registry.host\"=${docker_repo} -D\"docker.image.name\"=${productName}-${componentName} -D\"docker.image.tag\"=${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+				withMaven {
+					sh "./mvnw docker:build docker:push -D\"docker.registry.host\"=${docker_repo} -D\"docker.image.name\"=${productName}-${componentName} -D\"docker.image.tag\"=${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+				}
                 sh "gcloud container images add-tag ${IMAGE_TAG} ${docker_repo}/${productName}-${componentName}:${env.BRANCH_NAME}-latest"
             }
             when { branch 'main' }
