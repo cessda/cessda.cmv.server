@@ -178,14 +178,9 @@ public class ValidationView extends VerticalLayout implements View
 			}
 			finally
 			{
-				try
-				{
-					// Update the progress bar
-					var progress = (float) documentsValidated.incrementAndGet() / documentsToValidate;
-					this.getUI().access( () -> this.progressBar.setValue( progress ) );
-				} catch ( ArithmeticException e ) {
-					// ignored
-				}
+				// Update the progress bar
+				var progress = (float) documentsValidated.incrementAndGet() / Math.max( documentsToValidate, 1 );
+				this.getUI().access( () -> this.progressBar.setValue( progress ) );
 			}
 		} );
 
