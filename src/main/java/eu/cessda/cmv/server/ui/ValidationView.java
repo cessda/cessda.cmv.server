@@ -160,7 +160,7 @@ public class ValidationView extends VerticalLayout implements View
 		var documentsValidated = new AtomicInteger();
 
 		// Make sure documentsToValidate is at least 1 to avoid a potential divide-by-zero
-		int documentsToValidate = Math.max(documentResources.size(), 1);
+		int documentsToValidate = documentResources.size();
 
 		// Validate all documents using a parallel stream
 		var validationReportList = documentResources.parallelStream().flatMap( documentResource ->
@@ -178,8 +178,14 @@ public class ValidationView extends VerticalLayout implements View
 			}
 			finally
 			{
-				// Update the progress bar
-				this.getUI().access( () -> this.progressBar.setValue( (float) documentsValidated.incrementAndGet() / documentsToValidate ) );
+				try
+				{
+					// Update the progress bar
+					var progress = (float) documentsValidated.incrementAndGet() / documentsToValidate;
+					this.getUI().access( () -> this.progressBar.setValue( progress ) );
+				} catch ( ArithmeticException e ) {
+					// ignored
+				}
 			}
 		} );
 
