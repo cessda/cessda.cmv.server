@@ -229,10 +229,26 @@ public class ResultsComponent extends CustomComponent
 					// Constraint violations
 					zip.putNextEntry( new ZipEntry(  "Constraint violations.csv" ) );
 					generateCSV( validationReport.constraintViolations(), zip,
-						constraintViolation -> new String[] {
-							String.valueOf( constraintViolation.getLocationInfo().getLineNumber() ),
-							String.valueOf( constraintViolation.getLocationInfo().getColumnNumber() ),
-							constraintViolation.getMessage()
+						constraintViolation ->
+						{
+							String lineNumber;
+							String columnNumber;
+
+							// Only set the line and column numbers if location information is present
+							var locationInfo = constraintViolation.getLocationInfo();
+							if (locationInfo != null) {
+								lineNumber = String.valueOf( locationInfo.getLineNumber() );
+								columnNumber = String.valueOf( locationInfo.getColumnNumber() );
+							} else {
+								lineNumber = "";
+								columnNumber = "";
+							}
+
+							return new String[] {
+								lineNumber,
+								columnNumber,
+								constraintViolation.getMessage()
+							};
 						}
 					);
 				}
