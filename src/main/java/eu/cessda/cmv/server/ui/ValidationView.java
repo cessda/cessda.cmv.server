@@ -187,7 +187,7 @@ public class ValidationView extends VerticalLayout implements View
 		{
 			// Accumulate the stream in an asynchronous context so that the UI is not blocked
 			var completedList = validationReportList.collect( Collectors.toMap( Map.Entry::getKey, Map.Entry::getValue ) );
-			this.getUI().access( () -> updateView( completedList, validationExceptions ) );
+			this.updateView( completedList, validationExceptions );
 		}
 		finally
 		{
