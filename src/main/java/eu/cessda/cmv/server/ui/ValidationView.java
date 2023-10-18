@@ -34,7 +34,6 @@ import java.io.Serial;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -184,15 +183,17 @@ public class ValidationView extends VerticalLayout implements View
 			}
 		} );
 
-		CompletableFuture.runAsync( () ->
+		try
 		{
 			// Accumulate the stream in an asynchronous context so that the UI is not blocked
 			var completedList = validationReportList.collect( Collectors.toMap( Map.Entry::getKey, Map.Entry::getValue ) );
 			this.getUI().access( () -> updateView( completedList, validationExceptions ) );
-		} ).whenComplete(
+		}
+		finally
+		{
 			// Re-enable the button regardless if any exceptions were encountered
-			(v, e) -> this.getUI().access( this::resetPostValidation )
-		);
+			this.resetPostValidation();
+		}
 	}
 
 	private void updateView( Map<String, ValidationReport> validationReportList, Map<String, Exception> validationExceptions )
