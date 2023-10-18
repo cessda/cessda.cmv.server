@@ -28,12 +28,16 @@ import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.server.ValidationReport;
 import eu.cessda.cmv.server.ValidatorEngine;
 import org.gesis.commons.resource.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serial;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -49,6 +53,8 @@ import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.S
 @SuppressWarnings( { "java:S110", "java:S1948", "java:S2160" } )
 public class ValidationView extends VerticalLayout implements View
 {
+	private static final Logger log = LoggerFactory.getLogger( ValidationView.class );
+
 	public static final String VIEW_NAME = "validation";
 
 	@Serial
@@ -154,7 +160,7 @@ public class ValidationView extends VerticalLayout implements View
 		var profile = profileResources.get( 0 );
 
 		// Container for any validation errors encountered
-		var validationExceptions = new ConcurrentHashMap<String, Exception>(0);
+		var validationExceptions = new ConcurrentHashMap<String, Throwable>(0);
 
 		var documentsValidated = new AtomicInteger();
 
@@ -172,6 +178,7 @@ public class ValidationView extends VerticalLayout implements View
 			catch ( Exception e )
 			{
 				// Report all exceptions encountered to the user
+				log.warn( "Validation of {} failed", documentResource.getLabel(), e );
 				validationExceptions.put( documentResource.getLabel(), e );
 				return Stream.empty();
 			}
@@ -183,20 +190,32 @@ public class ValidationView extends VerticalLayout implements View
 			}
 		} );
 
-		try
+		CompletableFuture.runAsync( () ->
 		{
 			// Accumulate the stream in an asynchronous context so that the UI is not blocked
 			var completedList = validationReportList.collect( Collectors.toMap( Map.Entry::getKey, Map.Entry::getValue ) );
-			this.updateView( completedList, validationExceptions );
-		}
-		finally
-		{
-			// Re-enable the button regardless if any exceptions were encountered
-			this.resetPostValidation();
-		}
+			this.getUI().access( () -> updateView( completedList, validationExceptions ) );
+		} ).whenComplete(
+			(v, e) ->
+            {
+				// If an unexpected exception was thrown, handle it here and report it to the user
+				if (e != null) {
+					log.error( "Unexpected error when validating documents", e );
+					this.getUI().access( () ->
+                    {
+						var errorWindow = new ErrorWindow( e );
+						UI.getCurrent().addWindow( errorWindow );
+                        updateView( Collections.emptyMap(), validationExceptions );
+                    } );
+				}
+
+				// Re-enable the button regardless if any exceptions were encountered
+                this.getUI().access( this::resetPostValidation );
+            }
+		);
 	}
 
-	private void updateView( Map<String, ValidationReport> validationReportList, Map<String, Exception> validationExceptions )
+	private void updateView( Map<String, ValidationReport> validationReportList, Map<String, Throwable> validationExceptions )
 	{
 		// If any errors were encountered, present them to the user
 		if ( !validationExceptions.isEmpty() )

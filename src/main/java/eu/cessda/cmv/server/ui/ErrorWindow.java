@@ -40,10 +40,15 @@ class ErrorWindow extends Window
 
 	ErrorWindow( com.vaadin.server.ErrorEvent event, Locale locale )
 	{
-		this( event, ResourceBundle.getBundle( ErrorWindow.class.getName(), locale ) );
+		this( event.getThrowable(), ResourceBundle.getBundle( ErrorWindow.class.getName(), locale ) );
 	}
 
-	private ErrorWindow( com.vaadin.server.ErrorEvent event, ResourceBundle bundle ) {
+	ErrorWindow( Throwable throwable )
+	{
+		this( throwable, ResourceBundle.getBundle( ErrorWindow.class.getName(), UI.getCurrent().getLocale() ) );
+	}
+
+	private ErrorWindow( Throwable event, ResourceBundle bundle ) {
 		super( bundle.getString( "title" ) );
 
 		setHeight( 80, Unit.PERCENTAGE );
@@ -54,13 +59,13 @@ class ErrorWindow extends Window
 
 		TextField textField = new TextField();
 		textField.setCaption( bundle.getString( "message.caption" ) );
-		textField.setValue( getMessage( event.getThrowable(), bundle.getString( "message.unknown" ) ) );
+		textField.setValue( getMessage( event, bundle.getString( "message.unknown" ) ) );
 		textField.setReadOnly( true );
 		textField.setWidthFull();
 
 		TextArea textArea = new TextArea();
 		textArea.setCaption( bundle.getString( "stacktrace.caption" ) );
-		textArea.setValue( getStackTrace( event.getThrowable() ) );
+		textArea.setValue( getStackTrace( event ) );
 		textArea.setSizeFull();
 		textArea.setId( "tocopie" );
 		textArea.setReadOnly( true );
