@@ -272,21 +272,19 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!--Docker Containerisation-->
 			<plugin>
-				<groupId>io.fabric8</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.43.4</version>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.4.0</version>
 				<configuration>
-					<images>
-						<image>
-							<name>${docker.registry.host}/${docker.image.name}:${docker.image.tag}</name>
-							<build>
-								<dockerFile>${project.basedir}/target/docker/context/application.Dockerfile</dockerFile>
-								<assembly><descriptorRef>artifact</descriptorRef></assembly>
-							</build>
-							<run><ports><port>8080:8080</port></ports></run>
-						</image>
-					</images>
+					<to>
+						<image>{docker.registry.host}/${docker.image.name}:${docker.image.tag}</image>
+					</to>
+					<container>
+						<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+						<ports>8080</ports>
+					</container>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -401,16 +399,6 @@
 		</plugins>
 		<finalName>${project.artifactId}</finalName>
 		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<excludes><exclude>docker/**/*</exclude></excludes>
-			</resource>
-			<resource>
-				<directory>src/main/resources/docker</directory>
-				<filtering>true</filtering>
-				<targetPath>${project.build.directory}/docker/context</targetPath>
-				<includes><include>**/*</include></includes>
-			</resource>
 			<resource>
 				<directory>src/main/webapp/VAADIN</directory>
 				<targetPath>${project.build.directory}/classes/VAADIN</targetPath>

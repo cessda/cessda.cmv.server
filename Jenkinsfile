@@ -56,7 +56,7 @@ pipeline {
             steps {
                 sh 'gcloud auth configure-docker'
 				withMaven {
-					sh "./mvnw docker:build docker:push -D\"docker.registry.host\"=${docker_repo} -D\"docker.image.name\"=${productName}-${componentName} -D\"docker.image.tag\"=${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+					sh "./mvnw jib:build -Dimage=${IMAGE_TAG}"
 				}
                 sh "gcloud container images add-tag ${IMAGE_TAG} ${docker_repo}/${productName}-${componentName}:${env.BRANCH_NAME}-latest"
             }
