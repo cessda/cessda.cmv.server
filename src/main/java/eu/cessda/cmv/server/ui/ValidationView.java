@@ -200,7 +200,7 @@ public class ValidationView extends VerticalLayout implements View
             {
 				// If an unexpected exception was thrown, handle it here and report it to the user
 				if (e != null) {
-					log.error( "Unexpected error when validating documents", e );
+					log.error( "Unexpected error when validating documents: {}", e.toString(), e );
 					this.getUI().access( () ->
                     {
 						var errorWindow = new ErrorWindow( e );

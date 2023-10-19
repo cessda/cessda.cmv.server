@@ -57,25 +57,25 @@ class ErrorWindow extends Window
 		setModal( true );
 		center();
 
-		TextField textField = new TextField();
-		textField.setCaption( bundle.getString( "message.caption" ) );
-		textField.setValue( getMessage( event, bundle.getString( "message.unknown" ) ) );
-		textField.setReadOnly( true );
-		textField.setWidthFull();
+		// Extract the message from the exception
+		Label message = new Label();
+		message.setCaption( bundle.getString( "message.caption" ) );
+		message.setValue( event.getMessage() != null ? event.getMessage() : bundle.getString( "message.unknown" ) );
+		message.setWidthFull();
 
-		TextArea textArea = new TextArea();
-		textArea.setCaption( bundle.getString( "stacktrace.caption" ) );
-		textArea.setValue( getStackTrace( event ) );
-		textArea.setSizeFull();
-		textArea.setId( "tocopie" );
-		textArea.setReadOnly( true );
+		TextArea stackTrace = new TextArea();
+		stackTrace.setCaption( bundle.getString( "stacktrace.caption" ) );
+		stackTrace.setValue( getStackTrace( event ) );
+		stackTrace.setSizeFull();
+		stackTrace.setId( "tocopie" );
+		stackTrace.setReadOnly( true );
 
 		HorizontalLayout horizontalLayout = new HorizontalLayout();
 		horizontalLayout.setWidthFull();
 		Button clipBoardButton = new Button();
 		clipBoardButton.setCaption( bundle.getString( "copyToClipboard.caption" ) );
 		JSClipboard clipboard = new JSClipboard();
-		clipboard.apply( clipBoardButton, textArea );
+		clipboard.apply( clipBoardButton, stackTrace );
 		clipboard.addErrorListener( () -> show( bundle.getString( "copyToClipboard.failureMessage" ), ERROR_MESSAGE ) );
 		horizontalLayout.addComponent( clipBoardButton );
 		horizontalLayout.setComponentAlignment( clipBoardButton, MIDDLE_RIGHT );
@@ -90,22 +90,10 @@ class ErrorWindow extends Window
 		VerticalLayout verticalLayout = new VerticalLayout();
 		verticalLayout.setSizeFull();
 		setContent( verticalLayout );
-		verticalLayout.addComponent( textField );
-		verticalLayout.addComponent( textArea );
+		verticalLayout.addComponent( message );
+		verticalLayout.addComponent( stackTrace );
 		verticalLayout.addComponent( horizontalLayout );
-		verticalLayout.setExpandRatio( textArea, 1.0f );
-	}
-
-	private String getMessage( Throwable throwable, String unknownMessage )
-	{
-		for ( Throwable t = throwable; t != null; t = t.getCause() )
-		{
-			if ( t.getCause() == null )
-			{
-				return t.getClass().getName() + ": " + t.getMessage();
-			}
-		}
-		return unknownMessage;
+		verticalLayout.setExpandRatio( stackTrace, 1.0f );
 	}
 
 	private String getStackTrace( Throwable throwable )

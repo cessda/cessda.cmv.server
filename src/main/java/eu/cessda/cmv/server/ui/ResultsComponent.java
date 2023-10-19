@@ -218,39 +218,11 @@ public class ResultsComponent extends CustomComponent
 				{
 					// Schema violations
 					zip.putNextEntry( new ZipEntry(  "Schema violations.csv" ) );
-					generateCSV( validationReport.schemaViolations(), zip,
-						schemaViolation -> new String[] {
-							String.valueOf( schemaViolation.lineNumber() ),
-							String.valueOf( schemaViolation.columnNumber() ),
-							schemaViolation.message()
-						}
-					);
+					generateCSV( validationReport.schemaViolations(), zip, ResultsComponent::convertSchemaViolationToCSV );
 
 					// Constraint violations
 					zip.putNextEntry( new ZipEntry(  "Constraint violations.csv" ) );
-					generateCSV( validationReport.constraintViolations(), zip,
-						constraintViolation ->
-						{
-							String lineNumber;
-							String columnNumber;
-
-							// Only set the line and column numbers if location information is present
-							var locationInfo = constraintViolation.getLocationInfo();
-							if (locationInfo != null) {
-								lineNumber = String.valueOf( locationInfo.getLineNumber() );
-								columnNumber = String.valueOf( locationInfo.getColumnNumber() );
-							} else {
-								lineNumber = "";
-								columnNumber = "";
-							}
-
-							return new String[] {
-								lineNumber,
-								columnNumber,
-								constraintViolation.getMessage()
-							};
-						}
-					);
+					generateCSV( validationReport.constraintViolations(), zip, ResultsComponent::convertConstraintViolationToCSV );
 				}
 				catch ( IOException e )
 				{
@@ -289,23 +261,11 @@ public class ResultsComponent extends CustomComponent
 
 						// Schema violations
 						zip.putNextEntry( new ZipEntry( sourceFileName + " - schema violations.csv" ) );
-						generateCSV( report.getValue().schemaViolations(), zip,
-							schemaViolation -> new String[] {
-								String.valueOf( schemaViolation.lineNumber() ),
-								String.valueOf( schemaViolation.columnNumber() ),
-								schemaViolation.message()
-							}
-						);
+						generateCSV( report.getValue().schemaViolations(), zip, ResultsComponent::convertSchemaViolationToCSV );
 
 						// Constraint violations
 						zip.putNextEntry( new ZipEntry( sourceFileName + " - constraint violations.csv" ) );
-						generateCSV( report.getValue().constraintViolations(), zip,
-							constraintViolation -> new String[] {
-								String.valueOf( constraintViolation.getLocationInfo().getLineNumber() ),
-								String.valueOf( constraintViolation.getLocationInfo().getColumnNumber() ),
-								constraintViolation.getMessage()
-							}
-						);
+						generateCSV( report.getValue().constraintViolations(), zip, ResultsComponent::convertConstraintViolationToCSV );
 					}
 				}
 				catch ( IOException e )
@@ -359,5 +319,47 @@ public class ResultsComponent extends CustomComponent
 		{
 			throw new CSVException( e );
 		}
+	}
+
+	/**
+	 * Convert a constraint violation into a string array suitable for use when generating a CSV.
+	 * @return a string array in the form of {@code [lineNumber, columnNumber, message]}.
+	 */
+	private static String[] convertConstraintViolationToCSV( ConstraintViolation constraintViolation )
+	{
+		String lineNumber;
+		String columnNumber;
+
+		// Only set the line and column numbers if location information is present
+		var locationInfo = constraintViolation.getLocationInfo();
+		if ( locationInfo != null )
+		{
+			lineNumber = String.valueOf( locationInfo.getLineNumber() );
+			columnNumber = String.valueOf( locationInfo.getColumnNumber() );
+		}
+		else
+		{
+			lineNumber = "";
+			columnNumber = "";
+		}
+
+		return new String[]{
+			lineNumber,
+			columnNumber,
+			constraintViolation.getMessage()
+		};
+	}
+
+	/**
+	 * Convert a schema violation into a string array suitable for use when generating a CSV.
+	 * @return a string array in the form of {@code [lineNumber, columnNumber, message]}.
+	 */
+	private static String[] convertSchemaViolationToCSV( SchemaViolation schemaViolation )
+	{
+		return new String[]{
+			String.valueOf( schemaViolation.lineNumber() ),
+			String.valueOf( schemaViolation.columnNumber() ),
+			schemaViolation.message()
+		};
 	}
 }
