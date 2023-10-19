@@ -400,6 +400,9 @@
 		<finalName>${project.artifactId}</finalName>
 		<resources>
 			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
 				<directory>src/main/webapp/VAADIN</directory>
 				<targetPath>${project.build.directory}/classes/VAADIN</targetPath>
 				<includes><include>**/*</include></includes>
