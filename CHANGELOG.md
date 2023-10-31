@@ -139,7 +139,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Show notification if DDI document recognition fails ([#19](https://github.com/cessda/cessda.cmv.server/issues/19))
 - Change endpoints urls to be consistent with other CESSDA products ([#18](https://github.com/cessda/cessda.cmv.server/issues/18))
 
-[1.1.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/1.0.1
+[2.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/2.0.0
+[1.1.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/1.1.0
 [1.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/v1.0.0
 [0.4.2]: https://github.com/cessda/cessda.cmv.server/releases/tag/v0.4.2
 [0.4.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/v0.4.1
