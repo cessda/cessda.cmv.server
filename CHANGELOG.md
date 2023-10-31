@@ -14,6 +14,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - *Fixed (for any bug fixes)*  
 - *Security (in case of vulnerabilities)*
 
+## [2.0.0] - 2023-10-31
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10013426.svg)](https://doi.org/10.5281/zenodo.10013426)
+
+### Added
+
+- Added the ability to individually remove documents from the validation list ([#34](https://github.com/cessda/cessda.cmv.server/issues/34))
+- Added the ability to download validation reports directly from the results page ([#35](https://github.com/cessda/cessda.cmv.server/issues/35))
+- Added structured logging support using the logging.json.enabled property ([#49](https://github.com/cessda/cessda.cmv.server/issues/49))
+- Update SQAaaS badge after latest assessment ([#146](https://github.com/cessda/cessda.cmv.server/issues/146))
+
+### Changed
+
+- Run UI validation asynchronously ([#23](https://github.com/cessda/cessda.cmv.server/issues/23))
+- Only clear previous validation results when new results finish processing ([#33](https://github.com/cessda/cessda.cmv.server/issues/33))
+- Load UI strings from resource bundles ([#129](https://github.com/cessda/cessda.cmv.server/issues/129))
+- Added clarification that the top buttons on the results panel will download all reports ([PR-149](https://github.com/cessda/cessda.cmv.server/pull/149))
+- Updated the CMV validation profiles ([#155](https://github.com/cessda/cessda.cmv.server/issues/155))
+- Display dropdown selections with the HTML `<select>` element ([#161](https://github.com/cessda/cessda.cmv.server/issues/161))
+
 ## [1.1.0] - 2023-05-23
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7961907.svg)](https://doi.org/10.5281/zenodo.7961907)
@@ -121,7 +141,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Show notification if DDI document recognition fails ([#19](https://github.com/cessda/cessda.cmv.server/issues/19))
 - Change endpoints urls to be consistent with other CESSDA products ([#18](https://github.com/cessda/cessda.cmv.server/issues/18))
 
-[1.1.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/1.0.1
+[2.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/2.0.0
+[1.1.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/1.1.0
 [1.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/v1.0.0
 [0.4.2]: https://github.com/cessda/cessda.cmv.server/releases/tag/v0.4.2
 [0.4.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/v0.4.1
