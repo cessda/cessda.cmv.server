@@ -30,6 +30,7 @@ import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.NotDocumentException;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.gesis.commons.resource.Resource;
+import org.springframework.web.util.HtmlUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,7 +56,7 @@ public class ResourceSelectionComponent extends CustomComponent
 	private static final long serialVersionUID = -808880272310582714L;
 
 	private final ArrayList<Resource.V10> selectedResources = new ArrayList<>(1);
-	private final ComboBox<Resource.V10> comboBox;
+	private final NativeSelect<Resource.V10> predefinedSelect;
 	private final TextField textField;
 	private final Button clearButton;
 	private final Grid<Resource.V10> selectedResourcesGrid;
@@ -75,7 +76,13 @@ public class ResourceSelectionComponent extends CustomComponent
 	{
 		BY_PREDEFINED,
 		BY_URL,
-		BY_UPLOAD
+		BY_UPLOAD;
+
+		public String getLocalisedName()
+		{
+			var bundle = ResourceBundle.getBundle( ResourceSelectionComponent.class.getName(), UI.getCurrent().getLocale() );
+			return bundle.getString(this.name());
+		}
 	}
 
 	public ResourceSelectionComponent(
@@ -95,13 +102,12 @@ public class ResourceSelectionComponent extends CustomComponent
 		this.provisioningOptions = provisioningOptionsButtonGroup( selectedProvisioningOption );
 		this.provisioningOptions.addSelectionListener( listener -> refreshComponents() );
 
-		this.comboBox = new ComboBox<>();
-		this.comboBox.setPlaceholder( bundle.getString( "comboBox.select" ) );
-		this.comboBox.setItemCaptionGenerator( Resource.V10::getLabel );
-		this.comboBox.setWidth( 100, Unit.PERCENTAGE );
-		this.comboBox.setTextInputAllowed( false );
-		this.comboBox.setItems( predefinedResources );
-		this.comboBox.addSelectionListener( listener -> listener.getSelectedItem()
+		this.predefinedSelect = new NativeSelect<>();
+		this.predefinedSelect.setEmptySelectionCaption( bundle.getString( "comboBox.select" ) );
+		this.predefinedSelect.setItemCaptionGenerator( Resource.V10::getLabel );
+		this.predefinedSelect.setWidth( 100, Unit.PERCENTAGE );
+		this.predefinedSelect.setItems( predefinedResources );
+		this.predefinedSelect.addSelectionListener( listener -> listener.getSelectedItem()
 				.flatMap( this::recognizeDdiDocument )
 				.ifPresent( this::selectResource ) );
 
@@ -155,7 +161,7 @@ public class ResourceSelectionComponent extends CustomComponent
 		verticalLayout.setWidth( 100, Unit.PERCENTAGE );
 		verticalLayout.addComponent( this.provisioningOptions );
 		verticalLayout.addComponent( this.textField );
-		verticalLayout.addComponent( this.comboBox );
+		verticalLayout.addComponent( this.predefinedSelect );
 		verticalLayout.addComponent( this.fileUpload );
 		verticalLayout.addComponent( this.selectedResourcesGrid );
 		verticalLayout.addComponent( this.clearButton );
@@ -167,10 +173,10 @@ public class ResourceSelectionComponent extends CustomComponent
 
 	private void refreshComponents()
 	{
-		comboBox.setVisible( provisioningOptions.getValue().equals( BY_PREDEFINED )
+		predefinedSelect.setVisible( provisioningOptions.getValue().equals( BY_PREDEFINED )
 				&& ( selectionMode.equals( MULTI )
 				|| ( selectionMode.equals( SINGLE ) && selectedResources.isEmpty() ) ) );
-		comboBox.clear();
+		predefinedSelect.clear();
 		textField.setVisible( provisioningOptions.getValue().equals( BY_URL )
 				&& ( selectionMode.equals( MULTI )
 				|| ( selectionMode.equals( SINGLE ) && selectedResources.isEmpty() ) ) );
@@ -218,7 +224,7 @@ public class ResourceSelectionComponent extends CustomComponent
 			if ( resource.getUri().getScheme().startsWith( "http" ) )
 			{
 				label.setContentMode( ContentMode.HTML );
-				label.setValue( "<a href='" + resource.getUri() + "' target='_blank'>" + resource.getLabel() + "</a>" );
+				label.setValue( "<a href='" + resource.getUri() + "' target='_blank'>" + HtmlUtils.htmlEscape( resource.getLabel(), "UTF-8" ) + "</a>" );
 			}
 			else
 			{
@@ -255,8 +261,9 @@ public class ResourceSelectionComponent extends CustomComponent
 	private RadioButtonGroup<ProvisioningOptions> provisioningOptionsButtonGroup( ProvisioningOptions selectedProvisioningOption )
 	{
 		RadioButtonGroup<ProvisioningOptions> buttonGroup = new RadioButtonGroup<>();
-		buttonGroup.setItems( ProvisioningOptions.values() );
 		buttonGroup.addStyleName( OPTIONGROUP_HORIZONTAL );
+		buttonGroup.setItemCaptionGenerator( ProvisioningOptions::getLocalisedName );
+		buttonGroup.setItems( ProvisioningOptions.values() );
 		buttonGroup.setValue( selectedProvisioningOption );
 		return buttonGroup;
 	}

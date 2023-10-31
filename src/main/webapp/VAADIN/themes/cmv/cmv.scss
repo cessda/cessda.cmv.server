@@ -2649,13 +2649,19 @@ font-size:17px;
 	}
 
 	.validate-button-layout {
+		display: flex;
+
+		.v-slot:last-child {
+			flex: auto;
+		}
+
 		.v-progressbar {
 			.v-progressbar-wrapper {
-        		height: 20px;
-        	}
-        	position: relative;
-        	top: 10px;
-			width: 1030px;
+				height: 20px;
+			}
+			position: relative;
+			top: 10px;
+			width: 100%;
 		}
 	}
 
