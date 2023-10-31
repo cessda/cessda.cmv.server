@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [2.0.0] - 2023-10-31
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10013426.svg)](https://doi.org/10.5281/zenodo.10013426)
+
 ### Added
 
 - Added the ability to individually remove documents from the validation list ([#34](https://github.com/cessda/cessda.cmv.server/issues/34))
