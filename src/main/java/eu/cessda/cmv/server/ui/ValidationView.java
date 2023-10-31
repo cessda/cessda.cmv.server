@@ -64,7 +64,7 @@ public class ValidationView extends VerticalLayout implements View
 	private final ResourceBundle bundle;
 	private final ValidatorEngine validationService;
 
-	private final ComboBox<ValidationGateName> validationGateNameComboBox;
+	private final NativeSelect<ValidationGateName> validationGateNameComboBox;
 	private final Panel reportPanel;
 	private final ResourceSelectionComponent profileSelectionComponent;
 	private final ResourceSelectionComponent documentSelectionComponent;
@@ -81,7 +81,7 @@ public class ValidationView extends VerticalLayout implements View
 
 		this.bundle = ResourceBundle.getBundle( ValidationView.class.getName(), UI.getCurrent().getLocale() );
 
-		this.validationGateNameComboBox = new ComboBox<>();
+		this.validationGateNameComboBox = new NativeSelect<>();
 		this.validationGateNameComboBox.setCaption( bundle.getString( "configuration.validationGate" ) );
 		this.validationGateNameComboBox.setEmptySelectionAllowed( false );
 		this.validationGateNameComboBox.setItems( ValidationGateName.values() );
@@ -92,7 +92,7 @@ public class ValidationView extends VerticalLayout implements View
 		this.progressBar = new ProgressBar();
 		this.progressBar.setVisible( false );
 
-		var validateLayout = new HorizontalLayout( validateButton, this.progressBar );
+		var validateLayout = new HorizontalLayout( this.validateButton, this.progressBar );
 		validateLayout.setStyleName( "validate-button-layout" );
 
 		this.reportPanel = new Panel( bundle.getString( "report.panel.caption" ) );
