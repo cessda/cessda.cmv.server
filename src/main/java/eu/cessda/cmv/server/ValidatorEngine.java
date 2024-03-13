@@ -29,11 +29,12 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -43,42 +44,34 @@ public class ValidatorEngine
 	private final ValidationService validationService;
 
 	@Autowired
-	public ValidatorEngine( ValidationService validationService )
+	public ValidatorEngine( ValidationService validationService ) throws SAXException
 	{
 		this.validationService = validationService;
+
+		// Find the resources for the XML schemas
+		var schemaURLs = new URL[] {
+			this.getClass().getResource("/static/schemas/codebook/codebook.xsd"),
+			this.getClass().getResource("/static/schemas/lifecycle/3.2/instance.xsd"),
+			this.getClass().getResource("/static/schemas/lifecycle/3.3/instance.xsd"),
+			this.getClass().getResource("/static/schemas/nesstar/Version1-2-2.xsd"),
+			this.getClass().getResource("/static/schemas/oai-pmh/OAI-PMH.xsd")
+		};
+
+		var sources = Arrays.stream(schemaURLs)
+			.map(URL::toExternalForm)
+			.map(StreamSource::new)
+			.toArray(StreamSource[]::new);
+
+		// Construct schema objects from the XML schemas
+		var schema = SchemaFactory.newDefaultInstance().newSchema(sources);
+
+		// Create a ThreadLocal to construct an XMLValidator for each thread
 		this.xmlValidators = ThreadLocal.withInitial( () ->
 		{
-			try
-			{
-				// Find the resources for the XML schemas
-				var codebookResource = this.getClass().getResource( "/static/schemas/codebook/codebook.xsd" );
-				var lifecycleResource = this.getClass().getResource( "/static/schemas/lifecycle/instance.xsd" );
-				var nesstarResource = this.getClass().getResource( "/static/schemas/nesstar/Version1-2-2.xsd" );
-				var oaiResource = this.getClass().getResource( "/static/schemas/oai-pmh/OAI-PMH.xsd" );
-
-				// Assert schemas are not null
-				assert codebookResource != null;
-				assert lifecycleResource != null;
-				assert nesstarResource != null;
-				assert oaiResource != null;
-
-				// Construct schema objects from the XML schemas
-				var schema = SchemaFactory.newDefaultInstance().newSchema( new Source[]{
-						new StreamSource( codebookResource.toExternalForm() ),
-						new StreamSource( lifecycleResource.toExternalForm() ),
-						new StreamSource( nesstarResource.toExternalForm() ),
-						new StreamSource( oaiResource.toExternalForm() )
-				} );
-
-				// Create a validator and set its error handler
-				var validator = schema.newValidator();
-				validator.setErrorHandler( new LoggingErrorHandler() );
-				return validator;
-			}
-			catch ( SAXException e )
-			{
-				throw new IllegalStateException( e );
-			}
+			// Create a validator and set its error handler
+			var validator = schema.newValidator();
+			validator.setErrorHandler( new LoggingErrorHandler() );
+			return validator;
 		} );
 	}
 
@@ -98,7 +91,7 @@ public class ValidatorEngine
 		var validator = xmlValidators.get();
 		validator.validate( new StreamSource( validationRequest.readInputStream() ) );
 
-		// Extract errors from the error handler, then reset the validator
+		// Extract errors from the error handler, then reset the error handler
 		var errorHandler = (LoggingErrorHandler) validator.getErrorHandler();
 		var errors = errorHandler.getErrors();
 		errorHandler.reset();
