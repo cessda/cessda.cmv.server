@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,11 +26,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
-import eu.cessda.cmv.core.ValidationService;
+import eu.cessda.cmv.core.NotDocumentException;
+import eu.cessda.cmv.core.Profile;
 import org.gesis.commons.resource.ClasspathResourceRepository;
-import org.gesis.commons.resource.FileNameResourceLabelProvider;
 import org.gesis.commons.resource.Resource;
-import org.gesis.commons.xml.XercesXalanDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -43,9 +42,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.zalando.problem.jackson.ProblemModule;
 
+import java.io.IOException;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.gesis.commons.resource.Resource.newResource;
 
@@ -83,31 +83,27 @@ public class Server extends SpringBootServletInitializer
 	}
 
 	@Bean
-	public ValidationService validationService()
+	public List<Profile> demoProfiles( CessdaMetadataValidatorFactory factory )
 	{
-		return cessdaMetadataValidatorFactory().newValidationService();
-	}
-
-	@Bean
-	public List<Resource.V10> demoProfiles()
-	{
+		log.info( "Loading built-in profiles" );
 		return ClasspathResourceRepository.newBuilder()
 				.includeLocationPattern( "classpath*:**/profiles/**/*.xml" )
 				.build()
 				.findAll()
-				.map( resource ->
+				.flatMap( resource ->
 				{
-					var profile = XercesXalanDocument.newBuilder().ofInputStream( resource.readInputStream() ).build();
-
-					// Extract the profile name and version.
-					// There isn't a public method to do this, so use the XPath directly.
-					var profileName = profile.selectNode( "/DDIProfile/DDIProfileName" ).getTextContent().trim();
-					var profileVersion = profile.selectNode( "/DDIProfile/Version" ).getTextContent().trim();
-
-					return newResource( resource.getUri(), profileName + ": " + profileVersion );
+					var uri = resource.getUri();
+					try
+					{
+						var profile = factory.newProfile( uri );
+						return Stream.of( profile );
+					}
+					catch ( NotDocumentException | IOException e )
+					{
+						log.error( "Couldn't load profile from {}", uri, e );
+						return Stream.empty();
+					}
 				} )
-				.map( Resource.V10.class::cast )
-				.sorted( Comparator.comparing( Resource.V10::getLabel ) )
 				.toList();
 	}
 
@@ -127,8 +123,8 @@ public class Server extends SpringBootServletInitializer
 	@Bean
 	public List<Resource.V10> demoDocuments()
 	{
-		var labelProvider = new FileNameResourceLabelProvider();
-		try
+		log.info( "Discovering built-in documents" );
+        try
 		{
 			return ClasspathResourceRepository.newBuilder()
 					.includeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*.xml" )
@@ -136,9 +132,14 @@ public class Server extends SpringBootServletInitializer
 					.build()
 					.findAll()
 					.map( Resource::getUri )
-					.map( uri -> newResource( uri, labelProvider ) )
+					.map( uri ->
+					{
+						var path = uri.toString();
+						var lastPathIndex = path.lastIndexOf( '/' );
+						var fileName = path.substring( lastPathIndex + 1 );
+						return newResource( uri, fileName );
+					} )
 					.map( Resource.V10.class::cast )
-					.sorted( Comparator.comparing( Resource.V10::getLabel ) )
 					.toList();
 		}
 		catch ( RuntimeException e )

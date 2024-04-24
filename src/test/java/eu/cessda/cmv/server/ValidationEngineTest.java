@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,21 +36,22 @@ class ValidationEngineTest
 	void shouldValidateDocument() throws IOException, SAXException, NotDocumentException
 	{
 		// Init
-		var validationService = new CessdaMetadataValidatorFactory().newValidationService();
-		var validatorEngine = new ValidatorEngine( validationService );
+		var validatorFactory = new CessdaMetadataValidatorFactory();
+		var validatorEngine = new ValidatorEngine( validatorFactory );
 
 		// Get the document and the profile
 		var document = this.getClass().getResource( "/synthetic_compliant_cmm.xml" );
-		var profile = this.getClass().getResource( "/static/profiles/cdc/ddi-2.5/1.0.4/profile.xml" );
+		var profileResource = this.getClass().getResource( "/static/profiles/cdc/ddi-2.5/1.0.4/profile.xml" );
 
 		// Assert that the profile and document are found
-		assertThat(profile).isNotNull();
+		assertThat(profileResource).isNotNull();
 		assertThat(document).isNotNull();
 
 		// Validate
+		var profile = validatorFactory.newProfile( profileResource );
 		var report = validatorEngine.validate(
 				Resource.newResource(document),
-				Resource.newResource( profile ),
+				profile,
 				BASIC
 		);
 
