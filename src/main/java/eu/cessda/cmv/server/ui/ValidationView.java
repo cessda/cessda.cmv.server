@@ -177,7 +177,8 @@ public class ValidationView extends VerticalLayout implements View
 		catch ( NotDocumentException | IOException e )
 		{
 			// Profile couldn't be parsed - warn the user
-			log.warn( "Parsing profile {} failed: {}", ((Resource.V11) resource).getLabel(), e.toString() );
+			var resourceLabel = resource instanceof Resource.V10  ? ( (Resource.V10) resource ).getLabel() : resource.getUri();
+			log.warn( "Parsing profile {} failed: {}", resourceLabel, e.toString() );
 			Notification.show( this.bundle.getString("validate.profileError"), e.getMessage(), Notification.Type.WARNING_MESSAGE );
 			return Optional.empty();
 		}

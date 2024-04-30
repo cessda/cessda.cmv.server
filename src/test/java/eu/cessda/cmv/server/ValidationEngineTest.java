@@ -21,7 +21,6 @@ package eu.cessda.cmv.server;
 
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.NotDocumentException;
-import org.gesis.commons.resource.Resource;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
@@ -44,19 +43,22 @@ class ValidationEngineTest
 		var profileResource = this.getClass().getResource( "/static/profiles/cdc/ddi-2.5/1.0.4/profile.xml" );
 
 		// Assert that the profile and document are found
-		assertThat(profileResource).isNotNull();
-		assertThat(document).isNotNull();
+		assertThat( profileResource ).isNotNull();
+		assertThat( document ).isNotNull();
 
 		// Validate
 		var profile = validatorFactory.newProfile( profileResource );
-		var report = validatorEngine.validate(
-				Resource.newResource(document),
-				profile,
-				BASIC
-		);
+		try (var documentStream = document.openStream())
+		{
+			var report = validatorEngine.validate(
+					documentStream,
+					profile,
+					BASIC
+			);
 
-		// Schema and CMV violations should be found
-		assertThat( report.schemaViolations() ).isNotEmpty();
-		assertThat( report.constraintViolations() ).isNotEmpty();
+			// Schema and CMV violations should be found
+			assertThat( report.schemaViolations() ).isNotEmpty();
+			assertThat( report.constraintViolations() ).isNotEmpty();
+		}
 	}
 }
