@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,10 +20,13 @@
 package eu.cessda.cmv.server.ui;
 
 import com.vaadin.navigator.View;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
+import eu.cessda.cmv.core.NotDocumentException;
+import eu.cessda.cmv.core.Profile;
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.server.ValidationReport;
 import eu.cessda.cmv.server.ValidatorEngine;
@@ -31,12 +34,11 @@ import org.gesis.commons.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.util.HtmlUtils;
 
+import java.io.IOException;
 import java.io.Serial;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -62,22 +64,26 @@ public class ValidationView extends VerticalLayout implements View
 
 	// Localisation bundle
 	private final ResourceBundle bundle;
+
+	// Services
 	private final ValidatorEngine validationService;
+	private final CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory;
 
 	private final NativeSelect<ValidationGateName> validationGateNameComboBox;
 	private final Panel reportPanel;
-	private final ResourceSelectionComponent profileSelectionComponent;
-	private final ResourceSelectionComponent documentSelectionComponent;
+	private final ResourceSelectionComponent<Profile> profileSelectionComponent;
+	private final ResourceSelectionComponent<Resource.V10> documentSelectionComponent;
 	private final Button validateButton;
 	private final ProgressBar progressBar;
 
 
 	public ValidationView( @Autowired ValidatorEngine validationService,
 						   @Autowired List<Resource.V10> demoDocuments,
-						   @Autowired List<Resource.V10> demoProfiles,
+						   @Autowired List<Profile> demoProfiles,
 						   @Autowired CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory )
 	{
 		this.validationService = validationService;
+		this.cessdaMetadataValidatorFactory = cessdaMetadataValidatorFactory;
 
 		this.bundle = ResourceBundle.getBundle( ValidationView.class.getName(), UI.getCurrent().getLocale() );
 
@@ -98,19 +104,23 @@ public class ValidationView extends VerticalLayout implements View
 		this.reportPanel = new Panel( bundle.getString( "report.panel.caption" ) );
 		this.reportPanel.setVisible( false );
 
-		this.profileSelectionComponent = new ResourceSelectionComponent(
-			SINGLE,
-			BY_PREDEFINED,
-			demoProfiles,
-			cessdaMetadataValidatorFactory );
+		this.profileSelectionComponent = new ResourceSelectionComponent<>(
+                SINGLE,
+                BY_PREDEFINED,
+                demoProfiles,
+                profile -> new Label( profile.getProfileName() + ": " + profile.getProfileVersion() ),
+                this::parseProfile
+		);
 		this.profileSelectionComponent.setCaption( bundle.getString( "configuration.profileSelectionCaption" ) );
 		this.profileSelectionComponent.setWidthFull();
 
-		this.documentSelectionComponent = new ResourceSelectionComponent(
-			MULTI,
-			BY_UPLOAD,
-			demoDocuments,
-			cessdaMetadataValidatorFactory );
+		this.documentSelectionComponent = new ResourceSelectionComponent<>(
+                MULTI,
+                BY_UPLOAD,
+                demoDocuments,
+                ValidationView::labelFromResource,
+                this::recognizeDdiDocument
+		);
 		this.documentSelectionComponent.setCaption( bundle.getString( "configuration.documentSelectionCaption" ) );
 		this.documentSelectionComponent.setWidthFull();
 
@@ -125,6 +135,53 @@ public class ValidationView extends VerticalLayout implements View
 		addComponent( configurationPanel );
 		addComponent( validateLayout );
 		addComponent( reportPanel );
+	}
+
+	private static Label labelFromResource( Resource.V10 resource )
+	{
+		Label label = new Label();
+		if ( resource.getUri().getScheme().startsWith( "http" ) )
+		{
+			label.setContentMode( ContentMode.HTML );
+			label.setValue( "<a href='" + resource.getUri() + "' target='_blank'>" + HtmlUtils.htmlEscape( resource.getLabel(), "UTF-8" ) + "</a>" );
+		}
+		else
+		{
+			label.setValue( resource.getLabel() );
+		}
+		return label;
+	}
+
+	private <T extends Resource> Optional<T> recognizeDdiDocument( T resource )
+	{
+		try( var inputStream = resource.readInputStream() )
+		{
+			// TODO Avoid inefficiency of calling newDocument only to check if document is accepted
+			cessdaMetadataValidatorFactory.newDocument( inputStream );
+			return Optional.of( resource );
+		}
+		catch ( IOException | NotDocumentException e)
+		{
+			Notification.show( e.getMessage(), Notification.Type.WARNING_MESSAGE );
+			return Optional.empty();
+		}
+	}
+
+	private Optional<Profile> parseProfile( Resource resource )
+	{
+		try
+		{
+			var profile = cessdaMetadataValidatorFactory.newProfile( resource.getUri() );
+			return Optional.of( profile );
+		}
+		catch ( NotDocumentException | IOException e )
+		{
+			// Profile couldn't be parsed - warn the user
+			var resourceLabel = resource instanceof Resource.V10  ? ( (Resource.V10) resource ).getLabel() : resource.getUri();
+			log.warn( "Parsing profile {} failed: {}", resourceLabel, e.toString() );
+			Notification.show( this.bundle.getString("validate.profileError"), e.getMessage(), Notification.Type.WARNING_MESSAGE );
+			return Optional.empty();
+		}
 	}
 
 	/**
@@ -167,9 +224,9 @@ public class ValidationView extends VerticalLayout implements View
 		// Validate all documents using a parallel stream
 		var validationReportList = documentResources.parallelStream().flatMap( documentResource ->
 		{
-			try
+			try ( var inputStream = documentResource.readInputStream() )
 			{
-				var validationReport = this.validationService.validate( documentResource, profile, validationGate );
+				var validationReport = this.validationService.validate( inputStream, profile, validationGate );
 				return Stream.of( Map.entry( documentResource.getLabel(), validationReport ) );
 			}
 			catch ( Exception e )
@@ -200,7 +257,7 @@ public class ValidationView extends VerticalLayout implements View
             {
 				// If an unexpected exception was thrown, handle it here and report it to the user
 				if (e != null) {
-					log.error( "Unexpected error when validating documents: {}", e.toString(), e );
+					log.error( "Unexpected error when validating documents: {}", e, e );
 					this.getUI().access( () ->
                     {
 						var errorWindow = new ErrorWindow( e );

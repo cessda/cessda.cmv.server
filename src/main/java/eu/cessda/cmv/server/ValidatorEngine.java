@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,10 +19,10 @@
  */
 package eu.cessda.cmv.server;
 
+import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.NotDocumentException;
+import eu.cessda.cmv.core.Profile;
 import eu.cessda.cmv.core.ValidationGateName;
-import eu.cessda.cmv.core.ValidationService;
-import org.gesis.commons.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.xml.sax.ErrorHandler;
@@ -31,7 +31,9 @@ import org.xml.sax.SAXParseException;
 
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,12 +43,12 @@ import java.util.List;
 public class ValidatorEngine
 {
 	private final ThreadLocal<javax.xml.validation.Validator> xmlValidators;
-	private final ValidationService validationService;
+	private final CessdaMetadataValidatorFactory validatorFactory;
 
 	@Autowired
-	public ValidatorEngine( ValidationService validationService ) throws SAXException
+	public ValidatorEngine( CessdaMetadataValidatorFactory validatorFactory ) throws SAXException
 	{
-		this.validationService = validationService;
+		this.validatorFactory = validatorFactory;
 
 		// Find the resources for the XML schemas
 		var schemaURLs = new URL[] {
@@ -78,26 +80,31 @@ public class ValidatorEngine
 	/**
 	 * Validates a given XML document against XML schema and a CMV profile.
 	 *
-	 * @param validationRequest the document to validate.
+	 * @param documentInputStream the document to validate.
 	 * @param profile the profile to use when validating.
 	 * @param validationGate the validation gate to use when validating
 	 * @return a {@link ValidationReport} containing the list of XML validation errors and the CMV validation report.
 	 * @throws IOException if an IO error occurred when parsing the document.
 	 * @throws SAXException if the XML document was invalid.
 	 */
-	public ValidationReport validate( Resource.V10 validationRequest, Resource profile, ValidationGateName validationGate ) throws IOException, SAXException, NotDocumentException
+	public ValidationReport validate( InputStream documentInputStream, Profile profile, ValidationGateName validationGate ) throws IOException, SAXException, NotDocumentException
 	{
+		// Read XML into a buffer
+		var buffer = new ByteArrayInputStream( documentInputStream.readAllBytes() );
+
 		// Validate XML
 		var validator = xmlValidators.get();
-		validator.validate( new StreamSource( validationRequest.readInputStream() ) );
+		validator.validate( new StreamSource( buffer ) );
 
 		// Extract errors from the error handler, then reset the error handler
 		var errorHandler = (LoggingErrorHandler) validator.getErrorHandler();
 		var errors = errorHandler.getErrors();
 		errorHandler.reset();
+		buffer.reset();
 
 		// Validate against profile
-		var validationReport = validationService.validate( validationRequest, profile, validationGate );
+		var document = validatorFactory.newDocument( buffer );
+		var validationReport = validatorFactory.validate( document, profile, validationGate );
 		var validationErrors = errors.stream().map( SchemaViolation::new ).toList();
 		return new ValidationReport( validationErrors, validationReport.getConstraintViolations() );
 	}

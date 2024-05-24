@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,25 +20,22 @@
 package eu.cessda.cmv.server.ui;
 
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
+import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStateWindow;
-import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
-import eu.cessda.cmv.core.NotDocumentException;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.gesis.commons.resource.Resource;
-import org.springframework.web.util.HtmlUtils;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
 import static com.vaadin.shared.ui.grid.HeightMode.ROW;
 import static com.vaadin.ui.Grid.SelectionMode.NONE;
@@ -50,21 +47,21 @@ import static java.util.Objects.requireNonNull;
 import static org.gesis.commons.resource.Resource.newResource;
 
 @SuppressWarnings( "java:S2160" )
-public class ResourceSelectionComponent extends CustomComponent
+public class ResourceSelectionComponent<T> extends CustomComponent
 {
 	@Serial
 	private static final long serialVersionUID = -808880272310582714L;
 
-	private final ArrayList<Resource.V10> selectedResources = new ArrayList<>(1);
-	private final NativeSelect<Resource.V10> predefinedSelect;
+	private final ArrayList<T> selectedResources = new ArrayList<>(1);
+	private final NativeSelect<T> predefinedSelect;
 	private final TextField textField;
 	private final Button clearButton;
-	private final Grid<Resource.V10> selectedResourcesGrid;
+	private final Grid<T> selectedResourcesGrid;
 	private final MultiFileUpload fileUpload;
 	private final RadioButtonGroup<ProvisioningOptions> provisioningOptions;
 	private final SelectionMode selectionMode;
-	private final transient CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory;
-	private final ResourceBundle bundle;
+	private final transient Function<T, Label> labelMapper;
+	private final transient ResourceBundle bundle;
 
 	public enum SelectionMode
 	{
@@ -86,17 +83,17 @@ public class ResourceSelectionComponent extends CustomComponent
 	}
 
 	public ResourceSelectionComponent(
-			SelectionMode selectionMode,
-			ProvisioningOptions selectedProvisioningOption,
-			List<Resource.V10> predefinedResources,
-			CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory )
+            SelectionMode selectionMode,
+            ProvisioningOptions selectedProvisioningOption,
+            List<T> predefinedResources,
+			Function<T, Label> labelMapper,
+			Function<Resource.V10, Optional<T>> resourceValidator)
 	{
-		requireNonNull( selectionMode );
+        requireNonNull( selectionMode );
 		requireNonNull( predefinedResources );
 
 		this.bundle = ResourceBundle.getBundle( ResourceSelectionComponent.class.getName(), UI.getCurrent().getLocale() );
 
-		this.cessdaMetadataValidatorFactory = cessdaMetadataValidatorFactory;
 		this.selectionMode = selectionMode;
 
 		this.provisioningOptions = provisioningOptionsButtonGroup( selectedProvisioningOption );
@@ -104,12 +101,10 @@ public class ResourceSelectionComponent extends CustomComponent
 
 		this.predefinedSelect = new NativeSelect<>();
 		this.predefinedSelect.setEmptySelectionCaption( bundle.getString( "comboBox.select" ) );
-		this.predefinedSelect.setItemCaptionGenerator( Resource.V10::getLabel );
+		this.predefinedSelect.setItemCaptionGenerator( Object::toString );
 		this.predefinedSelect.setWidth( 100, Unit.PERCENTAGE );
 		this.predefinedSelect.setItems( predefinedResources );
-		this.predefinedSelect.addSelectionListener( listener -> listener.getSelectedItem()
-				.flatMap( this::recognizeDdiDocument )
-				.ifPresent( this::selectResource ) );
+		this.predefinedSelect.addSelectionListener( listener -> listener.getSelectedItem().ifPresent( this::selectResource ) );
 
 		this.textField = new TextField();
 		this.textField.setWidthFull();
@@ -123,7 +118,8 @@ public class ResourceSelectionComponent extends CustomComponent
 				UrlValidator urlValidator = UrlValidator.getInstance();
 				if ( urlValidator.isValid( value ) )
 				{
-					recognizeDdiDocument( newResource( value ) ).ifPresent( this::selectResource );
+					var resource = (Resource.V10) Resource.newResource( value );
+					resourceValidator.apply( resource ).ifPresent( this::selectResource );
 				}
 				else
 				{
@@ -133,14 +129,14 @@ public class ResourceSelectionComponent extends CustomComponent
 			} )
 		);
 
+		this.labelMapper = labelMapper;
 		this.selectedResourcesGrid = newGrid();
 		this.selectedResourcesGrid.setItems( this.selectedResources );
 
-		this.fileUpload = newMultiFileUpload( this.selectionMode );
-		this.fileUpload.getUploadStatePanel().setFinishedHandler( ( InputStream inputStream, String fileName, String mimeType, long length, int filesLeftInQueue ) ->
+		this.fileUpload = newMultiFileUpload( this.selectionMode, ( InputStream inputStream, String fileName, String mimeType, long length, int filesLeftInQueue ) ->
 		{
-			Resource.V10 uploadedResource = newResource( inputStream, fileName );
-			recognizeDdiDocument( uploadedResource ).ifPresent( this::selectResource );
+			var uploadedResource = (Resource.V10) newResource( inputStream, fileName );
+			resourceValidator.apply( uploadedResource ).ifPresent( this::selectResource );
 		} );
 
 		this.clearButton = new Button();
@@ -193,7 +189,7 @@ public class ResourceSelectionComponent extends CustomComponent
 		}
 	}
 
-	private void selectResource( Resource.V10 resource )
+	private void selectResource( T resource )
 	{
 		if ( selectionMode.equals( SINGLE ) )
 		{
@@ -209,27 +205,18 @@ public class ResourceSelectionComponent extends CustomComponent
 	 * For a ResourceSelectionComponent constructed with {@link SelectionMode#SINGLE},
 	 * this will contain zero or one elements.
 	 */
-	public List<Resource.V10> getResources()
+	public List<T> getResources()
 	{
 		return List.copyOf( selectedResources );
 	}
 
-	private Grid<Resource.V10> newGrid()
+	private Grid<T> newGrid()
 	{
-		Grid<Resource.V10> grid = new Grid<>();
+		Grid<T> grid = new Grid<>();
 		grid.addColumn( resource ->
 		{
-			Label label = new Label();
+			var label = this.labelMapper.apply( resource );
 			label.setSizeFull();
-			if ( resource.getUri().getScheme().startsWith( "http" ) )
-			{
-				label.setContentMode( ContentMode.HTML );
-				label.setValue( "<a href='" + resource.getUri() + "' target='_blank'>" + HtmlUtils.htmlEscape( resource.getLabel(), "UTF-8" ) + "</a>" );
-			}
-			else
-			{
-				label.setValue( resource.getLabel() );
-			}
 
 			if (selectionMode.equals( MULTI ))
 			{
@@ -268,13 +255,13 @@ public class ResourceSelectionComponent extends CustomComponent
 		return buttonGroup;
 	}
 
-	private MultiFileUpload newMultiFileUpload( SelectionMode selectionMode )
+	private MultiFileUpload newMultiFileUpload( SelectionMode selectionMode, UploadFinishedHandler uploadFinishedHandler )
 	{
 		UploadStateWindow uploadStateWindow = new UploadStateWindow();
 		uploadStateWindow.setWindowPosition( UploadStateWindow.WindowPosition.CENTER );
 		uploadStateWindow.setOverallProgressVisible( true );
 		uploadStateWindow.setResizable( true );
-		MultiFileUpload multiFileUpload = new MultiFileUpload( null, uploadStateWindow, selectionMode.equals( MULTI ) );
+		MultiFileUpload multiFileUpload = new MultiFileUpload( uploadFinishedHandler, uploadStateWindow, selectionMode.equals( MULTI ) );
 		multiFileUpload.setMaxFileSize( 100_000_000 );
 		multiFileUpload.setSizeErrorMsgPattern( bundle.getString("upload.fileTooBigPattern") );
 		multiFileUpload.setPanelCaption( bundle.getString("upload.caption") );
@@ -282,20 +269,5 @@ public class ResourceSelectionComponent extends CustomComponent
 		multiFileUpload.getSmartUpload().setUploadButtonCaptions( bundle.getString("upload.singleFile"), bundle.getString("upload.multipleFiles") );
 		multiFileUpload.getSmartUpload().setUploadButtonIcon( VaadinIcons.UPLOAD );
 		return multiFileUpload;
-	}
-
-	private Optional<Resource.V10> recognizeDdiDocument( Resource.V10 resource )
-	{
-		try
-		{
-			// TODO Avoid inefficiency of calling newDocument only to check if document is accepted
-			cessdaMetadataValidatorFactory.newDocument( resource );
-			return Optional.of( resource );
-		}
-		catch ( IOException | NotDocumentException e)
-		{
-			Notification.show( e.getMessage(), Type.WARNING_MESSAGE );
-			return Optional.empty();
-		}
 	}
 }

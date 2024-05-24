@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,7 +50,7 @@ public class ValidationControllerV0
 	public static final String BASE_PATH = "/api/V0";
 
 	@Autowired
-	private ValidationService validationService;
+	private CessdaMetadataValidatorFactory validatorFactory;
 
 	@PostMapping(
 			path = "/Validation",
@@ -94,9 +94,11 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 
 		if ( hasRequestParams && !hasRequestBody )
 		{
-			return validationService.validate( documentUri, profileUri, validationGateName );
+			Document document = validatorFactory.newDocument( documentUri );
+			Profile profile = validatorFactory.newProfile( profileUri );
+			return validatorFactory.validate( document, profile, validationGateName );
 		}
-		if ( !hasRequestParams && hasRequestBody )
+		else if ( !hasRequestParams && hasRequestBody )
 		{
 			// Validate the request
 			var requestValidationResult = validationRequest.validate();
@@ -133,9 +135,11 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 
 	private ValidationReport validateUsingGate( ValidationRequest validationRequest ) throws IOException, NotDocumentException
 	{
-		return validationService.validate(
-				validationRequest.getDocument().toResource(),
-				validationRequest.getProfile().toResource(),
+		var document = validatorFactory.newDocument( validationRequest.getDocument() );
+		var profile = validatorFactory.newProfile( validationRequest.getProfile() );
+		return validatorFactory.validate(
+				document,
+				profile,
 				validationRequest.getValidationGateName()
 		);
 	}
@@ -144,10 +148,12 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 	{
 		try
 		{
+			var document = validatorFactory.newDocument( validationRequest.getDocument() );
+			var profile = validatorFactory.newProfile( validationRequest.getProfile() );
 			var validationGate = CessdaMetadataValidatorFactory.newValidationGate( validationRequest.getConstraints() );
-			return validationService.validate(
-					validationRequest.getDocument().toResource(),
-					validationRequest.getProfile().toResource(),
+			return validatorFactory.validate(
+					document,
+					profile,
 					validationGate
 			);
 		}
