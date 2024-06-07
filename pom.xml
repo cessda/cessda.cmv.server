@@ -15,7 +15,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>17</java.version>
+		<java.version>21</java.version>
 		<git.branch />
 		<code-generation-comment>This file is generated, all changes will be overridden</code-generation-comment>
 		<docker.registry.host />
