@@ -18,9 +18,12 @@ pipeline {
     stages {
         // Building on master
         stage('Pull SDK Docker Image') {
+			environment {
+				HOME = "${WORKSPACE_TMP}"
+			}
             agent {
                 docker {
-                    image 'openjdk:17'
+					image 'eclipse-temurin:21'
                     reuseNode true
                 }
             }
