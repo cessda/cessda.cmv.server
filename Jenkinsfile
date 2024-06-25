@@ -8,7 +8,7 @@ pipeline {
     environment {
         productName = "cmv"
         componentName = "server"
-        IMAGE_TAG = "${docker_repo}/${productName}-${componentName}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+        IMAGE_TAG = "${DOCKER_ARTIFACT_REGISTRY}/${productName}-${componentName}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
     }
 
     agent {
@@ -57,7 +57,7 @@ pipeline {
         }
         stage('Build and Push Docker Image') {
             steps {
-                sh 'gcloud auth configure-docker'
+                sh "gcloud auth configure-docker ${ARTIFACT_REPOSITORY_HOST}"
 				withMaven {
 					sh "./mvnw jib:build -Dimage=${IMAGE_TAG}"
 				}
