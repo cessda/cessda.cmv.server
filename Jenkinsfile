@@ -57,7 +57,7 @@ pipeline {
         }
         stage('Build and Push Docker Image') {
             steps {
-                sh "gcloud auth configure-docker ${ARTIFACT_REPOSITORY_HOST}"
+                sh "gcloud auth configure-docker ${ARTIFACT_REGISTRY_HOST}"
 				withMaven {
 					sh "./mvnw jib:build -Dimage=${IMAGE_TAG}"
 				}
