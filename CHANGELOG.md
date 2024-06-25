@@ -14,6 +14,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - *Fixed (for any bug fixes)*  
 - *Security (in case of vulnerabilities)*
 
+## [3.0.0] - 2024-06-25
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.12527525.svg)](https://doi.org/10.5281/zenodo.12527525)
+
+### Added
+
+- Add DDI 3.3 schemas to the server ([PR-190](https://github.com/cessda/cessda.cmv.server/pull/190))
+
+### Changed
+
+- Update CMV core to version 3.0.0 ([PR-196](https://github.com/cessda/cessda.cmv.server/pull/196))
+- Update OpenJDK to version 21 ([PR-204](https://github.com/cessda/cessda.cmv.server/pull/204))
+
 ## [2.0.1] - 2023-12-05
 
 ### Changed
@@ -147,6 +160,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Show notification if DDI document recognition fails ([#19](https://github.com/cessda/cessda.cmv.server/issues/19))
 - Change endpoints urls to be consistent with other CESSDA products ([#18](https://github.com/cessda/cessda.cmv.server/issues/18))
 
+[3.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/3.0.0
 [2.0.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/2.0.1
 [2.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/2.0.0
 [1.1.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/1.1.0
