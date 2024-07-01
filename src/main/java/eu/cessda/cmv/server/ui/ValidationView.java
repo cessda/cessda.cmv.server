@@ -108,7 +108,7 @@ public class ValidationView extends VerticalLayout implements View
                 SINGLE,
                 BY_PREDEFINED,
                 demoProfiles,
-                profile -> new Label( profile.getProfileName() + ": " + profile.getProfileVersion() ),
+				profile -> profile.getProfileName() + ": " + profile.getProfileVersion(),
                 this::parseProfile
 		);
 		this.profileSelectionComponent.setCaption( bundle.getString( "configuration.profileSelectionCaption" ) );
@@ -118,6 +118,7 @@ public class ValidationView extends VerticalLayout implements View
                 MULTI,
                 BY_UPLOAD,
                 demoDocuments,
+				Resource.V10::getLabel,
                 ValidationView::labelFromResource,
                 this::recognizeDdiDocument
 		);
