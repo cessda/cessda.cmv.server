@@ -86,6 +86,7 @@ public class ResourceSelectionComponent<T> extends CustomComponent
             SelectionMode selectionMode,
             ProvisioningOptions selectedProvisioningOption,
             List<T> predefinedResources,
+			ItemCaptionGenerator<T> stringMapper,
 			Function<T, Label> labelMapper,
 			Function<Resource.V10, Optional<T>> resourceValidator)
 	{
@@ -101,7 +102,7 @@ public class ResourceSelectionComponent<T> extends CustomComponent
 
 		this.predefinedSelect = new NativeSelect<>();
 		this.predefinedSelect.setEmptySelectionCaption( bundle.getString( "comboBox.select" ) );
-		this.predefinedSelect.setItemCaptionGenerator( Object::toString );
+		this.predefinedSelect.setItemCaptionGenerator( stringMapper );
 		this.predefinedSelect.setWidth( 100, Unit.PERCENTAGE );
 		this.predefinedSelect.setItems( predefinedResources );
 		this.predefinedSelect.addSelectionListener( listener -> listener.getSelectedItem().ifPresent( this::selectResource ) );
