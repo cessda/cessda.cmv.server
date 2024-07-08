@@ -14,18 +14,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - *Fixed (for any bug fixes)*  
 - *Security (in case of vulnerabilities)*
 
-## [3.0.0] - 2024-06-25
+## [3.0.0] - 2024-07-02
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.12527525.svg)](https://doi.org/10.5281/zenodo.12527525)
 
 ### Added
 
-- Add DDI 3.3 schemas to the server ([PR-190](https://github.com/cessda/cessda.cmv.server/pull/190))
+- Added DDI 3.3 schemas to the server ([PR-190](https://github.com/cessda/cessda.cmv.server/pull/190))
 
 ### Changed
 
-- Update CMV core to version 3.0.0 ([PR-196](https://github.com/cessda/cessda.cmv.server/pull/196))
-- Update OpenJDK to version 21 ([PR-204](https://github.com/cessda/cessda.cmv.server/pull/204))
+- Updated CMV core to version 3.0.0 ([PR-196](https://github.com/cessda/cessda.cmv.server/pull/196))
+- Updated OpenJDK to version 21 ([PR-204](https://github.com/cessda/cessda.cmv.server/pull/204))
+
+### Fixed
+
+- Fixed an old version of `commons-io` breaking the CSV export ([f0a4244](https://github.com/cessda/cessda.cmv.server/commit/f0a4244942cecc2f3b59a392b264b09d367d8533))
 
 ## [2.0.1] - 2023-12-05
 
