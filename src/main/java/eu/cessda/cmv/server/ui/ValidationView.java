@@ -109,7 +109,6 @@ public class ValidationView extends VerticalLayout implements View
                 BY_PREDEFINED,
                 demoProfiles,
 				profile -> profile.getProfileName() + ": " + profile.getProfileVersion(),
-                profile -> new Label( profile.getProfileName() + ": " + profile.getProfileVersion() ),
                 this::parseProfile
 		);
 		this.profileSelectionComponent.setCaption( bundle.getString( "configuration.profileSelectionCaption" ) );

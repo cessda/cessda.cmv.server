@@ -83,6 +83,23 @@ public class ResourceSelectionComponent<T> extends CustomComponent
 	}
 
 	public ResourceSelectionComponent(
+		SelectionMode selectionMode,
+		ProvisioningOptions selectedProvisioningOption,
+		List<T> predefinedResources,
+		ItemCaptionGenerator<T> stringMapper,
+		Function<Resource.V10, Optional<T>> resourceValidator)
+	{
+		this(
+			selectionMode,
+			selectedProvisioningOption,
+			predefinedResources,
+			stringMapper,
+			item -> new Label(stringMapper.apply( item )),
+			resourceValidator
+		);
+	}
+
+	public ResourceSelectionComponent(
             SelectionMode selectionMode,
             ProvisioningOptions selectedProvisioningOption,
             List<T> predefinedResources,
