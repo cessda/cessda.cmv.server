@@ -30,10 +30,13 @@ import eu.cessda.cmv.core.Profile;
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.server.ValidationReport;
 import eu.cessda.cmv.server.ValidatorEngine;
-import org.gesis.commons.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.web.util.HtmlUtils;
 
 import java.io.IOException;
@@ -72,13 +75,13 @@ public class ValidationView extends VerticalLayout implements View
 	private final NativeSelect<ValidationGateName> validationGateNameComboBox;
 	private final Panel reportPanel;
 	private final ResourceSelectionComponent<Profile> profileSelectionComponent;
-	private final ResourceSelectionComponent<Resource.V10> documentSelectionComponent;
+	private final ResourceSelectionComponent<Resource> documentSelectionComponent;
 	private final Button validateButton;
 	private final ProgressBar progressBar;
 
 
 	public ValidationView( @Autowired ValidatorEngine validationService,
-						   @Autowired List<Resource.V10> demoDocuments,
+						   @Autowired List<Resource> demoDocuments,
 						   @Autowired List<Profile> demoProfiles,
 						   @Autowired CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory )
 	{
@@ -118,7 +121,7 @@ public class ValidationView extends VerticalLayout implements View
                 MULTI,
                 BY_UPLOAD,
                 demoDocuments,
-				Resource.V10::getLabel,
+				Resource::getFilename,
                 ValidationView::labelFromResource,
                 this::recognizeDdiDocument
 		);
@@ -138,25 +141,49 @@ public class ValidationView extends VerticalLayout implements View
 		addComponent( reportPanel );
 	}
 
-	private static Label labelFromResource( Resource.V10 resource )
+	private static Label labelFromResource( Resource resource )
 	{
 		Label label = new Label();
-		if ( resource.getUri().getScheme().startsWith( "http" ) )
+		if (resource instanceof UrlResource urlResource )
 		{
-			label.setContentMode( ContentMode.HTML );
-			label.setValue( "<a href='" + resource.getUri() + "' target='_blank'>" + HtmlUtils.htmlEscape( resource.getLabel(), "UTF-8" ) + "</a>" );
+			var url = urlResource.getURL();
+			if ( url.getProtocol().startsWith( "http" ) )
+			{
+				label.setContentMode( ContentMode.HTML );
+				label.setValue( "<a href='" + url + "' target='_blank'>" + HtmlUtils.htmlEscape( url.toString(), "UTF-8" ) + "</a>" );
+			}
+			else if (url.getProtocol().equals( "file" ) || url.getProtocol().equals( "jar" ))
+			{
+				label.setValue( urlResource.getFilename() );
+			}
+			else
+			{
+				label.setValue( url.toString() );
+			}
+		}
+		else if ( resource.getFilename() != null )
+		{
+			// Extract the filename
+			label.setValue( resource.getFilename() );
 		}
 		else
 		{
-			label.setValue( resource.getLabel() );
+			// Fallback in case an unexpected resource time is provided
+			label.setValue( resource.getDescription() );
 		}
 		return label;
 	}
 
-	private <T extends Resource> Optional<T> recognizeDdiDocument( T resource )
+	private Optional<org.springframework.core.io.Resource> recognizeDdiDocument( org.springframework.core.io.Resource resource )
 	{
-		try( var inputStream = resource.readInputStream() )
+		try( var inputStream = resource.getInputStream() )
 		{
+			if ( resource instanceof InputStreamResource inputStreamResource )
+			{
+				// An InputStreamResource can only be used once, copy to a ByteArrayResource which can be used multiple times
+				resource = new ByteArrayResource( inputStreamResource.getInputStream().readAllBytes() );
+			}
+
 			// TODO Avoid inefficiency of calling newDocument only to check if document is accepted
 			cessdaMetadataValidatorFactory.newDocument( inputStream );
 			return Optional.of( resource );
@@ -168,18 +195,17 @@ public class ValidationView extends VerticalLayout implements View
 		}
 	}
 
-	private Optional<Profile> parseProfile( Resource resource )
+	private Optional<Profile> parseProfile( org.springframework.core.io.Resource resource )
 	{
-		try
+		try(var inputStream = resource.getInputStream())
 		{
-			var profile = cessdaMetadataValidatorFactory.newProfile( resource.getUri() );
+			var profile = cessdaMetadataValidatorFactory.newProfile( inputStream );
 			return Optional.of( profile );
 		}
 		catch ( NotDocumentException | IOException e )
 		{
 			// Profile couldn't be parsed - warn the user
-			var resourceLabel = resource instanceof Resource.V10  ? ( (Resource.V10) resource ).getLabel() : resource.getUri();
-			log.warn( "Parsing profile {} failed: {}", resourceLabel, e.toString() );
+			log.warn( "Parsing profile \"{}\" failed: {}", resource, e.toString() );
 			Notification.show( this.bundle.getString("validate.profileError"), e.getMessage(), Notification.Type.WARNING_MESSAGE );
 			return Optional.empty();
 		}
@@ -215,26 +241,26 @@ public class ValidationView extends VerticalLayout implements View
 
 		// Get the validation gate and validation profile to be used
 		var validationGate = this.validationGateNameComboBox.getValue();
-		var profile = profileResources.get( 0 );
+		var profile = profileResources.getFirst();
 
 		// Container for any validation errors encountered
-		var validationExceptions = new ConcurrentHashMap<String, Throwable>(0);
+		var validationExceptions = new ConcurrentHashMap<Resource, Throwable>(0);
 
 		var documentsValidated = new AtomicInteger();
 
 		// Validate all documents using a parallel stream
 		var validationReportList = documentResources.parallelStream().flatMap( documentResource ->
 		{
-			try ( var inputStream = documentResource.readInputStream() )
+			try ( var inputStream = documentResource.getInputStream() )
 			{
 				var validationReport = this.validationService.validate( inputStream, profile, validationGate );
-				return Stream.of( Map.entry( documentResource.getLabel(), validationReport ) );
+				return Stream.of( Map.entry( documentResource, validationReport ) );
 			}
 			catch ( Exception e )
 			{
 				// Report all exceptions encountered to the user
-				log.warn( "Validation of {} failed", documentResource.getLabel(), e );
-				validationExceptions.put( documentResource.getLabel(), e );
+				log.warn( "Validation of \"{}\" failed", documentResource, e );
+				validationExceptions.put( documentResource, e );
 				return Stream.empty();
 			}
 			finally
@@ -273,7 +299,7 @@ public class ValidationView extends VerticalLayout implements View
 		);
 	}
 
-	private void updateView( Map<String, ValidationReport> validationReportList, Map<String, Throwable> validationExceptions )
+	private void updateView( Map<Resource, ValidationReport> validationReportMap, Map<Resource, Throwable> validationExceptions )
 	{
 		// If any errors were encountered, present them to the user
 		if ( !validationExceptions.isEmpty() )
@@ -285,7 +311,7 @@ public class ValidationView extends VerticalLayout implements View
 		}
 
 		// Update the UI with the validation reports
-		var reportComponent = new ResultsComponent( validationReportList );
+		var reportComponent = new ResultsComponent( validationReportMap );
 		this.reportPanel.setContent( reportComponent );
 		this.reportPanel.setVisible( true );
 	}
