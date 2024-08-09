@@ -272,7 +272,7 @@ class ValidationControllerV0Test
 		var requestJSON = this.getClass().getResource( "/invalidRequest.json" );
 		var validationRequest = objectMapper.readValue( requestJSON, ValidationRequest.class );
 
-		validationRequest.setConstraints( Collections.singleton( validationRequest.getConstraints().get( 0 ) ) );
+		validationRequest.setConstraints( Collections.singleton( validationRequest.getConstraints().getFirst() ) );
 
 		MediaType mediaType = MediaType.APPLICATION_JSON;
 		String responseBody = mockMvc.perform(post(uriBuilder.toEncodedString() )
