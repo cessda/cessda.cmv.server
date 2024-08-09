@@ -11,4 +11,4 @@ updates:
       interval: "weekly"
     ignore:
         - dependency-name: "net.logstash.logback:logstash-logback-encoder"
-          versions: ["[6.0,)"]
+          versions: ["[7.0,)"]
