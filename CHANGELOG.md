@@ -14,6 +14,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - *Fixed (for any bug fixes)*  
 - *Security (in case of vulnerabilities)*
 
+## [3.0.1] - 2024-08-22
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13364434.svg)](https://doi.org/10.5281/zenodo.13364434)
+
+### Changed
+
+- Migrated usages of `org.gesis.commons.resource.Resource` to `org.springframework.core.io.Resource` ([PR-214](https://github.com/cessda/cessda.cmv.server/pull/214))
+
+### Fixed
+
+- Fixed profile uploads failing with `java.net.MalformedURLException: unknown protocol: urn` ([#215](https://github.com/cessda/cessda.cmv.server/issues/215))
+- Fixed discovery of predefined documents failing on Windows ([PR-207](https://github.com/cessda/cessda.cmv.server/pull/207))
+
 ## [3.0.0] - 2024-07-02
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.12527525.svg)](https://doi.org/10.5281/zenodo.12527525)
