@@ -111,7 +111,7 @@ public class ValidationView extends VerticalLayout implements View
                 SINGLE,
                 BY_PREDEFINED,
                 demoProfiles,
-				profile -> profile.getProfileName() + ": " + profile.getProfileVersion(),
+				ValidationView::getProfileDescription,
                 this::parseProfile
 		);
 		this.profileSelectionComponent.setCaption( bundle.getString( "configuration.profileSelectionCaption" ) );
@@ -139,6 +139,23 @@ public class ValidationView extends VerticalLayout implements View
 		addComponent( configurationPanel );
 		addComponent( validateLayout );
 		addComponent( reportPanel );
+	}
+
+	/**
+	 * Get a description of a profile.
+	 */
+	private static String getProfileDescription(Profile profile) {
+		// Extract the profile's name and version if present
+		if (profile.getProfileName() != null) {
+			if (profile.getProfileVersion() != null) {
+				return profile.getProfileName() + ": " + profile.getProfileVersion();
+			} else {
+				return profile.getProfileName();
+			}
+		} else {
+			// TODO: replace with filename
+			return "UNNAMED PROFILE";
+		}
 	}
 
 	private static Label labelFromResource( Resource resource )
