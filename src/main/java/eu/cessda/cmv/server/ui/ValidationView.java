@@ -223,7 +223,7 @@ public class ValidationView extends VerticalLayout implements View
 		{
 			// Profile couldn't be parsed - warn the user
 			log.warn( "Parsing profile \"{}\" failed", resource, e );
-			Notification.show( this.bundle.getString("validate.profileError"), e.getMessage(), Notification.Type.WARNING_MESSAGE );
+			Notification.show( this.bundle.getString("validate.profileError"), e.getMessage(), Notification.Type.ERROR_MESSAGE );
 			return Optional.empty();
 		}
 	}
