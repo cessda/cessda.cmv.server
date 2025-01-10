@@ -2,7 +2,7 @@
  * #%L
  * CESSDA Metadata Validator
  * %%
- * Copyright (C) 2020 - 2024 CESSDA ERIC
+ * Copyright (C) 2020 - 2025 CESSDA ERIC
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.NotDocumentException;
-import eu.cessda.cmv.core.Profile;
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.server.ValidationReport;
 import eu.cessda.cmv.server.ValidatorEngine;
@@ -74,7 +73,7 @@ public class ValidationView extends VerticalLayout implements View
 
 	private final NativeSelect<ValidationGateName> validationGateNameComboBox;
 	private final Panel reportPanel;
-	private final ResourceSelectionComponent<Profile> profileSelectionComponent;
+	private final ResourceSelectionComponent<UIProfile> profileSelectionComponent;
 	private final ResourceSelectionComponent<Resource> documentSelectionComponent;
 	private final Button validateButton;
 	private final ProgressBar progressBar;
@@ -82,7 +81,7 @@ public class ValidationView extends VerticalLayout implements View
 
 	public ValidationView( @Autowired ValidatorEngine validationService,
 						   @Autowired List<Resource> demoDocuments,
-						   @Autowired List<Profile> demoProfiles,
+						   @Autowired List<UIProfile> demoProfiles,
 						   @Autowired CessdaMetadataValidatorFactory cessdaMetadataValidatorFactory )
 	{
 		this.validationService = validationService;
@@ -111,7 +110,7 @@ public class ValidationView extends VerticalLayout implements View
                 SINGLE,
                 BY_PREDEFINED,
                 demoProfiles,
-				profile -> profile.getProfileName() + ": " + profile.getProfileVersion(),
+				ValidationView::getProfileDescription,
                 this::parseProfile
 		);
 		this.profileSelectionComponent.setCaption( bundle.getString( "configuration.profileSelectionCaption" ) );
@@ -139,6 +138,33 @@ public class ValidationView extends VerticalLayout implements View
 		addComponent( configurationPanel );
 		addComponent( validateLayout );
 		addComponent( reportPanel );
+	}
+
+	/**
+	 * Get a description of a profile.
+	 */
+	private static String getProfileDescription( UIProfile uiProfile ) {
+		// Extract the profile's name and version if present
+		var profile = uiProfile.profile();
+		if (profile.getProfileName() != null) {
+			if (profile.getProfileVersion() != null) {
+				return profile.getProfileName() + ": " + profile.getProfileVersion();
+			} else {
+				return profile.getProfileName();
+			}
+		} else {
+			var resource = uiProfile.resource();
+			if ( resource.getFilename() != null )
+			{
+				// Extract the filename
+				return resource.getFilename();
+			}
+			else
+			{
+				// Return the description
+				return resource.getDescription();
+			}
+		}
 	}
 
 	private static Label labelFromResource( Resource resource )
@@ -195,18 +221,18 @@ public class ValidationView extends VerticalLayout implements View
 		}
 	}
 
-	private Optional<Profile> parseProfile( org.springframework.core.io.Resource resource )
+	private Optional<UIProfile> parseProfile( org.springframework.core.io.Resource resource )
 	{
 		try(var inputStream = resource.getInputStream())
 		{
 			var profile = cessdaMetadataValidatorFactory.newProfile( inputStream );
-			return Optional.of( profile );
+			return Optional.of( new UIProfile( profile, resource ) );
 		}
 		catch ( NotDocumentException | IOException e )
 		{
 			// Profile couldn't be parsed - warn the user
 			log.warn( "Parsing profile \"{}\" failed", resource, e );
-			Notification.show( this.bundle.getString("validate.profileError"), e.getMessage(), Notification.Type.WARNING_MESSAGE );
+			Notification.show( this.bundle.getString("validate.profileError"), e.getMessage(), Notification.Type.ERROR_MESSAGE );
 			return Optional.empty();
 		}
 	}
@@ -241,7 +267,7 @@ public class ValidationView extends VerticalLayout implements View
 
 		// Get the validation gate and validation profile to be used
 		var validationGate = this.validationGateNameComboBox.getValue();
-		var profile = profileResources.getFirst();
+		var uiProfile = profileResources.getFirst();
 
 		// Container for any validation errors encountered
 		var validationExceptions = new ConcurrentHashMap<Resource, Throwable>(0);
@@ -253,7 +279,7 @@ public class ValidationView extends VerticalLayout implements View
 		{
 			try ( var inputStream = documentResource.getInputStream() )
 			{
-				var validationReport = this.validationService.validate( inputStream, profile, validationGate );
+				var validationReport = this.validationService.validate( inputStream, uiProfile.profile(), validationGate );
 				return Stream.of( Map.entry( documentResource, validationReport ) );
 			}
 			catch ( Exception e )
@@ -307,7 +333,7 @@ public class ValidationView extends VerticalLayout implements View
 			var validationExceptionString = validationExceptions.entrySet().stream()
 					.map( e -> e.getKey() + ": " + e.getValue() )
 					.collect( Collectors.joining( "/n" ) );
-			Notification.show( this.bundle.getString("validate.validationErrors"), validationExceptionString, Notification.Type.WARNING_MESSAGE );
+			Notification.show( this.bundle.getString("validate.validationErrors"), validationExceptionString, Notification.Type.ERROR_MESSAGE );
 		}
 
 		// Update the UI with the validation reports

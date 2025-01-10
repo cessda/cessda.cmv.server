@@ -2,7 +2,7 @@
  * #%L
  * CESSDA Metadata Validator
  * %%
- * Copyright (C) 2020 - 2024 CESSDA ERIC
+ * Copyright (C) 2020 - 2025 CESSDA ERIC
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,10 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static com.vaadin.shared.ui.grid.HeightMode.ROW;
 import static com.vaadin.ui.Grid.SelectionMode.NONE;
@@ -53,7 +50,7 @@ public class ResourceSelectionComponent<T> extends CustomComponent
 	@Serial
 	private static final long serialVersionUID = -808880272310582714L;
 
-	private final ArrayList<T> selectedResources = new ArrayList<>(1);
+	private final LinkedHashSet<T> selectedResources = new LinkedHashSet<>(1);
 	private final NativeSelect<T> predefinedSelect;
 	private final TextField textField;
 	private final Button clearButton;
@@ -86,7 +83,7 @@ public class ResourceSelectionComponent<T> extends CustomComponent
 	public ResourceSelectionComponent(
 		SelectionMode selectionMode,
 		ProvisioningOptions selectedProvisioningOption,
-		List<T> predefinedResources,
+		Collection<T> predefinedResources,
 		ItemCaptionGenerator<T> stringMapper,
 		SerializableFunction<Resource, Optional<T>> resourceValidator)
 	{
@@ -103,7 +100,7 @@ public class ResourceSelectionComponent<T> extends CustomComponent
 	public ResourceSelectionComponent(
             SelectionMode selectionMode,
             ProvisioningOptions selectedProvisioningOption,
-            List<T> predefinedResources,
+            Collection<T> predefinedResources,
 			ItemCaptionGenerator<T> stringMapper,
 			SerializableFunction<T, Label> labelMapper,
 			SerializableFunction<Resource, Optional<T>> resourceValidator)
@@ -221,8 +218,14 @@ public class ResourceSelectionComponent<T> extends CustomComponent
 		{
 			selectedResources.clear();
 		}
-		selectedResources.add( resource );
-		refreshComponents();
+		if (selectedResources.add( resource ))
+		{
+			refreshComponents();
+		}
+		else
+		{
+			Notification.show(bundle.getString("documentAlreadySelected"));
+		}
 	}
 
 	/**

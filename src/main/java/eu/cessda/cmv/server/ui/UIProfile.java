@@ -1,3 +1,5 @@
+package eu.cessda.cmv.server.ui;
+
 /*-
  * #%L
  * CESSDA Metadata Validator
@@ -17,19 +19,15 @@
  * limitations under the License.
  * #L%
  */
-package eu.cessda.cmv.server.api;
 
-import java.io.Serial;
+import eu.cessda.cmv.core.Profile;
+import org.springframework.core.io.Resource;
 
-import static java.lang.String.format;
-
-public class ResourceNotFoundException extends RuntimeException
-{
-	@Serial
-	private static final long serialVersionUID = 9203612830248772991L;
-
-	public ResourceNotFoundException( String httpMethod, String requestPath )
-	{
-		super( format( "No handler found for %s /%s", httpMethod, requestPath ) );
-	}
+/**
+ * Container to hold the parsed profile and its source resource.
+ *
+ * @param profile the profile.
+ * @param resource the resource.
+ */
+public record UIProfile(Profile profile, Resource resource) {
 }

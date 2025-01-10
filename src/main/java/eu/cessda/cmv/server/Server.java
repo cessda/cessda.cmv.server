@@ -2,7 +2,7 @@
  * #%L
  * CESSDA Metadata Validator
  * %%
- * Copyright (C) 2020 - 2024 CESSDA ERIC
+ * Copyright (C) 2020 - 2025 CESSDA ERIC
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.NotDocumentException;
 import eu.cessda.cmv.core.Profile;
+import eu.cessda.cmv.server.ui.UIProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,19 +91,19 @@ public class Server extends SpringBootServletInitializer
 	}
 
 	@Bean
-	public List<Profile> demoProfiles( CessdaMetadataValidatorFactory factory ) throws IOException
+	public List<UIProfile> demoProfiles( CessdaMetadataValidatorFactory factory ) throws IOException
 	{
 		log.info( "Loading built-in profiles" );
 
 		var resources = applicationContext.getResources( "classpath*:**/profiles/**/*.xml" );
-		var profiles = new ArrayList<Profile>(resources.length);
+		var profiles = new ArrayList<UIProfile>(resources.length);
 		for ( var resource : resources )
 		{
 			log.debug( "Loading profile from \"{}\"", resource );
 			try( var inputStream = resource.getInputStream() )
 			{
 				var profile = factory.newProfile( inputStream );
-				profiles.add( profile );
+				profiles.add( new UIProfile( profile, resource ) );
 			}
 			catch ( NotDocumentException | IOException e )
 			{
