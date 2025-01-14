@@ -18,6 +18,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14643711.svg)](https://doi.org/10.5281/zenodo.14643711)
 
+### Migration Notes
+
+Due to changes in XML namespace support previous DDI profiles will validate differently. For correct validation, use the following profiles:
+
+* CDC DDI 2.5 profiles - use version 3.0.0 or newer
+* CDC DDI 2.6 profiles - use version 2.0.0 or newer
+* CDC DDI 3.2 profile - use version 2.0.0 or newer
+* CDC DDI 3.3 profile - use version 2.0.0 or newer
+* EQB DDI 2.5 profile - use version 1.0.0 or newer
+
+The built-in profiles have been updated with the neccessary changes.
+
+### Added
+
+* Added new versions of the CESSDA Metadata Profiles to the CMV server ([#234](https://github.com/cessda/cessda.cmv.server/issues/234)). See the [release notes](https://github.com/cessda/cessda.metadata.profiles/releases/tag/3.0.0) for the changes.
+
+### Changed
+
+* Updated `cmv-core` to version 4.0.0. This is a major release with implications for all CMV users. See the [release notes](https://github.com/cessda/cessda.cmv.core/releases/tag/4.0.0) for more information.
+
+### Fixed
+
+* Fixed the profile's name being null if the profile document was missing a name ([PR-233](https://github.com/cessda/cessda.cmv.server/pull/233))
+* Fixed the feedback form not working ([ac367d9](https://github.com/cessda/cessda.cmv.server/commit/ac367d91a77b5599033b9eb488998d6e7d1407fd)). This was caused by the EOSC Helpdesk being shut down.
 
 ## [3.0.1] - 2024-08-22
 
