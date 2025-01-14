@@ -3,9 +3,9 @@
 © Copyright 2020, CESSDA ERIC
 Licence: This document is issued under a CC BY licence (https://creativecommons.org/licenses/by/4.0/)
 Author: Darren Bell - UK Data Archive
-Created: 2023-08-29
-Version: v1.1.0
-Change summary: First release - see change log at https://github.com/cessda/cessda.metadata.profiles/blob/main/CHANGELOG.md
+Created: 2021-03-10
+Version: v2.0.0
+Change summary from v0.1.0: See change log at https://github.com/cessda/cessda.metadata.profiles/blob/main/CHANGELOG.md
 Last modified 2025-01-13 Matthew Morris
 ____________________________________________________________________________________
 -->
@@ -14,49 +14,49 @@ ________________________________________________________________________________
 			   xsi:schemaLocation="ddi:ddiprofile:3_2 https://ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/ddiprofile.xsd"
 			   versionDate="2023-08-29">
     <r:Agency>CESSDA</r:Agency>
-    <r:ID>CDC_DDI33_PROFILE</r:ID>
-    <r:Version>1.1.0</r:Version>
+    <r:ID>CDC_DDI32_PROFILE</r:ID>
+    <r:Version>2.0.0</r:Version>
     <r:VersionResponsibility>Darren Bell - UKDA</r:VersionResponsibility>
     <pr:DDIProfileName>
-        <r:String>CESSDA DATA CATALOGUE (CDC) DDI3.3 PROFILE</r:String>
+        <r:String>CESSDA DATA CATALOGUE (CDC) DDI3.2 PROFILE</r:String>
     </pr:DDIProfileName>
     <pr:XPathVersion>1.0</pr:XPathVersion>
-    <pr:DDINamespace>3.3</pr:DDINamespace>
+    <pr:DDINamespace>3.2</pr:DDINamespace>
     <pr:XMLPrefixMap>
         <pr:XMLPrefix>ddi</pr:XMLPrefix>
-        <pr:XMLNamespace>ddi:instance:3_3</pr:XMLNamespace>
+        <pr:XMLNamespace>ddi:instance:3_2</pr:XMLNamespace>
     </pr:XMLPrefixMap>
     <pr:XMLPrefixMap>
         <pr:XMLPrefix>s</pr:XMLPrefix>
-        <pr:XMLNamespace>ddi:studyunit:3_3</pr:XMLNamespace>
+        <pr:XMLNamespace>ddi:studyunit:3_2</pr:XMLNamespace>
     </pr:XMLPrefixMap>
     <pr:XMLPrefixMap>
         <pr:XMLPrefix>pi</pr:XMLPrefix>
-        <pr:XMLNamespace>ddi:physicalinstance:3_3</pr:XMLNamespace>
+        <pr:XMLNamespace>ddi:physicalinstance:3_2</pr:XMLNamespace>
     </pr:XMLPrefixMap>
     <pr:XMLPrefixMap>
         <pr:XMLPrefix>c</pr:XMLPrefix>
-        <pr:XMLNamespace>ddi:conceptualcomponent:3_3</pr:XMLNamespace>
+        <pr:XMLNamespace>ddi:conceptualcomponent:3_2</pr:XMLNamespace>
     </pr:XMLPrefixMap>
     <pr:XMLPrefixMap>
         <pr:XMLPrefix>l</pr:XMLPrefix>
-        <pr:XMLNamespace>ddi:logicalproduct:3_3</pr:XMLNamespace>
+        <pr:XMLNamespace>ddi:logicalproduct:3_2</pr:XMLNamespace>
     </pr:XMLPrefixMap>
     <pr:XMLPrefixMap>
         <pr:XMLPrefix>r</pr:XMLPrefix>
-        <pr:XMLNamespace>ddi:reusable:3_3</pr:XMLNamespace>
+        <pr:XMLNamespace>ddi:reusable:3_2</pr:XMLNamespace>
     </pr:XMLPrefixMap>
     <pr:XMLPrefixMap>
         <pr:XMLPrefix>d</pr:XMLPrefix>
-        <pr:XMLNamespace>ddi:datacollection:3_3</pr:XMLNamespace>
+        <pr:XMLNamespace>ddi:datacollection:3_2</pr:XMLNamespace>
     </pr:XMLPrefixMap>
     <pr:XMLPrefixMap>
         <pr:XMLPrefix>a</pr:XMLPrefix>
-        <pr:XMLNamespace>ddi:archive:3_3</pr:XMLNamespace>
+        <pr:XMLNamespace>ddi:archive:3_2</pr:XMLNamespace>
     </pr:XMLPrefixMap>
     <pr:XMLPrefixMap>
         <pr:XMLPrefix>g</pr:XMLPrefix>
-        <pr:XMLNamespace>ddi:group:3_3</pr:XMLNamespace>
+        <pr:XMLNamespace>ddi:group:3_2</pr:XMLNamespace>
     </pr:XMLPrefixMap>
     <pr:XMLPrefixMap>
         <pr:XMLPrefix>xsi</pr:XMLPrefix>
@@ -82,13 +82,13 @@ ________________________________________________________________________________
         </pr:Instructions>
     </pr:Used>
     <pr:Used xpath="/ddi:DDIInstance/@xsi:schemaLocation"
-        defaultValue="ddi:instance:3_2 http://www.ddialliance.org/Specification/DDI-Lifecycle/3.3/XMLSchema/instance.xsd"
+        defaultValue="ddi:instance:3_2 http://www.ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/instance.xsd"
         fixedValue="false" isRequired="false">
         <r:Description>
             <r:Content>Required: Recommended</r:Content>
             <r:Content>ElementType: Attribute</r:Content>
-            <r:Content>Usage: System-required information - nearly always "ddi:instance:3_3
-                http://www.ddialliance.org/Specification/DDI-Lifecycle/3.3/XMLSchema/instance.xsd".</r:Content>
+            <r:Content>Usage: System-required information - nearly always "ddi:instance:3_2
+                http://www.ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/instance.xsd".</r:Content>
          <r:Content>CMM_Mapping: 11.2.1</r:Content>
         </r:Description>
         <pr:Instructions>
@@ -234,7 +234,7 @@ ________________________________________________________________________________
             <r:Content>ElementRepeatable: Yes</r:Content>
             <r:Content>Usage: Reference to Principal investigator Person OR Institution.</r:Content>
             <r:Content>CDC_UI_Label: Creator</r:Content>
-         <r:Content>CMM_Mapping: 1.1.7.1/1.1.7.2</r:Content>
+            <r:Content>CMM_Mapping: 1.1.7.1/1.1.7.2</r:Content>
         </r:Description>
         <pr:Instructions>
             <r:Content><![CDATA[
@@ -508,7 +508,7 @@ ________________________________________________________________________________
         </pr:Instructions>
     </pr:Used>
     <pr:Used
-        xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Subject/@controlledVocabularyName"
+        xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Subject/@codeListName"
         defaultValue="CESSDA Topic Classification" fixedValue="false" isRequired="false">
         <r:Description>
             <r:Content>Required: Recommended</r:Content>
@@ -526,7 +526,7 @@ ________________________________________________________________________________
         </pr:Instructions>
     </pr:Used>
     <pr:Used
-        xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Subject/@controlledVocabularyURN"
+        xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Subject/@codeListURN"
         isRequired="false">
         <r:Description>
             <r:Content>Required: Recommended</r:Content>
@@ -583,7 +583,7 @@ ________________________________________________________________________________
         </pr:Instructions>
     </pr:Used>
     <pr:Used
-        xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Keyword/@controlledVocabularyName"
+        xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Keyword/@codeListName"
         defaultValue="ELSST" fixedValue="false" isRequired="false">
         <r:Description>
             <r:Content>Required: Recommended if 'keyword' element is present</r:Content>
@@ -601,13 +601,13 @@ ________________________________________________________________________________
         </pr:Instructions>
     </pr:Used>
     <pr:Used
-        xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Keyword/@controlledVocabularyURN"
+        xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:TopicalCoverage/r:Keyword/@codeListURN"
         isRequired="false">
         <r:Description>
             <r:Content>Required: Optional</r:Content>
             <r:Content>ElementType: Attribute</r:Content>
-            <r:Content>Optional but note that if @vocab=”ELSST”, then
-                use “https://elsst.cessda.eu/id” here.</r:Content>
+            <r:Content>Optional but note that if @vocab="ELSST", then
+                use "https://elsst.cessda.eu/id" here.</r:Content>
          <r:Content>CMM_Mapping: 1.2.2.4</r:Content>
         </r:Description>
         <pr:Instructions>
@@ -661,7 +661,7 @@ ________________________________________________________________________________
             </r:Content>
         </pr:Instructions>
     </pr:Used>
-    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:SpatialCoverage/r:CountryCode"
+    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:Coverage/r:SpatialCoverage/r:Country_2"
         isRequired="false">
         <r:Description>
             <r:Content>Required: Recommended</r:Content>
@@ -697,7 +697,7 @@ ________________________________________________________________________________
 			]]></r:Content>
         </pr:Instructions>
     </pr:Used>
-    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:AnalysisUnit/@controlledVocabularyName"
+    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:AnalysisUnit/@CodeListName"
         defaultValue="DDI Analysis Unit" fixedValue="true" isRequired="false">
         <r:Description>
             <r:Content>Required: Recommended</r:Content>
@@ -713,7 +713,7 @@ ________________________________________________________________________________
 			]]></r:Content>
         </pr:Instructions>
     </pr:Used>
-    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:AnalysisUnit/@controlledVocabularyListURN" isRequired="false">
+    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:AnalysisUnit/@CodeListURN" isRequired="false">
         <r:Description>
             <r:Content>Required: Optional</r:Content>
             <r:Content>ElementType: Attribute</r:Content>
@@ -772,7 +772,7 @@ ________________________________________________________________________________
     <!--****************************************************************************************-->
     <!--RELATED PUBLICATIONS (AND PID)-->
     <!--****************************************************************************************-->
-    <pr:Used xpath="/ddi:DDIInstance/StudyUnit/r:OtherMaterialScheme/r:OtherMaterial/r:TypeOfMaterial" isRequired="false">
+    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:OtherMaterial/r:TypeOfMaterial" isRequired="false">
         <r:Description>
             <r:Content>Required: Recommended</r:Content>
             <r:Content>ElementType: Content element</r:Content>
@@ -788,7 +788,7 @@ ________________________________________________________________________________
 			]]></r:Content>
         </pr:Instructions>
     </pr:Used>
-    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:OtherMaterialScheme/r:OtherMaterial/r:Citation/r:InternationalIdentifier/r:IdentifierContent" isRequired="false">
+    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:OtherMaterial/r:Citation/r:InternationalIdentifier/r:IdentifierContent" isRequired="false">
         <r:Description>
             <r:Content>Required: Recommended</r:Content>
             <r:Content>ElementType: Content element</r:Content>
@@ -805,7 +805,7 @@ ________________________________________________________________________________
 			]]></r:Content>
         </pr:Instructions>
     </pr:Used>
-    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:OtherMaterialScheme/r:OtherMaterial/r:Citation/r:InternationalIdentifier/r:ManagingAgency" isRequired="false">
+    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:OtherMaterial/r:Citation/r:InternationalIdentifier/r:ManagingAgency" isRequired="false">
         <r:Description>
             <r:Content>Required: Recommended</r:Content>
             <r:Content>ElementType: Content element</r:Content>
@@ -823,7 +823,7 @@ ________________________________________________________________________________
 			]]></r:Content>
         </pr:Instructions>
     </pr:Used>
-    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:OtherMaterialScheme/r:OtherMaterial/r:ExternalURLReference" isRequired="false">
+    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/r:OtherMaterial/r:ExternalURLReference" isRequired="false">
         <r:Description>
             <r:Content>Required: Recommended</r:Content>
             <r:Content>ElementType: Content element</r:Content>
@@ -922,7 +922,7 @@ ________________________________________________________________________________
         </pr:Instructions>
     </pr:Used>
     <pr:Used
-        xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:TimeMethod/d:TypeOfTimeMethod/@controlledVocabularyName"
+        xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:TimeMethod/d:TypeOfTimeMethod/@CodeListName"
         defaultValue="DDI Time Method" fixedValue="true" isRequired="false">
         <r:Description>
             <r:Content>Required: Recommended</r:Content>
@@ -939,7 +939,7 @@ ________________________________________________________________________________
         </pr:Instructions>
     </pr:Used>
     <pr:Used
-        xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:TimeMethod/d:TypeOfTimeMethod/@controlledVocabularyURN"
+        xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:TimeMethod/d:TypeOfTimeMethod/@CodeListURN"
         isRequired="false">
         <r:Description>
             <r:Content>Required: Optional</r:Content>
@@ -1020,7 +1020,7 @@ ________________________________________________________________________________
         </pr:Instructions>
     </pr:Used>
     <pr:Used
-        xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:SamplingProcedure/d:TypeOfSamplingProcedure/@controlledVocabularyName"
+        xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:SamplingProcedure/d:TypeOfSamplingProcedure/@codeListName"
         defaultValue="DDI Sampling Procedure" fixedValue="true" isRequired="false">
         <r:Description>
             <r:Content>Required: Recommended</r:Content>
@@ -1038,7 +1038,7 @@ ________________________________________________________________________________
         </pr:Instructions>
     </pr:Used>
     <pr:Used
-        xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:SamplingProcedure/d:TypeOfSamplingProcedure/@controlledVocabularyURN"
+        xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:Methodology/d:SamplingProcedure/d:TypeOfSamplingProcedure/@codeListURN"
         isRequired="false">
         <r:Description>
             <r:Content>Required: Optional</r:Content>
@@ -1225,7 +1225,7 @@ ________________________________________________________________________________
         </pr:Instructions>
     </pr:Used>
     <pr:Used
-        xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:CollectionEvent/d:ModeofCollection/d:TypeOfModeOfCollection@controlledVocabularyName"
+        xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:CollectionEvent/d:ModeofCollection/d:TypeOfModeOfCollection@codeListName"
         defaultValue="DDI Mode of Collection" fixedValue="true" isRequired="false">
         <r:Description>
             <r:Content>Required: Recommended</r:Content>
@@ -1243,7 +1243,7 @@ ________________________________________________________________________________
         </pr:Instructions>
     </pr:Used>
     <pr:Used
-        xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:CollectionEvent/d:ModeofCollection/d:TypeOfModeOfCollection@controlledVocabularyURN"
+        xpath="/ddi:DDIInstance/s:StudyUnit/d:DataCollection/d:CollectionEvent/d:ModeofCollection/d:TypeOfModeOfCollection@codeListURN"
         isRequired="false">
         <r:Description>
             <r:Content>Required: Optional</r:Content>
@@ -1303,7 +1303,7 @@ ________________________________________________________________________________
     <!--****************************************************************************************-->
     <!--ACCESS CATEGORY - OPEN OR RESTRICTED-->
     <!--****************************************************************************************-->
-    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/a:TypeOfAccess" isRequired="true">
+    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/a:AccessTypeName/r:String" isRequired="true">
         <r:Description>
             <r:Content>Required: Mandatory</r:Content>
             <r:Content>ElementType: Content element</r:Content>
@@ -1317,7 +1317,7 @@ ________________________________________________________________________________
             <r:Content>CMM_Mapping: 1.4.1</r:Content>
         </r:Description>
     </pr:Used>
-    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/a:TypeOfAccess/@controlledVocabularyName"
+    <pr:Used xpath="/ddi:DDIInstance/s:StudyUnit/a:Archive/a:ArchiveSpecific/a:Item/a:Access/a:AccessTypeName/@context"
         defaultValue="info:eu-repo-Access-Terms vocabulary" fixedValue="true" isRequired="false">
         <r:Description>
             <r:Content>Required: Mandatory if '../a:AccessTypeName' element is present</r:Content>

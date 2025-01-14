@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - *Fixed (for any bug fixes)*  
 - *Security (in case of vulnerabilities)*
 
+## [4.0.0] - 2025-01-14
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14643711.svg)](https://doi.org/10.5281/zenodo.14643711)
+
+
 ## [3.0.1] - 2024-08-22
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13364434.svg)](https://doi.org/10.5281/zenodo.13364434)
@@ -177,6 +182,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Show notification if DDI document recognition fails ([#19](https://github.com/cessda/cessda.cmv.server/issues/19))
 - Change endpoints urls to be consistent with other CESSDA products ([#18](https://github.com/cessda/cessda.cmv.server/issues/18))
 
+[4.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/4.0.0
 [3.0.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/3.0.1
 [3.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/3.0.0
 [2.0.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/2.0.1
