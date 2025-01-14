@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -225,11 +225,11 @@ public class ResultsComponent extends CustomComponent
 				{
 					// Schema violations
 					zip.putNextEntry( new ZipEntry(  "Schema violations.csv" ) );
-					generateCSV( validationReport.schemaViolations(), zip, ResultsComponent::convertSchemaViolationToCSV );
+					generateCSV( validationReport.schemaViolations(), ResultsComponent::convertSchemaViolationToCSV, zip );
 
 					// Constraint violations
 					zip.putNextEntry( new ZipEntry(  "Constraint violations.csv" ) );
-					generateCSV( validationReport.constraintViolations(), zip, ResultsComponent::convertConstraintViolationToCSV );
+					generateCSV( validationReport.constraintViolations(), ResultsComponent::convertConstraintViolationToCSV, zip );
 				}
 				catch ( IOException e )
 				{
@@ -268,11 +268,11 @@ public class ResultsComponent extends CustomComponent
 
 						// Schema violations
 						zip.putNextEntry( new ZipEntry( sourceFileName + " - schema violations.csv" ) );
-						generateCSV( report.getValue().schemaViolations(), zip, ResultsComponent::convertSchemaViolationToCSV );
+						generateCSV( report.getValue().schemaViolations(), ResultsComponent::convertSchemaViolationToCSV, zip );
 
 						// Constraint violations
 						zip.putNextEntry( new ZipEntry( sourceFileName + " - constraint violations.csv" ) );
-						generateCSV( report.getValue().constraintViolations(), zip, ResultsComponent::convertConstraintViolationToCSV );
+						generateCSV( report.getValue().constraintViolations(), ResultsComponent::convertConstraintViolationToCSV, zip );
 					}
 				}
 				catch ( IOException e )
@@ -297,10 +297,10 @@ public class ResultsComponent extends CustomComponent
 	 * Prints a series of values to a CSV.
 	 *
 	 * @param values the source of values.
-	 * @param outputStream the stream to write the CSV to.
 	 * @param stringMapper a function to map a {@link T} to a string array.
+	 * @param outputStream the stream to write the CSV to.
 	 */
-	private static <T> void generateCSV( Iterable<T> values, OutputStream outputStream, Function<T, String[]> stringMapper )
+	private static <T> void generateCSV( Iterable<T> values, Function<T, String[]> stringMapper, OutputStream outputStream )
 	{
 		// Add headers to the CSV
 		var csvFormat = CSVFormat.RFC4180.builder().setHeader( "lineNumber", "columnNumber", "message" ).build();
