@@ -2,7 +2,7 @@
 	$(function () {
 		// Insert the button and the script onto the page
 		$('<button id="zammad-feedback-form" style="position: fixed; right: 0; bottom: 0;">Send feedback</button>').appendTo("body");
-		$('<script id="zammad_form_script" src="https://eosc-helpdesk.eosc-portal.eu/assets/form/form.js"></script>').appendTo("body");
+		$('<script id="zammad_form_script" src="https://helpdesk.cessda.eu/assets/form/form.js"></script>').appendTo("body");
 
 		// Set up the form
 		setTimeout(setupForm);
