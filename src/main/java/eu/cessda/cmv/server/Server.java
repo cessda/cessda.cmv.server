@@ -101,8 +101,8 @@ public class Server extends SpringBootServletInitializer
 		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-1.2.2/3.0.0/profile-mono.xml" ) );
 		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-2.5/3.0.0/profile.xml" ) );
 		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-2.5/3.0.0/profile-mono.xml" ) );
-		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-3.2/2.0.0/profile.xml" ) );
-		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-3.3/2.0.0/profile.xml" ) );
+		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-3.2/2.0.1/profile.xml" ) );
+		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-3.3/2.0.1/profile.xml" ) );
 		resources.add( applicationContext.getResource( "classpath:static/profiles/eqb/ddi-2.5/1.0.0/profile.xml" ) );
 		resources.add( applicationContext.getResource( "classpath:static/profiles/eqb/ddi-3.2/0.2.0/profile.xml" ) );
 
@@ -138,7 +138,7 @@ public class Server extends SpringBootServletInitializer
 	}
 
 	@Bean
-	public List<org.springframework.core.io.Resource> demoDocuments() throws IOException
+	public List<Resource> demoDocuments() throws IOException
 	{
 		log.info( "Discovering built-in documents" );
 		var resources = applicationContext.getResources("classpath*:**/demo-documents/ddi-v25/*.xml");

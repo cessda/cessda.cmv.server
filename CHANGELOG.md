@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - *Fixed (for any bug fixes)*  
 - *Security (in case of vulnerabilities)*
 
+## [4.0.1] - 2025-02-04
+
+### Added
+
+* Added versions 2.0.1 of the CDC DDI metadata profiles, fixing issue [CMP-215](https://github.com/cessda/cessda.metadata.profiles/issues/215) ([#239](https://github.com/cessda/cessda.cmv.server/239))
+
 ## [4.0.0] - 2025-01-14
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14643711.svg)](https://doi.org/10.5281/zenodo.14643711)
@@ -28,7 +34,7 @@ Due to changes in XML namespace support previous DDI profiles will validate diff
 * CDC DDI 3.3 profile - use version 2.0.0 or newer
 * EQB DDI 2.5 profile - use version 1.0.0 or newer
 
-The built-in profiles have been updated with the neccessary changes.
+The built-in profiles have been updated with the necessary changes.
 
 ### Added
 
@@ -206,6 +212,7 @@ The built-in profiles have been updated with the neccessary changes.
 - Show notification if DDI document recognition fails ([#19](https://github.com/cessda/cessda.cmv.server/issues/19))
 - Change endpoints urls to be consistent with other CESSDA products ([#18](https://github.com/cessda/cessda.cmv.server/issues/18))
 
+[4.0.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/4.0.1
 [4.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/4.0.0
 [3.0.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/3.0.1
 [3.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/3.0.0
