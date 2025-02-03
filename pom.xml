@@ -100,6 +100,13 @@
 		    <version>2.14.1</version>
 		</dependency>
 
+		<!-- Async Processing -->
+		<dependency>
+			<groupId>io.reactivex.rxjava3</groupId>
+			<artifactId>rxjava</artifactId>
+			<version>3.1.10</version>
+		</dependency>
+
 		<!-- JSON API Dependencies -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>

@@ -29,6 +29,9 @@ import eu.cessda.cmv.core.NotDocumentException;
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.server.ValidationReport;
 import eu.cessda.cmv.server.ValidatorEngine;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,15 +40,13 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.web.util.HtmlUtils;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.Serial;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
@@ -76,8 +77,11 @@ public class ValidationView extends VerticalLayout implements View
 	private final ResourceSelectionComponent<UIProfile> profileSelectionComponent;
 	private final ResourceSelectionComponent<Resource> documentSelectionComponent;
 	private final Button validateButton;
+	private final Button cancelButton;
 	private final ProgressBar progressBar;
 
+	// Computation disposable
+	private Disposable subscription;
 
 	public ValidationView( @Autowired ValidatorEngine validationService,
 						   @Autowired List<Resource> demoDocuments,
@@ -97,10 +101,13 @@ public class ValidationView extends VerticalLayout implements View
 
 		this.validateButton = new Button( bundle.getString( "validate.button" ), listener -> validate() );
 
+		this.cancelButton = new Button("Cancel", listener -> subscription.dispose());
+		this.cancelButton.setVisible( false );
+
 		this.progressBar = new ProgressBar();
 		this.progressBar.setVisible( false );
 
-		var validateLayout = new HorizontalLayout( this.validateButton, this.progressBar );
+		var validateLayout = new HorizontalLayout( this.validateButton, this.progressBar, this.cancelButton );
 		validateLayout.setStyleName( "validate-button-layout" );
 
 		this.reportPanel = new Panel( bundle.getString( "report.panel.caption" ) );
@@ -274,55 +281,54 @@ public class ValidationView extends VerticalLayout implements View
 
 		var documentsValidated = new AtomicInteger();
 
-		// Validate all documents using a parallel stream
-		var validationReportList = documentResources.parallelStream().flatMap( documentResource ->
-		{
-			try ( var inputStream = documentResource.getInputStream() )
+		subscription = Flowable.fromIterable( documentResources )
+			.parallel()
+			.runOn( Schedulers.computation() )
+			// Validate each document
+			.mapOptional( documentResource ->
 			{
-				var validationReport = this.validationService.validate( inputStream, uiProfile.profile(), validationGate );
-				return Stream.of( Map.entry( documentResource, validationReport ) );
-			}
-			catch ( Exception e )
-			{
-				// Report all exceptions encountered to the user
-				log.warn( "Validation of \"{}\" failed", documentResource, e );
-				validationExceptions.put( documentResource, e );
-				return Stream.empty();
-			}
-			finally
-			{
-				// Update the progress bar
-				this.getUI().access( () ->
-                {
-					var progress = (float) documentsValidated.incrementAndGet() / documentResources.size();
-                    this.progressBar.setValue( progress );
-                } );
-			}
-		} );
-
-		CompletableFuture.runAsync( () ->
-		{
-			// Accumulate the stream in an asynchronous context so that the UI is not blocked
-			var completedList = validationReportList.collect( Collectors.toMap( Map.Entry::getKey, Map.Entry::getValue ) );
-			this.getUI().access( () -> updateView( completedList, validationExceptions ) );
-		} ).whenComplete(
-			(v, e) ->
-            {
-				// If an unexpected exception was thrown, handle it here and report it to the user
-				if (e != null) {
+				log.warn( Thread.currentThread().getName() );
+				try ( var inputStream = documentResource.getInputStream() )
+				{
+					var validationReport = this.validationService.validate( inputStream, uiProfile.profile(), validationGate );
+					return Optional.of(Map.entry( documentResource, validationReport ));
+				}
+				catch ( IOException | SAXException | NotDocumentException e )
+				{
+					// Report all exceptions encountered to the user
+					log.warn( "Validation of \"{}\" failed", documentResource, e );
+					validationExceptions.put( documentResource, e );
+					return Optional.empty();
+				}
+				finally
+				{
+					// Update the progress bar
+					this.getUI().access( () ->
+					{
+						var progress = (float) documentsValidated.incrementAndGet() / documentResources.size();
+						this.progressBar.setValue( progress );
+					} );
+				}
+			})
+			// Collect validation results into a map
+			.sequential().toMap( Map.Entry::getKey, Map.Entry::getValue )
+			// Re-enable the validate button regardless if any exceptions were encountered
+			.doFinally( this::resetPostValidation )
+			.subscribe(
+				completedList -> this.getUI().access( () -> updateView( completedList, validationExceptions ) ),
+				e ->
+				{
 					log.error( "Unexpected error when validating documents: {}", e, e );
 					this.getUI().access( () ->
-                    {
+					{
 						var errorWindow = new ErrorWindow( e );
 						UI.getCurrent().addWindow( errorWindow );
-                        updateView( Collections.emptyMap(), validationExceptions );
-                    } );
-				}
+						updateView( Collections.emptyMap(), validationExceptions );
+					} );
+				});
 
-				// Re-enable the button regardless if any exceptions were encountered
-                this.getUI().access( this::resetPostValidation );
-            }
-		);
+		// Enable the cancel button
+		this.cancelButton.setVisible( true );
 	}
 
 	private void updateView( Map<Resource, ValidationReport> validationReportMap, Map<Resource, Throwable> validationExceptions )
@@ -330,9 +336,12 @@ public class ValidationView extends VerticalLayout implements View
 		// If any errors were encountered, present them to the user
 		if ( !validationExceptions.isEmpty() )
 		{
-			var validationExceptionString = validationExceptions.entrySet().stream()
-					.map( e -> e.getKey() + ": " + e.getValue() )
-					.collect( Collectors.joining( "/n" ) );
+			var validationExceptionStringJoiner = new StringJoiner( "/n" );
+			for ( Map.Entry<Resource, Throwable> e : validationExceptions.entrySet() )
+			{
+				validationExceptionStringJoiner.add( e.getKey().getFilename() + ": " + e.getValue().getMessage() );
+			}
+			var validationExceptionString = validationExceptionStringJoiner.toString();
 			Notification.show( this.bundle.getString("validate.validationErrors"), validationExceptionString, Notification.Type.ERROR_MESSAGE );
 		}
 
@@ -353,5 +362,6 @@ public class ValidationView extends VerticalLayout implements View
 
 		// Enable the validation button again
 		validateButton.setEnabled( true );
+		cancelButton.setVisible( false );
 	}
 }
