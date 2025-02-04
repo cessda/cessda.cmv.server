@@ -364,4 +364,12 @@ public class ValidationView extends VerticalLayout implements View
 		validateButton.setEnabled( true );
 		cancelButton.setVisible( false );
 	}
+
+	@Override
+	public void detach()
+	{
+		// Terminate any running validations
+		subscription.dispose();
+		super.detach();
+	}
 }
