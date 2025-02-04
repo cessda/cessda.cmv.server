@@ -55,16 +55,19 @@ pipeline {
                 }
             }
         }
-        stage('Build and Push Docker Image') {
-            steps {
-                sh "gcloud auth configure-docker ${ARTIFACT_REGISTRY_HOST}"
-				withMaven {
-					sh "./mvnw jib:build -Dimage=${IMAGE_TAG}"
-				}
-                sh "gcloud container images add-tag ${IMAGE_TAG} ${DOCKER_ARTIFACT_REGISTRY}/${productName}-${componentName}:${env.BRANCH_NAME}-latest"
-            }
-            when { branch 'main' }
-        }
+		stage('Build Docker image') {
+			steps {
+				sh "docker build -t ${IMAGE_TAG} ."
+			}
+		}
+		stage('Push Docker image') {
+			steps {
+				sh "gcloud auth configure-docker ${ARTIFACT_REGISTRY_HOST}"
+				sh "docker push ${IMAGE_TAG}"
+				sh "gcloud container images add-tag ${IMAGE_TAG} ${DOCKER_ARTIFACT_REGISTRY}/${productName}-${componentName}:${env.BRANCH_NAME}-latest"
+			}
+			when { branch 'main' }
+		}
         stage('Deploy CMV Server') {
             steps {
                 build job: 'cessda.cmv.deploy/main', parameters: [string(name: 'serverImageTag', value: "${env.BRANCH_NAME}-${env.BUILD_NUMBER}")], wait: false
