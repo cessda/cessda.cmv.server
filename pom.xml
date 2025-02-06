@@ -102,9 +102,8 @@
 
 		<!-- Async Processing -->
 		<dependency>
-			<groupId>io.reactivex.rxjava3</groupId>
-			<artifactId>rxjava</artifactId>
-			<version>3.1.10</version>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-core</artifactId>
 		</dependency>
 
 		<!-- JSON API Dependencies -->

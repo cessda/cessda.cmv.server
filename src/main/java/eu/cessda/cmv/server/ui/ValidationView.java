@@ -29,9 +29,6 @@ import eu.cessda.cmv.core.NotDocumentException;
 import eu.cessda.cmv.core.ValidationGateName;
 import eu.cessda.cmv.server.ValidationReport;
 import eu.cessda.cmv.server.ValidatorEngine;
-import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +38,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.web.util.HtmlUtils;
 import org.xml.sax.SAXException;
+import reactor.core.Disposable;
+import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -107,7 +106,7 @@ public class ValidationView extends VerticalLayout implements View
 		this.progressBar = new ProgressBar();
 		this.progressBar.setVisible( false );
 
-		var validateLayout = new HorizontalLayout( this.validateButton, this.progressBar, this.cancelButton );
+		var validateLayout = new HorizontalLayout( this.validateButton, this.cancelButton, this.progressBar );
 		validateLayout.setStyleName( "validate-button-layout" );
 
 		this.reportPanel = new Panel( bundle.getString( "report.panel.caption" ) );
@@ -249,7 +248,7 @@ public class ValidationView extends VerticalLayout implements View
 	 *
 	 * @implNote This method is synchronized to ensure that only one validation can occur per UI instance.
 	 */
-	@SuppressWarnings( { "java:S3958", "OverlyBroadCatchBlock" } )
+	@SuppressWarnings( { "java:S3958" } )
 	private synchronized void validate()
 	{
 		var profileResources = this.profileSelectionComponent.getResources();
@@ -281,24 +280,23 @@ public class ValidationView extends VerticalLayout implements View
 
 		var documentsValidated = new AtomicInteger();
 
-		subscription = Flowable.fromIterable( documentResources )
+		subscription = Flux.fromIterable( documentResources )
 			.parallel()
-			.runOn( Schedulers.computation() )
+			.runOn( reactor.core.scheduler.Schedulers.parallel() )
 			// Validate each document
-			.mapOptional( documentResource ->
+			.flatMap( documentResource ->
 			{
-				log.warn( Thread.currentThread().getName() );
 				try ( var inputStream = documentResource.getInputStream() )
 				{
 					var validationReport = this.validationService.validate( inputStream, uiProfile.profile(), validationGate );
-					return Optional.of(Map.entry( documentResource, validationReport ));
+					return Flux.just( Map.entry( documentResource, validationReport ) );
 				}
 				catch ( IOException | SAXException | NotDocumentException e )
 				{
 					// Report all exceptions encountered to the user
 					log.warn( "Validation of \"{}\" failed", documentResource, e );
 					validationExceptions.put( documentResource, e );
-					return Optional.empty();
+					return Flux.empty();
 				}
 				finally
 				{
@@ -311,9 +309,9 @@ public class ValidationView extends VerticalLayout implements View
 				}
 			})
 			// Collect validation results into a map
-			.sequential().toMap( Map.Entry::getKey, Map.Entry::getValue )
+			.sequential().collectMap( Map.Entry::getKey, Map.Entry::getValue )
 			// Re-enable the validate button regardless if any exceptions were encountered
-			.doFinally( this::resetPostValidation )
+			.doAfterTerminate( this::resetPostValidation )
 			.subscribe(
 				completedList -> this.getUI().access( () -> updateView( completedList, validationExceptions ) ),
 				e ->
