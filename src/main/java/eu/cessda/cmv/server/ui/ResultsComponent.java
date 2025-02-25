@@ -303,7 +303,7 @@ public class ResultsComponent extends CustomComponent
 	private static <T> void generateCSV( Iterable<T> values, Function<T, String[]> stringMapper, OutputStream outputStream )
 	{
 		// Add headers to the CSV
-		var csvFormat = CSVFormat.RFC4180.builder().setHeader( "lineNumber", "columnNumber", "message" ).build();
+		var csvFormat = CSVFormat.RFC4180.builder().setHeader( "lineNumber", "columnNumber", "message" ).get();
 
 		try
 		{
