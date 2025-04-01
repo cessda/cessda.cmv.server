@@ -2,7 +2,7 @@
  * #%L
  * CESSDA Metadata Validator
  * %%
- * Copyright (C) 2020 - 2024 CESSDA ERIC
+ * Copyright (C) 2020 - 2025 CESSDA ERIC
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,21 @@
 package eu.cessda.cmv.server.ui;
 
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.SerializableFunction;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStateWindow;
-import org.apache.commons.validator.routines.UrlValidator;
-import org.gesis.commons.resource.Resource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.function.Function;
+import java.net.MalformedURLException;
+import java.util.*;
 
 import static com.vaadin.shared.ui.grid.HeightMode.ROW;
 import static com.vaadin.ui.Grid.SelectionMode.NONE;
@@ -44,7 +43,6 @@ import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOpt
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.MULTI;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.SINGLE;
 import static java.util.Objects.requireNonNull;
-import static org.gesis.commons.resource.Resource.newResource;
 
 @SuppressWarnings( "java:S2160" )
 public class ResourceSelectionComponent<T> extends CustomComponent
@@ -52,7 +50,7 @@ public class ResourceSelectionComponent<T> extends CustomComponent
 	@Serial
 	private static final long serialVersionUID = -808880272310582714L;
 
-	private final ArrayList<T> selectedResources = new ArrayList<>(1);
+	private final LinkedHashSet<T> selectedResources = new LinkedHashSet<>(1);
 	private final NativeSelect<T> predefinedSelect;
 	private final TextField textField;
 	private final Button clearButton;
@@ -60,7 +58,7 @@ public class ResourceSelectionComponent<T> extends CustomComponent
 	private final MultiFileUpload fileUpload;
 	private final RadioButtonGroup<ProvisioningOptions> provisioningOptions;
 	private final SelectionMode selectionMode;
-	private final transient Function<T, Label> labelMapper;
+	private final SerializableFunction<T, Label> labelMapper;
 	private final transient ResourceBundle bundle;
 
 	public enum SelectionMode
@@ -83,11 +81,29 @@ public class ResourceSelectionComponent<T> extends CustomComponent
 	}
 
 	public ResourceSelectionComponent(
+		SelectionMode selectionMode,
+		ProvisioningOptions selectedProvisioningOption,
+		Collection<T> predefinedResources,
+		ItemCaptionGenerator<T> stringMapper,
+		SerializableFunction<Resource, Optional<T>> resourceValidator)
+	{
+		this(
+			selectionMode,
+			selectedProvisioningOption,
+			predefinedResources,
+			stringMapper,
+			item -> new Label(stringMapper.apply( item )),
+			resourceValidator
+		);
+	}
+
+	public ResourceSelectionComponent(
             SelectionMode selectionMode,
             ProvisioningOptions selectedProvisioningOption,
-            List<T> predefinedResources,
-			Function<T, Label> labelMapper,
-			Function<Resource.V10, Optional<T>> resourceValidator)
+            Collection<T> predefinedResources,
+			ItemCaptionGenerator<T> stringMapper,
+			SerializableFunction<T, Label> labelMapper,
+			SerializableFunction<Resource, Optional<T>> resourceValidator)
 	{
         requireNonNull( selectionMode );
 		requireNonNull( predefinedResources );
@@ -101,7 +117,7 @@ public class ResourceSelectionComponent<T> extends CustomComponent
 
 		this.predefinedSelect = new NativeSelect<>();
 		this.predefinedSelect.setEmptySelectionCaption( bundle.getString( "comboBox.select" ) );
-		this.predefinedSelect.setItemCaptionGenerator( Object::toString );
+		this.predefinedSelect.setItemCaptionGenerator( stringMapper );
 		this.predefinedSelect.setWidth( 100, Unit.PERCENTAGE );
 		this.predefinedSelect.setItems( predefinedResources );
 		this.predefinedSelect.addSelectionListener( listener -> listener.getSelectedItem().ifPresent( this::selectResource ) );
@@ -115,15 +131,14 @@ public class ResourceSelectionComponent<T> extends CustomComponent
 			// See https://bitbucket.org/cessda/cessda.cmv/issues/89
 			this.textField.getOptionalValue().ifPresent( value ->
 			{
-				UrlValidator urlValidator = UrlValidator.getInstance();
-				if ( urlValidator.isValid( value ) )
+				try
 				{
-					var resource = (Resource.V10) Resource.newResource( value );
+					var resource = new UrlResource( value );
 					resourceValidator.apply( resource ).ifPresent( this::selectResource );
 				}
-				else
+				catch ( MalformedURLException e )
 				{
-					Notification.show( bundle.getString("invalidURL"), Type.WARNING_MESSAGE );
+					Notification.show( bundle.getString("invalidURL"), e.getMessage(), Type.WARNING_MESSAGE );
 					this.textField.clear();
 				}
 			} )
@@ -135,8 +150,16 @@ public class ResourceSelectionComponent<T> extends CustomComponent
 
 		this.fileUpload = newMultiFileUpload( this.selectionMode, ( InputStream inputStream, String fileName, String mimeType, long length, int filesLeftInQueue ) ->
 		{
-			var uploadedResource = (Resource.V10) newResource( inputStream, fileName );
-			resourceValidator.apply( uploadedResource ).ifPresent( this::selectResource );
+			try (inputStream)
+			{
+				// Read the stream into a resource that encapsulates the file name
+				var uploadedResource = new FilenameResource( inputStream.readAllBytes(), fileName );
+				resourceValidator.apply( uploadedResource ).ifPresent( this::selectResource );
+			}
+			catch ( IOException e )
+			{
+				Notification.show( bundle.getString("upload.failedCaption"), e.getMessage(), Type.WARNING_MESSAGE );
+			}
 		} );
 
 		this.clearButton = new Button();
@@ -195,8 +218,14 @@ public class ResourceSelectionComponent<T> extends CustomComponent
 		{
 			selectedResources.clear();
 		}
-		selectedResources.add( resource );
-		refreshComponents();
+		if (selectedResources.add( resource ))
+		{
+			refreshComponents();
+		}
+		else
+		{
+			Notification.show(bundle.getString("documentAlreadySelected"));
+		}
 	}
 
 	/**

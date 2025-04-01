@@ -14,6 +14,71 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - *Fixed (for any bug fixes)*  
 - *Security (in case of vulnerabilities)*
 
+## [4.0.1] - 2025-02-04
+
+### Added
+
+* Added versions 2.0.1 of the CDC DDI metadata profiles, fixing issue [CMP-215](https://github.com/cessda/cessda.metadata.profiles/issues/215) ([#239](https://github.com/cessda/cessda.cmv.server/239))
+
+## [4.0.0] - 2025-01-14
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14643711.svg)](https://doi.org/10.5281/zenodo.14643711)
+
+### Migration Notes
+
+Due to changes in XML namespace support previous DDI profiles will validate differently. For correct validation, use the following profiles:
+
+* CDC DDI 2.5 profiles - use version 3.0.0 or newer
+* CDC DDI 2.6 profiles - use version 2.0.0 or newer
+* CDC DDI 3.2 profile - use version 2.0.0 or newer
+* CDC DDI 3.3 profile - use version 2.0.0 or newer
+* EQB DDI 2.5 profile - use version 1.0.0 or newer
+
+The built-in profiles have been updated with the necessary changes.
+
+### Added
+
+* Added new versions of the CESSDA Metadata Profiles to the CMV server ([#234](https://github.com/cessda/cessda.cmv.server/issues/234)). See the [release notes](https://github.com/cessda/cessda.metadata.profiles/releases/tag/3.0.0) for the changes.
+
+### Changed
+
+* Updated `cmv-core` to version 4.0.0. This is a major release with implications for all CMV users. See the [release notes](https://github.com/cessda/cessda.cmv.core/releases/tag/4.0.0) for more information.
+
+### Fixed
+
+* Fixed the profile's name being null if the profile document was missing a name ([PR-233](https://github.com/cessda/cessda.cmv.server/pull/233))
+* Fixed the feedback form not working ([ac367d9](https://github.com/cessda/cessda.cmv.server/commit/ac367d91a77b5599033b9eb488998d6e7d1407fd)). This was caused by the EOSC Helpdesk being shut down.
+
+## [3.0.1] - 2024-08-22
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13364434.svg)](https://doi.org/10.5281/zenodo.13364434)
+
+### Changed
+
+- Migrated usages of `org.gesis.commons.resource.Resource` to `org.springframework.core.io.Resource` ([PR-214](https://github.com/cessda/cessda.cmv.server/pull/214))
+
+### Fixed
+
+- Fixed profile uploads failing with `java.net.MalformedURLException: unknown protocol: urn` ([#215](https://github.com/cessda/cessda.cmv.server/issues/215))
+- Fixed discovery of predefined documents failing on Windows ([PR-207](https://github.com/cessda/cessda.cmv.server/pull/207))
+
+## [3.0.0] - 2024-07-02
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.12527525.svg)](https://doi.org/10.5281/zenodo.12527525)
+
+### Added
+
+- Added DDI 3.3 schemas to the server ([PR-190](https://github.com/cessda/cessda.cmv.server/pull/190))
+
+### Changed
+
+- Updated CMV core to version 3.0.0 ([PR-196](https://github.com/cessda/cessda.cmv.server/pull/196))
+- Updated OpenJDK to version 21 ([PR-204](https://github.com/cessda/cessda.cmv.server/pull/204))
+
+### Fixed
+
+- Fixed an old version of `commons-io` breaking the CSV export ([f0a4244](https://github.com/cessda/cessda.cmv.server/commit/f0a4244942cecc2f3b59a392b264b09d367d8533))
+
 ## [2.0.1] - 2023-12-05
 
 ### Changed
@@ -147,6 +212,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Show notification if DDI document recognition fails ([#19](https://github.com/cessda/cessda.cmv.server/issues/19))
 - Change endpoints urls to be consistent with other CESSDA products ([#18](https://github.com/cessda/cessda.cmv.server/issues/18))
 
+[4.0.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/4.0.1
+[4.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/4.0.0
+[3.0.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/3.0.1
+[3.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/3.0.0
 [2.0.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/2.0.1
 [2.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/2.0.0
 [1.1.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/1.1.0

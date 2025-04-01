@@ -2,7 +2,7 @@
  * #%L
  * CESSDA Metadata Validator
  * %%
- * Copyright (C) 2020 - 2024 CESSDA ERIC
+ * Copyright (C) 2020 - 2025 CESSDA ERIC
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,32 +27,40 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.NotDocumentException;
-import eu.cessda.cmv.core.Profile;
-import org.gesis.commons.resource.ClasspathResourceRepository;
-import org.gesis.commons.resource.Resource;
+import eu.cessda.cmv.server.ui.UIProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.Resource;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.zalando.problem.jackson.ProblemModule;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Stream;
-
-import static org.gesis.commons.resource.Resource.newResource;
 
 @SpringBootApplication
 public class Server extends SpringBootServletInitializer
 {
 	private static final Logger log = LoggerFactory.getLogger( Server.class );
+
+	private final ApplicationContext applicationContext;
+
+	@Autowired
+	public Server( ApplicationContext applicationContext )
+	{
+		this.applicationContext = applicationContext;
+	}
 
 	public static void main( String[] args )
 	{
@@ -83,28 +91,37 @@ public class Server extends SpringBootServletInitializer
 	}
 
 	@Bean
-	public List<Profile> demoProfiles( CessdaMetadataValidatorFactory factory )
+	public List<UIProfile> demoProfiles( CessdaMetadataValidatorFactory factory )
 	{
 		log.info( "Loading built-in profiles" );
-		return ClasspathResourceRepository.newBuilder()
-				.includeLocationPattern( "classpath*:**/profiles/**/*.xml" )
-				.build()
-				.findAll()
-				.flatMap( resource ->
-				{
-					var uri = resource.getUri();
-					try
-					{
-						var profile = factory.newProfile( uri );
-						return Stream.of( profile );
-					}
-					catch ( NotDocumentException | IOException e )
-					{
-						log.error( "Couldn't load profile from {}", uri, e );
-						return Stream.empty();
-					}
-				} )
-				.toList();
+
+		// Load CMV 4 compatible profiles only
+		var resources = new ArrayList<Resource>(8);
+		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-1.2.2/3.0.0/profile.xml" ) );
+		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-1.2.2/3.0.0/profile-mono.xml" ) );
+		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-2.5/3.0.0/profile.xml" ) );
+		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-2.5/3.0.0/profile-mono.xml" ) );
+		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-3.2/2.0.1/profile.xml" ) );
+		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-3.3/2.0.1/profile.xml" ) );
+		resources.add( applicationContext.getResource( "classpath:static/profiles/eqb/ddi-2.5/1.0.0/profile.xml" ) );
+		resources.add( applicationContext.getResource( "classpath:static/profiles/eqb/ddi-3.2/0.2.0/profile.xml" ) );
+
+		var profiles = new ArrayList<UIProfile>(resources.size());
+		for ( var resource : resources )
+		{
+			log.debug( "Loading profile from \"{}\"", resource );
+			try( var inputStream = resource.getInputStream() )
+			{
+				var profile = factory.newProfile( inputStream );
+				profiles.add( new UIProfile( profile, resource ) );
+			}
+			catch ( NotDocumentException | IOException e )
+			{
+				log.error( "Couldn't load profile from \"{}\"", resource, e );
+			}
+		}
+
+		return profiles;
 	}
 
 	@Bean
@@ -121,31 +138,20 @@ public class Server extends SpringBootServletInitializer
 	}
 
 	@Bean
-	public List<Resource.V10> demoDocuments()
+	public List<Resource> demoDocuments() throws IOException
 	{
 		log.info( "Discovering built-in documents" );
-        try
+		var resources = applicationContext.getResources("classpath*:**/demo-documents/ddi-v25/*.xml");
+		var excludedResources = applicationContext.getResources( "classpath*:**/demo-documents/ddi-v25/*profile*.xml");
+
+		var includedResourcesSet = new HashSet<>( Arrays.asList( resources ) );
+		for (var excluded : excludedResources)
 		{
-			return ClasspathResourceRepository.newBuilder()
-					.includeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*.xml" )
-					.excludeLocationPattern( "classpath*:**/demo-documents/ddi-v25/*profile*.xml" )
-					.build()
-					.findAll()
-					.map( Resource::getUri )
-					.map( uri ->
-					{
-						var path = uri.toString();
-						var lastPathIndex = path.lastIndexOf( '/' );
-						var fileName = path.substring( lastPathIndex + 1 );
-						return newResource( uri, fileName );
-					} )
-					.map( Resource.V10.class::cast )
-					.toList();
+			// Remove profiles from the document list
+			includedResourcesSet.remove( excluded );
+			log.debug( "\"{}\" excluded", excluded );
 		}
-		catch ( RuntimeException e )
-		{
-			log.warn( "Couldn't discover demo documents", e );
-			return Collections.emptyList();
-		}
+
+		return new ArrayList<>( includedResourcesSet );
 	}
 }

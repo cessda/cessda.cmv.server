@@ -2,14 +2,14 @@
  * #%L
  * CESSDA Metadata Validator
  * %%
- * Copyright (C) 2020 - 2024 CESSDA ERIC
+ * Copyright (C) 2020 - 2025 CESSDA ERIC
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,6 +33,7 @@ import eu.cessda.cmv.server.ValidationReport;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 
 import java.io.*;
@@ -53,7 +54,7 @@ public class ResultsComponent extends CustomComponent
 	private static final long serialVersionUID = 7050472282523014449L;
 
 
-	public ResultsComponent( Map<String, ValidationReport> reports )
+	public ResultsComponent( Map<Resource, ValidationReport> reports )
 	{
 		var bundle = ResourceBundle.getBundle( ResultsComponent.class.getName(), UI.getCurrent().getLocale() );
 
@@ -68,7 +69,9 @@ public class ResultsComponent extends CustomComponent
 		var buttonLayout = new HorizontalLayout( jsonButton, csvButton );
 
 		// Configure the panels
-		var resultsPanels = reports.entrySet().stream().map( ResultsComponent::createResultsPanel ).toArray( Panel[]::new );
+		var resultsPanels = reports.entrySet().stream().map(
+			resource -> createResultsPanel( resource.getKey(), resource.getValue() )
+		).toArray( Panel[]::new );
 
 		// Configure the layout
 		var layout = new VerticalLayout();
@@ -86,19 +89,23 @@ public class ResultsComponent extends CustomComponent
 		return stringGrid;
 	}
 
-	private static Panel createResultsPanel( Map.Entry<String, ValidationReport> report )
+	private static Panel createResultsPanel( Resource resource, ValidationReport report )
 	{
 		var bundle = ResourceBundle.getBundle( ResultsComponent.class.getName(), UI.getCurrent().getLocale() );
-		var documentLabelString = report.getKey();
+		var documentLabelString = resource.getFilename();
+		if (documentLabelString == null)
+		{
+			documentLabelString = resource.getDescription();
+		}
 
 		var documentLabel = new Label( documentLabelString );
 
 		// Export buttons
 		var downloadJSONButton = new Button( bundle.getString( "results.downloadReport" ) );
-		createJSONFileDownloader( FilenameUtils.removeExtension( report.getKey() ), report.getValue() ).extend( downloadJSONButton );
+		createJSONFileDownloader( FilenameUtils.removeExtension( documentLabelString ), report ).extend( downloadJSONButton );
 
 		var csvButton = new Button( bundle.getString("results.downloadCSV") );
-		createCSVFileDownloader(  FilenameUtils.removeExtension( report.getKey() ), report.getValue() ).extend( csvButton );
+		createCSVFileDownloader( FilenameUtils.removeExtension( documentLabelString ), report ).extend( csvButton );
 
 		// Combine buttons into their own layout
 		var buttonLayout = new HorizontalLayout(downloadJSONButton, csvButton);
@@ -110,7 +117,7 @@ public class ResultsComponent extends CustomComponent
 		/*
 		 * Schema Violations
 		 */
-		var schemaViolations = report.getValue().schemaViolations();
+		var schemaViolations = report.schemaViolations();
 
 		// Configure the schema violation grid
 		var schemaViolationGrid = createResultsGrid(
@@ -124,7 +131,7 @@ public class ResultsComponent extends CustomComponent
 		/*
 		 * Constraint Violations
 		 */
-		var constraintViolations = report.getValue().constraintViolations();
+		var constraintViolations = report.constraintViolations();
 
 		// Configure the constraint violation grid
 		var constraintViolationGrid = createResultsGrid(
@@ -218,11 +225,11 @@ public class ResultsComponent extends CustomComponent
 				{
 					// Schema violations
 					zip.putNextEntry( new ZipEntry(  "Schema violations.csv" ) );
-					generateCSV( validationReport.schemaViolations(), zip, ResultsComponent::convertSchemaViolationToCSV );
+					generateCSV( validationReport.schemaViolations(), ResultsComponent::convertSchemaViolationToCSV, zip );
 
 					// Constraint violations
 					zip.putNextEntry( new ZipEntry(  "Constraint violations.csv" ) );
-					generateCSV( validationReport.constraintViolations(), zip, ResultsComponent::convertConstraintViolationToCSV );
+					generateCSV( validationReport.constraintViolations(), ResultsComponent::convertConstraintViolationToCSV, zip );
 				}
 				catch ( IOException e )
 				{
@@ -247,7 +254,7 @@ public class ResultsComponent extends CustomComponent
   	 *
 	 * @param reports the reports to convert into CSVs.
 	 */
-	private static FileDownloader createCSVFileDownloader( Map<String, ValidationReport> reports )
+	private static FileDownloader createCSVFileDownloader( Map<Resource, ValidationReport> reports )
 	{
 		var resource = new StreamResource(
 			() ->
@@ -257,15 +264,15 @@ public class ResultsComponent extends CustomComponent
 				{
 					for ( var report : reports.entrySet() )
 					{
-						var sourceFileName = FilenameUtils.removeExtension( report.getKey() );
+						var sourceFileName = FilenameUtils.removeExtension( report.getKey().getFilename() );
 
 						// Schema violations
 						zip.putNextEntry( new ZipEntry( sourceFileName + " - schema violations.csv" ) );
-						generateCSV( report.getValue().schemaViolations(), zip, ResultsComponent::convertSchemaViolationToCSV );
+						generateCSV( report.getValue().schemaViolations(), ResultsComponent::convertSchemaViolationToCSV, zip );
 
 						// Constraint violations
 						zip.putNextEntry( new ZipEntry( sourceFileName + " - constraint violations.csv" ) );
-						generateCSV( report.getValue().constraintViolations(), zip, ResultsComponent::convertConstraintViolationToCSV );
+						generateCSV( report.getValue().constraintViolations(), ResultsComponent::convertConstraintViolationToCSV, zip );
 					}
 				}
 				catch ( IOException e )
@@ -290,13 +297,13 @@ public class ResultsComponent extends CustomComponent
 	 * Prints a series of values to a CSV.
 	 *
 	 * @param values the source of values.
-	 * @param outputStream the stream to write the CSV to.
 	 * @param stringMapper a function to map a {@link T} to a string array.
+	 * @param outputStream the stream to write the CSV to.
 	 */
-	private static <T> void generateCSV( Iterable<T> values, OutputStream outputStream, Function<T, String[]> stringMapper )
+	private static <T> void generateCSV( Iterable<T> values, Function<T, String[]> stringMapper, OutputStream outputStream )
 	{
 		// Add headers to the CSV
-		var csvFormat = CSVFormat.RFC4180.builder().setHeader( "lineNumber", "columnNumber", "message" ).build();
+		var csvFormat = CSVFormat.RFC4180.builder().setHeader( "lineNumber", "columnNumber", "message" ).get();
 
 		try
 		{

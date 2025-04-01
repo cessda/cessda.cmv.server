@@ -2,7 +2,7 @@
  * #%L
  * CESSDA Metadata Validator
  * %%
- * Copyright (C) 2020 - 2024 CESSDA ERIC
+ * Copyright (C) 2020 - 2025 CESSDA ERIC
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.zalando.problem.Problem;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 import static org.gesis.commons.resource.Resource.newResource;
@@ -57,9 +58,9 @@ class ValidationControllerV0Test
 	/**
 	 * Test profile to validate against.
 	 */
-	private static final String PROFILE_URI = "https://raw.githubusercontent.com/cessda/cessda.cmv.core/8d0ea9d6a731fa06bde8c8f2b231c2e974aa7130/src/main/resources/demo-documents/ddi-v25/cdc25_profile.xml";
+	private static final String PROFILE_URI = "https://raw.githubusercontent.com/cessda/cessda.cmv.core/refs/tags/4.0.0/src/main/resources/demo-documents/ddi-v25/cdc25_profile.xml";
 	/** Test document to validate against. */
-	private static final String DOCUMENT_URI = "https://raw.githubusercontent.com/cessda/cessda.cmv.core/8d0ea9d6a731fa06bde8c8f2b231c2e974aa7130/src/main/resources/demo-documents/ddi-v25/ukds-2000.xml";
+	private static final String DOCUMENT_URI = "https://raw.githubusercontent.com/cessda/cessda.cmv.core/refs/tags/4.0.0/src/main/resources/demo-documents/ddi-v25/ukds-2000.xml";
 
 	@Test
 	void validateWithBasicValidationGate() throws Exception {
@@ -78,7 +79,7 @@ class ValidationControllerV0Test
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
 		validationReport = eu.cessda.cmv.core.mediatype.validationreport.ValidationReport.read( responseBody );
-		assertThat( validationReport.getConstraintViolations(), hasSize( 7 ) );
+		assertThat( validationReport.getConstraintViolations(), hasSize( 216 ) );
 
 		// JSON
 		responseBody = mockMvc.perform( post( uriBuilder.toEncodedString() )
@@ -86,7 +87,7 @@ class ValidationControllerV0Test
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
 		validationReport = objectMapper.readValue( responseBody, eu.cessda.cmv.core.mediatype.validationreport.ValidationReport.class );
-		assertThat( validationReport.getConstraintViolations(), hasSize(7));
+		assertThat( validationReport.getConstraintViolations(), hasSize(216));
 	}
 
 	@Test
@@ -106,7 +107,7 @@ class ValidationControllerV0Test
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
 		validationReport = eu.cessda.cmv.core.mediatype.validationreport.ValidationReport.read( responseBody );
-		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
+		assertThat( validationReport.getConstraintViolations(), hasSize( 232 ) );
 		assertThat( validationReport.getDocumentUri().toString(), equalTo( DOCUMENT_URI ) );
 
 		// JSON
@@ -115,10 +116,11 @@ class ValidationControllerV0Test
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
 		validationReport = objectMapper.readValue( responseBody, eu.cessda.cmv.core.mediatype.validationreport.ValidationReport.class );
-		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
+		assertThat( validationReport.getConstraintViolations(), hasSize( 232 ) );
 		assertThat( validationReport.getDocumentUri().toString(), equalTo( DOCUMENT_URI));
 	}
 
+	@SuppressWarnings( "resource" )
 	@Test
 	void validateWithStandardValidationGateByValidationRequestV0() throws Exception {
 		String responseBody;
@@ -129,7 +131,7 @@ class ValidationControllerV0Test
 				.path("/Validation");
 		var validationRequest = new ValidationRequest();
 		validationRequest.setDocument(URI.create(DOCUMENT_URI));
-		validationRequest.setProfile(new TextResource(newResource(PROFILE_URI)).toString());
+		validationRequest.setProfile( new String( URI.create(PROFILE_URI).toURL().openStream().readAllBytes(), StandardCharsets.UTF_8 ));
 		validationRequest.setValidationGateName(ValidationGateName.STANDARD );
 
 		mediaType = MediaType.APPLICATION_JSON;
@@ -140,7 +142,7 @@ class ValidationControllerV0Test
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
 		validationReport = objectMapper.readValue( responseBody, eu.cessda.cmv.core.mediatype.validationreport.ValidationReport.class );
-		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
+		assertThat( validationReport.getConstraintViolations(), hasSize( 232 ) );
 		assertThat( validationReport.getDocumentUri().toString(), equalTo( DOCUMENT_URI ) );
 
 		mediaType = MediaType.APPLICATION_XML;
@@ -151,7 +153,7 @@ class ValidationControllerV0Test
 				.andExpect( status().isOk() )
 				.andReturn().getResponse().getContentAsString();
 		validationReport = eu.cessda.cmv.core.mediatype.validationreport.ValidationReport.read( responseBody );
-		assertThat( validationReport.getConstraintViolations(), hasSize( 19 ) );
+		assertThat( validationReport.getConstraintViolations(), hasSize( 232 ) );
 		assertThat( validationReport.getDocumentUri().toString(), equalTo( DOCUMENT_URI));
 	}
 
@@ -272,7 +274,7 @@ class ValidationControllerV0Test
 		var requestJSON = this.getClass().getResource( "/invalidRequest.json" );
 		var validationRequest = objectMapper.readValue( requestJSON, ValidationRequest.class );
 
-		validationRequest.setConstraints( Collections.singleton( validationRequest.getConstraints().get( 0 ) ) );
+		validationRequest.setConstraints( Collections.singleton( validationRequest.getConstraints().getFirst() ) );
 
 		MediaType mediaType = MediaType.APPLICATION_JSON;
 		String responseBody = mockMvc.perform(post(uriBuilder.toEncodedString() )
