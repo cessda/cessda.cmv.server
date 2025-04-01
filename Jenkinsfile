@@ -8,7 +8,7 @@ pipeline {
     environment {
         productName = "cmv"
         componentName = "server"
-        IMAGE_TAG = "${DOCKER_ARTIFACT_REGISTRY}/${productName}-${componentName}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+        IMAGE_TAG = "${DOCKER_ARTIFACT_REGISTRY}/${productName}-${componentName}:${env.BRANCH_NAME.toLowerCase().replaceAll('[^a-z0-9\\.\\_\\-]', '-')}-${env.BUILD_NUMBER}"
     }
 
     agent {
