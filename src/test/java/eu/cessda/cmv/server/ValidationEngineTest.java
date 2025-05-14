@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +22,7 @@ package eu.cessda.cmv.server;
 import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
 import eu.cessda.cmv.core.NotDocumentException;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.UrlResource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -48,17 +49,17 @@ class ValidationEngineTest
 
 		// Validate
 		var profile = validatorFactory.newProfile( profileResource );
-		try (var documentStream = document.openStream())
-		{
-			var report = validatorEngine.validate(
-					documentStream,
-					profile,
-					BASIC
-			);
+		var documentResource = new UrlResource( document );
+		var report = validatorEngine.validate(
+				documentResource,
+				profile,
+				BASIC
+		);
 
-			// Schema and CMV violations should be found
-			assertThat( report.schemaViolations() ).isNotEmpty();
-			assertThat( report.constraintViolations() ).isNotEmpty();
-		}
+		// Schema and CMV violations should be found
+		assertThat( report ).containsKey( documentResource );
+		var validationReport = report.get( documentResource );
+		assertThat( validationReport.schemaViolations() ).isNotEmpty();
+		assertThat( validationReport.constraintViolations() ).isNotEmpty();
 	}
 }

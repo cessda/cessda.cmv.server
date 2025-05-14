@@ -37,6 +37,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.web.util.HtmlUtils;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
@@ -47,6 +48,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static eu.cessda.cmv.server.Server.NOT_LIST_RECORDS_RESPONSE;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_PREDEFINED;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.ProvisioningOptions.BY_UPLOAD;
 import static eu.cessda.cmv.server.ui.ResourceSelectionComponent.SelectionMode.MULTI;
@@ -206,19 +208,59 @@ public class ValidationView extends VerticalLayout implements View
 		return label;
 	}
 
-	private Optional<org.springframework.core.io.Resource> recognizeDdiDocument( org.springframework.core.io.Resource resource )
+	/**
+	 * Attempt to load the document.
+	 * <p>
+	 * If the resource is an instance of {@link InputStreamResource}, it will
+	 * be converted to a {@link ByteArrayResource} so it can be reused.
+	 *
+	 * @param documentResource the document.
+	 * @return an {@link Optional} containing the provided resource,
+	 * or an empty optional if the document could not be loaded.
+	 */
+	private Optional<Resource> recognizeDdiDocument( Resource documentResource )
 	{
-		try( var inputStream = resource.getInputStream() )
+		if ( documentResource instanceof InputStreamResource )
 		{
-			if ( resource instanceof InputStreamResource inputStreamResource )
+			// An InputStreamResource can only be used once, copy to a ByteArrayResource which can be used multiple times
+			try ( var inputStream = documentResource.getInputStream() )
 			{
-				// An InputStreamResource can only be used once, copy to a ByteArrayResource which can be used multiple times
-				resource = new ByteArrayResource( inputStreamResource.getInputStream().readAllBytes() );
+				log.info( "Copying \"{}\" into a ByteArrayResource", documentResource );
+				documentResource = new ByteArrayResource( inputStream.readAllBytes(), documentResource.getDescription() );
 			}
+			catch ( IOException e )
+			{
+				// Stream is now in an unknown state
+				Notification.show( e.getMessage(), Notification.Type.WARNING_MESSAGE );
+				return Optional.empty();
+			}
+		}
 
+		// Determine if this is a list records response
+		try( var inputStream = documentResource.getInputStream() )
+		{
+			var inputSource = new InputSource(inputStream);
+
+			// Parse the source as a ListRecords response
+			cessdaMetadataValidatorFactory.splitListRecordsResponse( inputSource );
+			log.debug( "\"{}\" is a ListRecords response", documentResource );
+			return Optional.of( documentResource );
+		}
+		catch ( IllegalArgumentException e )
+		{
+			log.debug( NOT_LIST_RECORDS_RESPONSE, documentResource );
+		}
+		catch ( IOException | SAXException e )
+		{
+			Notification.show( e.getMessage(), Notification.Type.WARNING_MESSAGE );
+			return Optional.empty();
+		}
+
+		try( var inputStream = documentResource.getInputStream() )
+		{
 			// TODO Avoid inefficiency of calling newDocument only to check if document is accepted
 			cessdaMetadataValidatorFactory.newDocument( inputStream );
-			return Optional.of( resource );
+			return Optional.of( documentResource );
 		}
 		catch ( IOException | NotDocumentException e)
 		{
@@ -227,7 +269,7 @@ public class ValidationView extends VerticalLayout implements View
 		}
 	}
 
-	private Optional<UIProfile> parseProfile( org.springframework.core.io.Resource resource )
+	private Optional<UIProfile> parseProfile( Resource resource )
 	{
 		try(var inputStream = resource.getInputStream())
 		{
@@ -286,10 +328,13 @@ public class ValidationView extends VerticalLayout implements View
 			// Validate each document
 			.flatMap( documentResource ->
 			{
-				try ( var inputStream = documentResource.getInputStream() )
+				try
 				{
-					var validationReport = this.validationService.validate( inputStream, uiProfile.profile(), validationGate );
-					return Flux.just( Map.entry( documentResource, validationReport ) );
+					// Attempt to split the document
+					Map<Resource, ValidationReport> reportMap;
+					reportMap = validationService.validate( documentResource, uiProfile.profile(), validationGate );
+
+					return Flux.fromIterable( reportMap.entrySet() );
 				}
 				catch ( IOException | SAXException | NotDocumentException e )
 				{
@@ -311,7 +356,7 @@ public class ValidationView extends VerticalLayout implements View
 			// Collect validation results into a map
 			.sequential().collectMap( Map.Entry::getKey, Map.Entry::getValue )
 			// Re-enable the validate button regardless if any exceptions were encountered
-			.doAfterTerminate( this::resetPostValidation )
+			.doAfterTerminate( () -> this.getUI().access( this::resetPostValidation ) )
 			.subscribe(
 				completedList -> this.getUI().access( () -> updateView( completedList, validationExceptions ) ),
 				e ->
