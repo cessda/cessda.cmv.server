@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,29 +19,32 @@
  */
 package eu.cessda.cmv.server;
 
-import eu.cessda.cmv.core.CessdaMetadataValidatorFactory;
-import eu.cessda.cmv.core.NotDocumentException;
-import eu.cessda.cmv.core.Profile;
-import eu.cessda.cmv.core.ValidationGateName;
+import eu.cessda.cmv.core.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.DescriptiveResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+
+import static eu.cessda.cmv.server.Server.NOT_LIST_RECORDS_RESPONSE;
 
 @Component
 public class ValidatorEngine
 {
+	private static final Logger log = LoggerFactory.getLogger( ValidatorEngine.class );
+
 	private final ThreadLocal<javax.xml.validation.Validator> xmlValidators;
 	private final CessdaMetadataValidatorFactory validatorFactory;
 
@@ -80,33 +83,135 @@ public class ValidatorEngine
 	/**
 	 * Validates a given XML document against XML schema and a CMV profile.
 	 *
-	 * @param documentInputStream the document to validate.
+	 * @param documentResource the document to validate.
 	 * @param profile the profile to use when validating.
-	 * @param validationGate the validation gate to use when validating
+	 * @param validationGate the validation gate to use when validating.
+	 * @return a map of {@link ValidationReport}s containing the list of XML validation errors and the CMV validation report.
+	 * @throws IOException if an IO error occurred when parsing the document.
+	 * @throws SAXException if the XML document was invalid.
+	 */
+	public Map<Resource, ValidationReport> validate( Resource documentResource, Profile profile, ValidationGateName validationGate ) throws IOException, SAXException, NotDocumentException
+	{
+		try
+		{
+			return validateMultiple( documentResource, profile, validationGate );
+		}
+		catch (IllegalArgumentException e )
+		{
+			log.debug(NOT_LIST_RECORDS_RESPONSE, documentResource );
+		}
+
+		var validationReport = validateSingle( documentResource, profile, validationGate );
+		return Map.of( documentResource, validationReport );
+	}
+
+
+	/**
+	 * Validates a given XML document against XML schema and a CMV profile.
+	 *
+	 * @param documentResource the document to validate.
+	 * @param profile the profile to use when validating.
+	 * @param validationGate the validation gate to use when validating.
 	 * @return a {@link ValidationReport} containing the list of XML validation errors and the CMV validation report.
 	 * @throws IOException if an IO error occurred when parsing the document.
 	 * @throws SAXException if the XML document was invalid.
 	 */
-	public ValidationReport validate( InputStream documentInputStream, Profile profile, ValidationGateName validationGate ) throws IOException, SAXException, NotDocumentException
+	private ValidationReport validateSingle( Resource documentResource, Profile profile, ValidationGateName validationGate ) throws IOException, SAXException, NotDocumentException
 	{
-		// Read XML into a buffer
-		var buffer = new ByteArrayInputStream( documentInputStream.readAllBytes() );
-
 		// Validate XML
-		var validator = xmlValidators.get();
-		validator.validate( new StreamSource( buffer ) );
-
-		// Extract errors from the error handler, then reset the error handler
-		var errorHandler = (LoggingErrorHandler) validator.getErrorHandler();
-		var errors = errorHandler.getErrors();
-		errorHandler.reset();
-		buffer.reset();
+		var validationErrors = getXMLSchemaViolations( documentResource );
 
 		// Validate against profile
-		var document = validatorFactory.newDocument( buffer );
-		var validationReport = validatorFactory.validate( document, profile, validationGate );
-		var validationErrors = errors.stream().map( SchemaViolation::new ).toList();
+		eu.cessda.cmv.core.mediatype.validationreport.ValidationReport validationReport;
+		try (var inputStream = documentResource.getInputStream())
+		{
+			var document = validatorFactory.newDocument( inputStream );
+			validationReport = validatorFactory.validate( document, profile, validationGate );
+		}
+
 		return new ValidationReport( validationErrors, validationReport.getConstraintViolations() );
+	}
+
+	private List<SchemaViolation> getXMLSchemaViolations( Resource documentResource ) throws IOException, SAXException
+	{
+		var validator = xmlValidators.get();
+		var errorHandler = (LoggingErrorHandler) validator.getErrorHandler();
+		List<SAXParseException> errors;
+		try (var inputStream = documentResource.getInputStream())
+		{
+			StreamSource streamSource;
+			try
+			{
+				streamSource = new StreamSource( inputStream, documentResource.getURL().toString() );
+			}
+			catch ( IOException e )
+			{
+				streamSource = new StreamSource(inputStream);
+			}
+			validator.validate( streamSource );
+
+			// Extract errors from the error handler
+			errors = errorHandler.getErrors();
+		}
+		finally
+		{
+			// Reset the error handler
+			errorHandler.reset();
+		}
+
+		// Convert SAXParseException instances to SchemaViolation instances
+		var validationErrors = new ArrayList<SchemaViolation>(errors.size());
+		for ( var error : errors )
+		{
+			validationErrors.add( new SchemaViolation( error ) );
+		}
+		return validationErrors;
+	}
+
+	/**
+	 * Validate all documents in the ListRecords document using the provided profile and validation gate.
+	 *
+	 * @param documentResource a resource representing a ListRecords document.
+	 * @param profile the profile to use when validating.
+	 * @param validationGate the validation gate to use when validating.
+	 * @return a map with the document URI as a key, and the validation report as the value.
+	 * @throws IllegalArgumentException if the document is not a ListRecords response.
+	 * @throws IOException if an IO error occurs.
+	 * @throws SAXException if the XML document is invalid.
+	 */
+	private Map<Resource, ValidationReport> validateMultiple( Resource documentResource, Profile profile, ValidationGate validationGate ) throws IOException, SAXException
+	{
+		var inputSource = new InputSource(documentResource.getInputStream());
+
+		try
+		{
+			var url = documentResource.getURL();
+			inputSource.setSystemId( url.toString() );
+		}
+		catch ( IOException e )
+		{
+			inputSource.setSystemId( documentResource.getFilename() );
+		}
+
+		// Parse the source as a ListRecords response, this will throw IllegalArgumentException if
+		// the document is not a ListRecords response skipping the schema violations validation
+		var documents = validatorFactory.splitListRecordsResponse( inputSource );
+		var results = new HashMap<URI, eu.cessda.cmv.core.mediatype.validationreport.ValidationReport>();
+		for ( var document : documents )
+		{
+			var report = validatorFactory.validate( document, profile, validationGate );
+			results.put( document.getURI(), report );
+		}
+
+		var schemaViolations = getXMLSchemaViolations( documentResource );
+
+		var compiledRes = new HashMap<Resource, ValidationReport>();
+		for (var res : results.entrySet()) {
+			var validationReport = new ValidationReport( schemaViolations, res.getValue().getConstraintViolations() );
+			compiledRes.put( new DescriptiveResource( res.getKey().toString() ), validationReport );
+		}
+
+		return compiledRes;
 	}
 
 	/**

@@ -52,7 +52,10 @@ import java.util.List;
 @SpringBootApplication
 public class Server extends SpringBootServletInitializer
 {
-	private static final Logger log = LoggerFactory.getLogger( Server.class );
+    private static final Logger log = LoggerFactory.getLogger( Server.class );
+
+	// Logging constants
+	public static final String NOT_LIST_RECORDS_RESPONSE = "\"{}\" is not a ListRecords response";
 
 	private final ApplicationContext applicationContext;
 
