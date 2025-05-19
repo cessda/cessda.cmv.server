@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,10 +30,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.system.ApplicationTemp;
 import org.springframework.web.bind.annotation.*;
+import org.xml.sax.InputSource;
 import org.zalando.problem.Problem;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Set;
@@ -49,8 +54,15 @@ public class ValidationControllerV0
 {
 	public static final String BASE_PATH = "/api/V0";
 
+	private final ApplicationTemp applicationTemp;
+	private final CessdaMetadataValidatorFactory validatorFactory;
+
 	@Autowired
-	private CessdaMetadataValidatorFactory validatorFactory;
+	public ValidationControllerV0( ApplicationTemp applicationTemp, CessdaMetadataValidatorFactory validatorFactory )
+	{
+		this.applicationTemp = applicationTemp;
+		this.validatorFactory = validatorFactory;
+	}
 
 	@PostMapping(
 			path = "/Validation",
@@ -89,14 +101,12 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 			@RequestParam( required = false ) ValidationGateName validationGateName,
 			@RequestBody( required = false ) @Valid ValidationRequest validationRequest ) throws IOException, NotDocumentException
 	{
-		boolean hasRequestParams = documentUri != null || profileUri != null || validationGateName != null;
+		boolean hasRequestParams = documentUri != null && profileUri != null && validationGateName != null;
 		boolean hasRequestBody = validationRequest != null;
 
 		if ( hasRequestParams && !hasRequestBody )
 		{
-			Document document = validatorFactory.newDocument( documentUri );
-			Profile profile = validatorFactory.newProfile( profileUri );
-			return validatorFactory.validate( document, profile, validationGateName );
+			return fromRequestParams( documentUri, profileUri, validationGateName );
 		}
 		else if ( !hasRequestParams && hasRequestBody )
 		{
@@ -121,6 +131,57 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 		else
 		{
 			throw new IllegalArgumentException( "Invalid request: Use either the query parameters or the request body!" );
+		}
+	}
+
+	private ValidationReport fromRequestParams( URI documentUri, URI profileUri, ValidationGateName validationGateName ) throws IOException, NotDocumentException
+	{
+		File tempDocumentFile = null;
+		try
+		{
+			// Download the document
+			tempDocumentFile = File.createTempFile( "doc", null, applicationTemp.getDir() );
+			try (
+				var docInputStream = documentUri.toURL().openStream();
+				var tempOutputStream = new FileOutputStream( tempDocumentFile )
+			)
+			{
+				docInputStream.transferTo( tempOutputStream );
+			}
+
+			try (var tempInputStream = new FileInputStream(tempDocumentFile) )
+			{
+				// Validate that this is not a ListRecords response
+				var inputSource = new InputSource( documentUri.toString() );
+				inputSource.setByteStream(tempInputStream);
+				validatorFactory.splitListRecordsResponse( inputSource );
+				throw new IllegalArgumentException( "OAI-PMH ListRecord responses are not supported" );
+			}
+			catch ( NotDocumentException e )
+			{
+				if ( e.getCause() != null )
+				{
+					throw e;
+				}
+			}
+
+			try (var tempInputStream = new FileInputStream(tempDocumentFile) )
+			{
+				var inputSource = new InputSource( documentUri.toString() );
+				inputSource.setByteStream(tempInputStream);
+
+				Document document = validatorFactory.newDocument(inputSource);
+				Profile profile = validatorFactory.newProfile( profileUri );
+				return validatorFactory.validate( document, profile, validationGateName );
+			}
+		}
+		finally
+		{
+			if (tempDocumentFile != null)
+			{
+				// Best effort deletion of the temporary file
+				tempDocumentFile.delete();
+			}
 		}
 	}
 

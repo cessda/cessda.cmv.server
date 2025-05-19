@@ -250,7 +250,7 @@ public class ValidationView extends VerticalLayout implements View
 		{
 			log.debug( NOT_LIST_RECORDS_RESPONSE, documentResource );
 		}
-		catch ( IOException | SAXException e )
+		catch ( IOException | NotDocumentException e )
 		{
 			Notification.show( e.getMessage(), Notification.Type.WARNING_MESSAGE );
 			return Optional.empty();

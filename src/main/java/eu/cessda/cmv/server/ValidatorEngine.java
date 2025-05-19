@@ -179,7 +179,7 @@ public class ValidatorEngine
 	 * @throws IOException if an IO error occurs.
 	 * @throws SAXException if the XML document is invalid.
 	 */
-	private Map<Resource, ValidationReport> validateMultiple( Resource documentResource, Profile profile, ValidationGate validationGate ) throws IOException, SAXException
+	private Map<Resource, ValidationReport> validateMultiple( Resource documentResource, Profile profile, ValidationGate validationGate ) throws IOException, NotDocumentException, SAXException
 	{
 		var inputSource = new InputSource(documentResource.getInputStream());
 
