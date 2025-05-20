@@ -29,6 +29,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.commons.io.input.CloseShieldInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.system.ApplicationTemp;
 import org.springframework.web.bind.annotation.*;
@@ -36,14 +37,16 @@ import org.xml.sax.InputSource;
 import org.zalando.problem.Problem;
 
 import javax.validation.Valid;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.nio.channels.Channels;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Set;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
+import static java.nio.file.StandardOpenOption.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
@@ -80,7 +83,7 @@ The constraint violations will include a line and column number of the location 
 
 ## Useful links
 
-* [Documentation on the definition of the constraints, as well as what constraints are part of each validation gate](/documentation/constraints.html).
+* [Documentation on the definition of the constraints, and what constraints are part of each validation gate](/documentation/constraints.html).
 * [CESSDA profiles for the Data Catalogue and European Question Bank](/documentation/profiles.html).
 
 ## *Deprecation notice*
@@ -136,24 +139,24 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 
 	private ValidationReport fromRequestParams( URI documentUri, URI profileUri, ValidationGateName validationGateName ) throws IOException, NotDocumentException
 	{
-		File tempDocumentFile = null;
-		try
+		Path tempDocumentFile = Files.createTempFile( applicationTemp.getDir().toPath(), null, null );
+		try( var tempDocumentChannel = Files.newByteChannel( tempDocumentFile, READ, WRITE, DELETE_ON_CLOSE) )
 		{
 			// Download the document
-			tempDocumentFile = File.createTempFile( "doc", null, applicationTemp.getDir() );
-			try (
-				var docInputStream = documentUri.toURL().openStream();
-				var tempOutputStream = new FileOutputStream( tempDocumentFile )
-			)
+			try ( var docInputStream = documentUri.toURL().openStream() )
 			{
-				docInputStream.transferTo( tempOutputStream );
+				docInputStream.transferTo( Channels.newOutputStream( tempDocumentChannel ) );
 			}
 
-			try (var tempInputStream = new FileInputStream(tempDocumentFile) )
+			// Seek to the start of the file
+			tempDocumentChannel.position(0);
+
+			try
 			{
+				// Create the input source that will be used by the XML parser
+				var inputSource = createSourceFromStream( documentUri.toString(), Channels.newInputStream( tempDocumentChannel ) );
+
 				// Validate that this is not a ListRecords response
-				var inputSource = new InputSource( documentUri.toString() );
-				inputSource.setByteStream(tempInputStream);
 				validatorFactory.splitListRecordsResponse( inputSource );
 				throw new IllegalArgumentException( "OAI-PMH ListRecord responses are not supported" );
 			}
@@ -165,24 +168,36 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 				}
 			}
 
-			try (var tempInputStream = new FileInputStream(tempDocumentFile) )
-			{
-				var inputSource = new InputSource( documentUri.toString() );
-				inputSource.setByteStream(tempInputStream);
+			// Seek to the start of the file
+			tempDocumentChannel.position(0);
 
-				Document document = validatorFactory.newDocument(inputSource);
-				Profile profile = validatorFactory.newProfile( profileUri );
-				return validatorFactory.validate( document, profile, validationGateName );
-			}
+			// Create the input source that will be used by the XML parser
+			var inputSource = createSourceFromStream( documentUri.toString(), Channels.newInputStream( tempDocumentChannel ) );
+
+			Document document = validatorFactory.newDocument(inputSource);
+			Profile profile = validatorFactory.newProfile( profileUri );
+
+			return validatorFactory.validate( document, profile, validationGateName );
 		}
 		finally
 		{
-			if (tempDocumentFile != null)
-			{
-				// Best effort deletion of the temporary file
-				tempDocumentFile.delete();
-			}
+			// Best effort deletion of the temporary file
+			Files.deleteIfExists(tempDocumentFile);
 		}
+	}
+
+	private static InputSource createSourceFromStream( String documentUri, InputStream inputStream )
+	{
+		var inputSource = new InputSource();
+
+		// Set the system ID of the document source
+		inputSource.setSystemId( documentUri );
+
+		// Shield the input stream from being closed by the XML parser
+		var shieldedInputStream = CloseShieldInputStream.wrap( inputStream );
+		inputSource.setByteStream( shieldedInputStream );
+
+		return inputSource;
 	}
 
 	@GetMapping(path = "/Constraints", produces = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE })
