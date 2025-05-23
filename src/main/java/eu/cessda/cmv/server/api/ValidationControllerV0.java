@@ -55,6 +55,8 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 @Tag( name = SwaggerConfiguration.TAG_VALIDATIONS )
 public class ValidationControllerV0
 {
+	private static final String LIST_RECORD_NOT_SUPPORTED = "OAI-PMH ListRecord responses are not supported";
+
 	public static final String BASE_PATH = "/api/V0";
 
 	private final ApplicationTemp applicationTemp;
@@ -104,14 +106,14 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 			@RequestParam( required = false ) ValidationGateName validationGateName,
 			@RequestBody( required = false ) @Valid ValidationRequest validationRequest ) throws IOException, NotDocumentException
 	{
-		boolean hasRequestParams = documentUri != null && profileUri != null && validationGateName != null;
 		boolean hasRequestBody = validationRequest != null;
 
-		if ( hasRequestParams && !hasRequestBody )
+		if ( documentUri != null && profileUri != null && validationGateName != null && !hasRequestBody )
 		{
+			// All request params specified and request body not present
 			return fromRequestParams( documentUri, profileUri, validationGateName );
 		}
-		else if ( !hasRequestParams && hasRequestBody )
+		else if ( !(documentUri != null || profileUri != null || validationGateName != null) && hasRequestBody )
 		{
 			// Validate the request
 			var requestValidationResult = validationRequest.validate();
@@ -151,30 +153,21 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 			// Seek to the start of the file
 			tempDocumentChannel.position(0);
 
-			try
+			// Check if this is a ListRecords response
+			var inputSource = createSourceFromStream( documentUri.toString(), Channels.newInputStream( tempDocumentChannel ) );
+			if (isListRecordsResponse( inputSource ))
 			{
-				// Create the input source that will be used by the XML parser
-				var inputSource = createSourceFromStream( documentUri.toString(), Channels.newInputStream( tempDocumentChannel ) );
+				throw new IllegalArgumentException( LIST_RECORD_NOT_SUPPORTED );
+			}
 
-				// Validate that this is not a ListRecords response
-				validatorFactory.splitListRecordsResponse( inputSource );
-				throw new IllegalArgumentException( "OAI-PMH ListRecord responses are not supported" );
-			}
-			catch ( NotDocumentException e )
-			{
-				if ( e.getCause() != null )
-				{
-					throw e;
-				}
-			}
 
 			// Seek to the start of the file
 			tempDocumentChannel.position(0);
 
 			// Create the input source that will be used by the XML parser
-			var inputSource = createSourceFromStream( documentUri.toString(), Channels.newInputStream( tempDocumentChannel ) );
+			inputSource = createSourceFromStream( documentUri.toString(), Channels.newInputStream( tempDocumentChannel ) );
 
-			Document document = validatorFactory.newDocument(inputSource);
+			Document document = validatorFactory.newDocument( inputSource );
 			Profile profile = validatorFactory.newProfile( profileUri );
 
 			return validatorFactory.validate( document, profile, validationGateName );
@@ -183,6 +176,24 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 		{
 			// Best effort deletion of the temporary file
 			Files.deleteIfExists(tempDocumentFile);
+		}
+	}
+
+	private boolean isListRecordsResponse( InputSource inputSource ) throws IOException, NotDocumentException
+	{
+		try
+		{
+			// Validate that this is not a ListRecords response
+			validatorFactory.splitListRecordsResponse( inputSource );
+			return true;
+		}
+		catch ( NotDocumentException e )
+		{
+			if ( e.getCause() != null )
+			{
+				throw e;
+			}
+			return false;
 		}
 	}
 
@@ -211,6 +222,13 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 
 	private ValidationReport validateUsingGate( ValidationRequest validationRequest ) throws IOException, NotDocumentException
 	{
+		// Check if this is a ListRecords response
+		var source = validationRequest.getDocument().toInputSource();
+		if (isListRecordsResponse( source ))
+		{
+			throw new IllegalArgumentException( LIST_RECORD_NOT_SUPPORTED );
+		}
+
 		var document = validatorFactory.newDocument( validationRequest.getDocument() );
 		var profile = validatorFactory.newProfile( validationRequest.getProfile() );
 		return validatorFactory.validate(
@@ -224,6 +242,13 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 	{
 		try
 		{
+			// Check if this is a ListRecords response
+			var source = validationRequest.getDocument().toInputSource();
+			if (isListRecordsResponse( source ))
+			{
+				throw new IllegalArgumentException( LIST_RECORD_NOT_SUPPORTED );
+			}
+
 			var document = validatorFactory.newDocument( validationRequest.getDocument() );
 			var profile = validatorFactory.newProfile( validationRequest.getProfile() );
 			var validationGate = CessdaMetadataValidatorFactory.newValidationGate( validationRequest.getConstraints() );

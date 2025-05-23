@@ -96,7 +96,7 @@ public class ValidatorEngine
 		{
 			return validateMultiple( documentResource, profile, validationGate );
 		}
-		catch (IllegalArgumentException e )
+		catch ( IllegalArgumentException | NotDocumentException e )
 		{
 			log.debug(NOT_LIST_RECORDS_RESPONSE, documentResource );
 		}
@@ -175,7 +175,7 @@ public class ValidatorEngine
 	 * @param profile the profile to use when validating.
 	 * @param validationGate the validation gate to use when validating.
 	 * @return a map with the document URI as a key, and the validation report as the value.
-	 * @throws IllegalArgumentException if the document is not a ListRecords response.
+	 * @throws NotDocumentException if the document is not a ListRecords response.
 	 * @throws IOException if an IO error occurs.
 	 * @throws SAXException if the XML document is invalid.
 	 */
@@ -193,7 +193,7 @@ public class ValidatorEngine
 			inputSource.setSystemId( documentResource.getFilename() );
 		}
 
-		// Parse the source as a ListRecords response, this will throw IllegalArgumentException if
+		// Parse the source as a ListRecords response, this will throw NotDocumentException if
 		// the document is not a ListRecords response skipping the schema violations validation
 		var documents = validatorFactory.splitListRecordsResponse( inputSource );
 		var results = new HashMap<URI, eu.cessda.cmv.core.mediatype.validationreport.ValidationReport>();
