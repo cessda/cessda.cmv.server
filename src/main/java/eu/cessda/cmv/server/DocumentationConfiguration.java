@@ -41,6 +41,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Configures the web application to serve the documentation and metadata profiles.
+ */
 @Configuration
 public class DocumentationConfiguration implements WebMvcConfigurer
 {

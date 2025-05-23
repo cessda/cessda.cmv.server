@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,16 +29,24 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.commons.io.input.CloseShieldInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.system.ApplicationTemp;
 import org.springframework.web.bind.annotation.*;
+import org.xml.sax.InputSource;
 import org.zalando.problem.Problem;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.nio.channels.Channels;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Set;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
+import static java.nio.file.StandardOpenOption.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
@@ -47,10 +55,19 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 @Tag( name = SwaggerConfiguration.TAG_VALIDATIONS )
 public class ValidationControllerV0
 {
+	private static final String LIST_RECORD_NOT_SUPPORTED = "OAI-PMH ListRecord responses are not supported";
+
 	public static final String BASE_PATH = "/api/V0";
 
+	private final ApplicationTemp applicationTemp;
+	private final CessdaMetadataValidatorFactory validatorFactory;
+
 	@Autowired
-	private CessdaMetadataValidatorFactory validatorFactory;
+	public ValidationControllerV0( ApplicationTemp applicationTemp, CessdaMetadataValidatorFactory validatorFactory )
+	{
+		this.applicationTemp = applicationTemp;
+		this.validatorFactory = validatorFactory;
+	}
 
 	@PostMapping(
 			path = "/Validation",
@@ -68,7 +85,7 @@ The constraint violations will include a line and column number of the location 
 
 ## Useful links
 
-* [Documentation on the definition of the constraints, as well as what constraints are part of each validation gate](/documentation/constraints.html).
+* [Documentation on the definition of the constraints, and what constraints are part of each validation gate](/documentation/constraints.html).
 * [CESSDA profiles for the Data Catalogue and European Question Bank](/documentation/profiles.html).
 
 ## *Deprecation notice*
@@ -89,16 +106,14 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 			@RequestParam( required = false ) ValidationGateName validationGateName,
 			@RequestBody( required = false ) @Valid ValidationRequest validationRequest ) throws IOException, NotDocumentException
 	{
-		boolean hasRequestParams = documentUri != null || profileUri != null || validationGateName != null;
 		boolean hasRequestBody = validationRequest != null;
 
-		if ( hasRequestParams && !hasRequestBody )
+		if ( documentUri != null && profileUri != null && validationGateName != null && !hasRequestBody )
 		{
-			Document document = validatorFactory.newDocument( documentUri );
-			Profile profile = validatorFactory.newProfile( profileUri );
-			return validatorFactory.validate( document, profile, validationGateName );
+			// All request params specified and request body not present
+			return fromRequestParams( documentUri, profileUri, validationGateName );
 		}
-		else if ( !hasRequestParams && hasRequestBody )
+		else if ( !(documentUri != null || profileUri != null || validationGateName != null) && hasRequestBody )
 		{
 			// Validate the request
 			var requestValidationResult = validationRequest.validate();
@@ -124,6 +139,78 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 		}
 	}
 
+	private ValidationReport fromRequestParams( URI documentUri, URI profileUri, ValidationGateName validationGateName ) throws IOException, NotDocumentException
+	{
+		Path tempDocumentFile = Files.createTempFile( applicationTemp.getDir().toPath(), null, null );
+		try( var tempDocumentChannel = Files.newByteChannel( tempDocumentFile, READ, WRITE, DELETE_ON_CLOSE) )
+		{
+			// Download the document
+			try ( var docInputStream = documentUri.toURL().openStream() )
+			{
+				docInputStream.transferTo( Channels.newOutputStream( tempDocumentChannel ) );
+			}
+
+			// Seek to the start of the file
+			tempDocumentChannel.position(0);
+
+			// Check if this is a ListRecords response
+			var inputSource = createSourceFromStream( documentUri.toString(), Channels.newInputStream( tempDocumentChannel ) );
+			if (isListRecordsResponse( inputSource ))
+			{
+				throw new IllegalArgumentException( LIST_RECORD_NOT_SUPPORTED );
+			}
+
+
+			// Seek to the start of the file
+			tempDocumentChannel.position(0);
+
+			// Create the input source that will be used by the XML parser
+			inputSource = createSourceFromStream( documentUri.toString(), Channels.newInputStream( tempDocumentChannel ) );
+
+			Document document = validatorFactory.newDocument( inputSource );
+			Profile profile = validatorFactory.newProfile( profileUri );
+
+			return validatorFactory.validate( document, profile, validationGateName );
+		}
+		finally
+		{
+			// Best effort deletion of the temporary file
+			Files.deleteIfExists(tempDocumentFile);
+		}
+	}
+
+	private boolean isListRecordsResponse( InputSource inputSource ) throws IOException, NotDocumentException
+	{
+		try
+		{
+			// Validate that this is not a ListRecords response
+			validatorFactory.splitListRecordsResponse( inputSource );
+			return true;
+		}
+		catch ( NotDocumentException e )
+		{
+			if ( e.getCause() != null )
+			{
+				throw e;
+			}
+			return false;
+		}
+	}
+
+	private static InputSource createSourceFromStream( String documentUri, InputStream inputStream )
+	{
+		var inputSource = new InputSource();
+
+		// Set the system ID of the document source
+		inputSource.setSystemId( documentUri );
+
+		// Shield the input stream from being closed by the XML parser
+		var shieldedInputStream = CloseShieldInputStream.wrap( inputStream );
+		inputSource.setByteStream( shieldedInputStream );
+
+		return inputSource;
+	}
+
 	@GetMapping(path = "/Constraints", produces = { APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE })
 	@Operation(
 			description = "Get the list of supported constraints, use with /Validation",
@@ -135,6 +222,13 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 
 	private ValidationReport validateUsingGate( ValidationRequest validationRequest ) throws IOException, NotDocumentException
 	{
+		// Check if this is a ListRecords response
+		var source = validationRequest.getDocument().toInputSource();
+		if (isListRecordsResponse( source ))
+		{
+			throw new IllegalArgumentException( LIST_RECORD_NOT_SUPPORTED );
+		}
+
 		var document = validatorFactory.newDocument( validationRequest.getDocument() );
 		var profile = validatorFactory.newProfile( validationRequest.getProfile() );
 		return validatorFactory.validate(
@@ -148,6 +242,13 @@ Using query parameters to call the API is deprecated and doesn't allow specifyin
 	{
 		try
 		{
+			// Check if this is a ListRecords response
+			var source = validationRequest.getDocument().toInputSource();
+			if (isListRecordsResponse( source ))
+			{
+				throw new IllegalArgumentException( LIST_RECORD_NOT_SUPPORTED );
+			}
+
 			var document = validatorFactory.newDocument( validationRequest.getDocument() );
 			var profile = validatorFactory.newProfile( validationRequest.getProfile() );
 			var validationGate = CessdaMetadataValidatorFactory.newValidationGate( validationRequest.getConstraints() );

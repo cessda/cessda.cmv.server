@@ -21,7 +21,8 @@ FROM eclipse-temurin:21
 LABEL maintainer='CESSDA-ERIC "support@cessda.eu"'
 
 # Copy JAR artifacts
-COPY ./target/cmv-server.jar /opt/cmv-server/cmv-server.jar
+WORKDIR /opt/cessda/cmv-server
+COPY ./target/cmv-server.jar /opt/cessda/cmv-server/cmv-server.jar
 
 # Entrypoint - Start Admin
-ENTRYPOINT ["java", "-jar", "/opt/cmv-server/cmv-server.jar"]
+ENTRYPOINT ["java", "-jar", "cmv-server.jar"]
