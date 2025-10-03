@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+	<responseDate>2025-04-04T12:38:29Z</responseDate>
+	<request verb="ListRecords" metadataPrefix="oai_ddi25">https://datacatalogue.cessda.eu/oai-pmh/v0/oai</request>
+	<ListRecords>
+		<record>
+			<header status="deleted">
+				<identifier>29f289b10b43dd51e0faaaed36a7d0873c1a0445de704cdb9049c7d3e0eb0126</identifier>
+				<datestamp>2024-12-11T03:21:44Z</datestamp>
+				<setSpec>language:en</setSpec><setSpec>openaire_data</setSpec>
+			</header>
+		</record>
+		<record>
+			<header status="deleted">
+				<identifier>2dde6da4463d9635cca4f6ad90c99b2bd317fe1ba12d90c2a921b9fe160c210f</identifier>
+				<datestamp>2024-12-11T03:21:43Z</datestamp>
+				<setSpec>language:sv</setSpec>
+			</header>
+		</record>
+		<record>
+			<header status="deleted">
+				<identifier>967f0eca3a881658fa05632156e4168b5c54db568f97d531d7d4ff638ea62e08</identifier>
+				<datestamp>2024-12-11T03:21:43Z</datestamp>
+				<setSpec>language:en</setSpec><setSpec>openaire_data</setSpec>
+			</header>
+		</record>
+		<record>
+			<header>
+				<identifier>53b3946ddb431037aa99e4fccd86fe280a18b25e8ff9612e0f963ba0f2691e4e</identifier>
+				<datestamp>2024-12-11T03:21:42Z</datestamp>
+				<setSpec>language:en</setSpec><setSpec>openaire_data</setSpec>
+			</header>
+			<metadata>
+				<codeBook xmlns="ddi:codebook:2_5" version="2.5" xsi:schemaLocation="ddi:codebook:2_5 http://www.ddialliance.org/Specification/DDI-Codebook/2.5/XMLSchema/codebook.xsd">
+					<docDscr>
+						<citation>
+							<titlStmt>
+								<titl xml:lang="en">XML DDI-C 2.5 Documentation for study SN258-1.0</titl>
+							</titlStmt>
+							<prodStmt>
+								<producer xml:lang="en" abbr="UniData">UniData - Bicocca Data Archive</producer>
+								<copyright xml:lang="en">UniData metadata records are licensed under a Creative Commons Attribution-Noncommercial 3.0 Italian License</copyright>
+							</prodStmt>
+						</citation>
+					</docDscr>
+					<stdyDscr>
+						<citation>
+							<titlStmt>
+								<titl xml:lang="en">Global Risks and Uncertainty. Interviews with Young People in the City of Milan (2022-2023)</titl>
+								<parTitl xml:lang="it">Rischi globali e sicurezza. Interviste a giovani e giovani adulti nella città di Milano (2022-2023)</parTitl>
+								<IDNo xml:lang="en" agency="UniData">SN258</IDNo><IDNo xml:lang="en" agency="DOI">10.20366/unimib/unidata/SN258-1.0</IDNo>
+							</titlStmt>
+							<rspStmt>
+								<AuthEnty affiliation="Università degli Studi di Milano-Bicocca" xml:lang="en">Bergamo, Sonia
+								</AuthEnty>
+							</rspStmt>
+							<prodStmt>
+								<prodDate xml:lang="en">2024-10-16</prodDate>
+							</prodStmt>
+							<distStmt>
+								<distrbtr abbr="UniData" URI="https://www.unidata.unimib.it" xml:lang="en">UniData - Bicocca Data Archive</distrbtr>
+								<distDate xml:lang="en" date="2024-10-28"/>
+							</distStmt>
+							<verStmt>
+								<version date="2024-09-25" xml:lang="en"/><version date="2024-10-16" xml:lang="en"/>
+							</verStmt>
+							<holdings xml:lang="en" URI="http://dx.doi.org/10.20366/unimib/unidata/SN258-1.0">UniData - Bicocca Data Archive</holdings>
+						</citation>
+						<stdyInfo>
+							<subject>
+								<keyword xml:lang="en" vocab="UniData Category System" vocabURI="https://www.unidata.unimib.it/?tag=urban-context">urban context</keyword><keyword xml:lang="en" vocab="UniData Category System" vocabURI="https://www.unidata.unimib.it/?tag=italy">Italy</keyword><keyword xml:lang="en" vocab="UniData Category System" vocabURI="https://www.unidata.unimib.it/?tag=youth">youth</keyword><keyword xml:lang="en" vocab="UniData Category System" vocabURI="https://www.unidata.unimib.it/?tag=covid-19-en">Covid-19</keyword><keyword xml:lang="en" vocab="UniData Category System" vocabURI="https://www.unidata.unimib.it/?tag=young-adults">young adults</keyword><keyword xml:lang="en" vocab="UniData Category System" vocabURI="https://www.unidata.unimib.it/?tag=uncertainty">uncertainty</keyword>
+								<topcClas xml:lang="en" vocab="CESSDA Topic Classification">HEALTH - health policy</topcClas><topcClas xml:lang="en" vocab="CESSDA Topic Classification">HEALTH - physical fitness and exercise</topcClas><topcClas xml:lang="en" vocab="CESSDA Topic Classification">HEALTH - specific diseases and medical conditions</topcClas><topcClas xml:lang="en" vocab="CESSDA Topic Classification">PSYCHOLOGY</topcClas><topcClas xml:lang="en" vocab="CESSDA Topic Classification">SOCIAL STRATIFICATION AND GROUPINGS - youth</topcClas><topcClas xml:lang="en" vocab="CESSDA Topic Classification">SOCIETY AND CULTURE - social behaviour and attitudes</topcClas>
+							</subject>
+							<abstract xml:lang="en">The data comes from research within the field of the sociology of risk, aimed at exploring social representations of global risks, particularly those related to the COVID-19 pandemic. The long-term impact of pandemic COVID-19 on daily life is explored through qualitative research focusing on the role of age in managing uncertainty. The results show how the restrictions imposed during the pandemic continued to affect the daily lives of young people even after the emergency ended.    The data were collected through semi-structured interviews with a sample of individuals aged 15-34 years, residing in Milan. The interviews addressed the following topics:  - socio-biographical area: educational background, current studies, living situation, employment - daily life before the pandemic and current life - feelings evoked by some terms related to the pandemic, with reference to personal experience: physical distancing, quarantines, lockdown, etc. - habits developed during the pandemic that have become part of daily routine.</abstract>
+							<sumDscr>
+								<collDate xml:lang="en" date="2022-09-30" event="start"/><collDate xml:lang="en" date="2023-05-26" event="end"/>
+								<nation xml:lang="en">Italy</nation>
+								<geogCover xml:lang="en">Municipality of Milano</geogCover>
+								<anlyUnit xml:lang="en">individual<concept/></anlyUnit>
+								<universe xml:lang="en" clusion="I">Residents in the municipality of Milan aged between 15 to 34 years</universe>
+								<dataKind xml:lang="en">individual data</dataKind>
+							</sumDscr>
+						</stdyInfo>
+						<method>
+							<dataColl>
+								<timeMeth xml:lang="en">cross-section<concept/></timeMeth>
+								<sampProc xml:lang="en">41 individuals. Convenience sampling<concept/></sampProc>
+								<collMode xml:lang="en">face to face interview<concept/></collMode>
+							</dataColl>
+						</method>
+						<dataAccs>
+							<useStmt>
+								<restrctn xml:lang="en">Data are released in according to Creative Commons – Attribution 4.0 Licence, available &lt;a href="https://creativecommons.org/licenses/by/4.0/" target="_blank"&gt;here&lt;/a&gt;.</restrctn>
+								<citReq xml:lang="en">Bergamo, Sonia. (2022-2023) Global Risks and Uncertainty. Interviews with Young People in the City of Milan.  UniData - Bicocca Data Archive, Milan. Study Number SN258. Data file version 1.0 doi:10.20366/unimib/unidata/SN258-1.0</citReq>
+								<deposReq xml:lang="en">The user is obliged to quote all data and documents disseminated by UniData and used in the own publications, using the information previously showed. The user is also obliged to send UniData the bibliographic citations related to the publications where the requested data and documents are used</deposReq>
+							</useStmt>
+						</dataAccs>
+						<othrStdyMat>
+							<relMat xml:lang="en">
+								<citation>
+									<titlStmt>
+										<titl xml:lang="en">Methodological Notes</titl>
+										<IDNo xml:lang="en"/>
+									</titlStmt>
+								</citation>
+							</relMat>
+							<relPubl xml:lang="en">
+								<citation>
+									<titlStmt>
+										<titl xml:lang="en">Bergamo, S. (2023). Lo abbiamo fatto per loro. L’emergenza pandemica per le generazioni cosmopolitiche a Milano, Sicurezza e Scienze Sociali, 2/2023, Franco Angeli, pp. 51-64. (ISSN 2283-8740)</titl>
+									</titlStmt>
+									<distStmt>
+										<distDate xml:lang="en"/>
+									</distStmt>
+								</citation><citation>
+								<titlStmt>
+									<titl xml:lang="en">Bergamo, S. (2024). Embracing Uncertainty Post-COVID-19 Crisis. Insights from Youth in Milan. Health risk and society (forthcoming).</titl>
+								</titlStmt>
+								<distStmt>
+									<distDate xml:lang="en"/>
+								</distStmt>
+							</citation>
+							</relPubl>
+						</othrStdyMat>
+					</stdyDscr>
+					<fileDscr>
+					</fileDscr>
+				</codeBook>
+			</metadata>
+		</record>
+		<record>
+			<header>
+				<identifier>fbf98ec92c3e23f85bf9c9eb14aef49c4187a2179fdea5642015ff8f9fecf9be</identifier>
+				<datestamp>2024-12-11T03:20:06Z</datestamp>
+				<setSpec>language:en</setSpec><setSpec>openaire_data</setSpec>
+			</header>
+			<metadata>
+				<codeBook xmlns="ddi:codebook:2_5" version="2.5" xsi:schemaLocation="ddi:codebook:2_5 http://www.ddialliance.org/Specification/DDI-Codebook/2.5/XMLSchema/codebook.xsd">
+					<docDscr>
+						<citation>
+							<titlStmt>
+								<titl xml:lang="en">DDI2.5 XML CODEBOOK RECORD FOR STUDY NUMBER 993</titl>
+							</titlStmt>
+							<prodStmt>
+							</prodStmt>
+						</citation>
+					</docDscr>
+					<stdyDscr>
+						<citation>
+							<titlStmt>
+								<titl xml:lang="en">Political Literacy Survey : Hansard Society Schools Survey, 1975</titl>
+								<IDNo xml:lang="en" agency="UKDA">993</IDNo><IDNo xml:lang="en" agency="DOI">10.5255/UKDA-SN-993-1</IDNo>
+							</titlStmt>
+							<rspStmt>
+								<AuthEnty xml:lang="en">Social and Community Planning Research
+								</AuthEnty><AuthEnty xml:lang="en">Stradling, R., Hansard Society
+							</AuthEnty>
+							</rspStmt>
+							<prodStmt>
+								<copyright xml:lang="en">No information recorded</copyright>
+								<prodDate xml:lang="en"/>
+								<fundAg xml:lang="en">Leverhulme Trust</fundAg>
+							</prodStmt>
+							<distStmt>
+								<distrbtr xml:lang="en">UK Data Service</distrbtr>
+								<distDate xml:lang="en" date="1979-01-01T00:00:00Z"/>
+							</distStmt>
+							<verStmt>
+								<version date="1979-01-01T00:00:07Z" xml:lang="en"/>
+							</verStmt>
+							<holdings xml:lang="en" URI="http://doi.org/10.5255/UKDA-SN-993-1"/>
+						</citation>
+						<stdyInfo>
+							<subject>
+								<keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/e53409ed-4ff4-4c89-bb8c-a9a1f1b0e9ee">AGE</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/c9d3e816-6d7b-4ad7-ab41-f96f6d5d88da">ATTITUDES</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/209e0ca3-1f3a-4034-b762-744692a9258c">BUREAUCRACY</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/b7663b57-7c7b-4dfc-b7f2-8105b2ed201d">COMMUNISM</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/ef777527-b940-41a5-b65a-1caa40368ff2">COMPREHENSIVE SCHOOLS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/bc9b35e9-8730-4a2d-abb4-e3e496053af3">EDUCATIONAL EXPECTATIONS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/eceaaef0-1fa2-43a7-95b8-3635bcaf73d7">EDUCATIONAL POLICY</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/8e5e3a61-b5da-4b8c-b55c-22a8bf3955b5">EUROPEAN ECONOMIC COMMUNITY</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/921c807e-b6a8-472c-92fc-87821639bb11">EUROPEAN UNION</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/7439dcde-e961-40b5-885a-bec2edb0baee">FATHERS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/9d8972c0-5618-484c-8d25-2e77022d761e">FOOD SHORTAGES</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/12ceb9b9-9d15-4962-828e-35f4fc10083c">GENDER</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/690e04a8-0e94-4358-b256-1b43a49907f4">GENERATIONS (AGE)</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/99f1d63a-f672-4508-8a74-273da70bbc0d">GOVERNMENT</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/4a369e18-ff46-4deb-87b7-3266e3ec0f7b">HOUSING SHORTAGES</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/30718d3c-8435-4289-b3ef-10bacd2bf34f">INFLATION</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/10553da9-d6d9-4457-b5f8-e0efb6572ea9">INTERNATIONAL POLITICS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/dc0fc567-b3d0-49c9-a370-c47aa8c1dbf8">INTERPERSONAL COMMUNICATION</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/5e67468e-34a5-46a5-b594-a26a30efcbe9">INTERPERSONAL INFLUENCE</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/bd311e82-b485-4658-9968-7a3b870b3bcf">LABOUR RELATIONS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/fc23c717-9643-4ba5-be72-44e51453c0bc">LEGISLATURE</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/98515b38-cbbb-4e29-9f8e-34908b8be82e">MOTHERS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/817dde15-9de1-46cb-b9d1-d73faf5c1af1">NEWSPAPER READERSHIP</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/1414999f-5304-4ce5-a724-af2c8afd095b">NUCLEAR WARFARE</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/60aa1ed7-4815-4126-b778-bbc520dfc3a9">OVERPOPULATION</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/9a867096-b390-44fc-9d4d-a743b3af5a4c">PERSONAL EFFICACY</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/96f28e4e-1438-4c55-893f-21e8a0b056d8">POLITICAL ATTITUDES</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/482dbb37-096b-4564-aa48-0236b9d14400">POLITICAL AWARENESS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/c92878ec-20de-4c4b-95d8-344b059f2a68">POLITICAL INTEREST</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/e9f516dc-673b-45df-8c66-87a79ae6e5bb">POLITICIANS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/d2778dab-d1f6-4b40-88d7-d63c8331d903">POLITICS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/12f39465-21b8-4be0-875c-34e7ccd34ecd">POLLUTION</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/3028c685-1ec1-4c06-99ea-f9e60b683740">POLITICAL INFLUENCE</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/94545517-4795-47bb-9ae5-133cd99c1952">RADIO NEWS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/a461b19e-a393-4572-aabb-0b1d87493cd1">RAW MATERIALS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/9a9e80b4-c4fb-47a7-8adb-ebb050d62734">REASONING</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/baa6c7b0-09f6-49c6-aeac-4d0a16255c19">RESOURCES CONSERVATION</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/8825232a-c9c0-4969-81e3-15e4f73c87d5">SECONDARY EDUCATION</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/063e23b9-6065-486a-97c7-a13082829825">SECONDARY MODERN SCHOOLS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/b4ce2851-0817-4e43-8184-f3dc498aa924">SECONDARY SCHOOLS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/bc29055c-dca7-47f2-aa70-9f12cc4f148b">SELECTIVE SCHOOLS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/f703d8ac-baf6-4bd4-b4b9-296b4efe431e">SOCIO-ECONOMIC STATUS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/110d73e2-3a55-49d4-9d0b-3bd18e6c7731">TELEVISION NEWS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/45f985f6-861c-412f-a370-577faeaf6efa">TELEVISION PROGRAMMES</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/21962840-71d2-4deb-a08b-ee7e62e19302">TERRORISM</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/fcb74870-bbf2-4d22-9106-e21ec9821028">WAR</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/8f18a2e7-8369-412a-9bd6-5d29a7b6c5c7">YOUTH ACTIVITIES</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/69ac9d1d-69d5-4b62-86b5-fa816dac8425">SOCIOLOGY</keyword><keyword xml:lang="en" vocab="YEAR">1975</keyword><keyword xml:lang="en" vocab="GEO">England and Wales</keyword>
+								<topcClas xml:lang="en">Political behaviour and attitudes</topcClas><topcClas xml:lang="en">Compulsory and pre-school education</topcClas>
+							</subject>
+							<abstract xml:lang="en">&lt;P&gt;Abstract copyright UK Data Service and data collection copyright owner.&lt;/P&gt;</abstract><abstract xml:lang="en">The main aims of this survey were:&lt;br&gt; 1)To produce a reliable estimate of the extent of political knowledge and ignorance of 15 to 16 year-olds.&lt;br&gt; 2)To estimate a `yard stick' of political literacy against which to measure the effects of future developments in political education.&lt;br&gt; 3)To examine the sources of political information in our own society and their role as political educators.&lt;br&gt; 4)To provide information which can help to establish priorities for developing better curricula on political education - what needs to be taught, what gaps need to be filled and how.</abstract><abstract xml:lang="en">&lt;B&gt;Main Topics&lt;/B&gt;:&lt;BR&gt;</abstract><abstract xml:lang="en">Attitudinal/Behavioural Questions&lt;br&gt; Expected school leaving age, subjects studied at school, frequency of reading daily/Sunday newspapers, frequency of viewing TV news, current affairs programmes usually seen, frequency of listening to radio news, degree of interest in politics, frequency of discussing politics with parents, friends, perception of problems facing young people, knowledge of party stance on various issues, e.g. selling of council houses, taxation, private education. Knowledge of current Prime Minister/opposition leader/Liberal Party leader/Foreign Secretary/number of M.P.'s in House of Commons/local M.P./Parliamentary constituency in which respondent lives. Knowledge of political procedures, most important Parliamentary function, knowledge of pressure groups influencing government decisions, knowledge of who controls public services (water supply, social security, electricity, housing). Knowledge of membership of EEC/countries with Communist Governments/international politics. Attitude to conflict between 'Law and Order and Free Speech'/between `Council Planners and Landowners'/between 'Individual Liberty and Welfare'. Attitude to politics and politicians, assessment of extent of own knowledge of politics and current affairs, assessment of personal efficacy at home/at school. Indices of political knowledge.&lt;br&gt; Background Variables&lt;br&gt; Region, type of school, age, sex, father's/mother's occupation.</abstract>
+							<sumDscr>
+								<collDate xml:lang="en" event="single"/><collDate xml:lang="en" date="1975-01-01T00:00:00Z" event="start"/>
+								<nation xml:lang="en">England and Wales</nation>
+								<anlyUnit xml:lang="en">Individuals<concept/></anlyUnit><anlyUnit xml:lang="en">Groups<concept/></anlyUnit><anlyUnit xml:lang="en">National<concept/></anlyUnit><anlyUnit xml:lang="en">Pupils<concept/></anlyUnit><anlyUnit xml:lang="en">School leavers<concept/></anlyUnit>
+								<universe xml:lang="en" clusion="I">Pupils aged 15-16 in secondary schools in England and Wales</universe>
+							</sumDscr>
+						</stdyInfo>
+						<method>
+							<dataColl>
+								<timeMeth xml:lang="en">Cross-sectional (one-time) study<concept/></timeMeth>
+								<sampProc xml:lang="en">One-stage stratified or systematic random sample<concept/></sampProc><sampProc xml:lang="en">firstly, one third of the 108 Local Education Authorities, established after the Local Government Act of 1972, were randomly selected. 33 agreed to participate in the project. Next, all the state secondary schools within these Authorities were listed under four separate headings: Secondary Modern, Grammar, Coexisting and Non-Coexisting Comprehensives. A sampling frame was drawn up based on the national distribution of these four lists in direct proportion to their national distribution. 72 schools agreed to participate. The entire fifth form in each school completed questionnaries.<concept/></sampProc>
+								<collMode xml:lang="en">Postal survey<concept/></collMode>
+							</dataColl>
+						</method>
+						<dataAccs>
+							<useStmt>
+								<restrctn xml:lang="en">&lt;p&gt;The Data Collection is available to UK Data Service registered users subject to the &lt;a href="https://ukdataservice.ac.uk/app/uploads/cd137-enduserlicence.pdf" target="_blank"&gt;End User Licence Agreement&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Commercial use of the data requires approval from the data owner or their nominee. The UK Data Service will contact you.&lt;/p&gt;</restrctn>
+								<conditions xml:lang="en">See &lt;restrctn&gt;</conditions>
+							</useStmt>
+						</dataAccs>
+						<othrStdyMat>
+							<relPubl xml:lang="en">
+								Stradling, R. (1977) &lt;i&gt;The political awareness of the school leaver&lt;/i&gt;, London: Hansard Society.
+								<citation>
+									<titlStmt>
+										<titl xml:lang="en"/>
+										<IDNo xml:lang="en" agency="URN">The political awareness of the school leaver</IDNo>
+									</titlStmt>
+									<distStmt>
+										<distDate xml:lang="en"/>
+									</distStmt>
+									<holdings xml:lang="en" URI="The political awareness of the school leaver"/>
+								</citation>
+							</relPubl>
+						</othrStdyMat>
+					</stdyDscr>
+					<fileDscr>
+					</fileDscr>
+				</codeBook>
+			</metadata>
+		</record>
+		<record>
+			<header>
+				<identifier>e97d29a96d0e4943d757efa95101a2904826065d947740f1fb05fe6e2a0930d5</identifier>
+				<datestamp>2024-12-11T03:20:05Z</datestamp>
+				<setSpec>language:en</setSpec><setSpec>openaire_data</setSpec>
+			</header>
+			<metadata>
+				<codeBook xmlns="ddi:codebook:2_5" version="2.5" xsi:schemaLocation="ddi:codebook:2_5 http://www.ddialliance.org/Specification/DDI-Codebook/2.5/XMLSchema/codebook.xsd">
+					<docDscr>
+						<citation>
+							<titlStmt>
+								<titl xml:lang="en">DDI2.5 XML CODEBOOK RECORD FOR STUDY NUMBER 992</titl>
+							</titlStmt>
+							<prodStmt>
+							</prodStmt>
+						</citation>
+					</docDscr>
+					<stdyDscr>
+						<citation>
+							<titlStmt>
+								<titl xml:lang="en">Road Traffic and the Environment, 1972</titl>
+								<IDNo xml:lang="en" agency="UKDA">992</IDNo><IDNo xml:lang="en" agency="DOI">10.5255/UKDA-SN-992-1</IDNo>
+							</titlStmt>
+							<rspStmt>
+								<AuthEnty xml:lang="en">Social and Community Planning Research
+								</AuthEnty>
+							</rspStmt>
+							<prodStmt>
+								<copyright xml:lang="en">No information recorded</copyright>
+								<prodDate xml:lang="en"/>
+								<fundAg xml:lang="en">Office of Population Censuses and Surveys</fundAg>
+							</prodStmt>
+							<distStmt>
+								<distrbtr xml:lang="en">UK Data Service</distrbtr>
+								<distDate xml:lang="en" date="1978-01-01T00:00:00Z"/>
+							</distStmt>
+							<verStmt>
+								<version date="1978-01-01T00:00:07Z" xml:lang="en"/>
+							</verStmt>
+							<holdings xml:lang="en" URI="http://doi.org/10.5255/UKDA-SN-992-1"/>
+						</citation>
+						<stdyInfo>
+							<subject>
+								<keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/e53409ed-4ff4-4c89-bb8c-a9a1f1b0e9ee">AGE</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/c41e1f99-824a-4d8f-9428-c42b9ae17164">AIR POLLUTION</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/f16ef2d9-e6e0-4e5e-9a71-0b916e7b6a1c">AIR TRAFFIC NOISE</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/c9d3e816-6d7b-4ad7-ab41-f96f6d5d88da">ATTITUDES</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/9600a09d-8a45-43d1-8ee4-3c74dbb08b1b">BUSES</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/45100da9-69d4-4eb9-b55c-cc81bf6e5125">CHILDREN</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/a194a0b7-0884-4491-816c-498e2b9dbe54">COMMUNITY IDENTIFICATION</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/248e66a2-0d37-43f1-ae94-d96cd9267565">COMMUTING</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/1856e186-3ee6-4c35-8584-d76b4a52b7a5">EDUCATIONAL BACKGROUND</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/4fd4dd2d-213e-445f-afc4-329496510a60">EDUCATIONAL FACILITIES</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/50f3f992-f53c-49d3-b440-b52e7f6e617b">ELECTORS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/61a206ee-9f6e-41ac-bef1-cfb586bcf482">EMPLOYMENT</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/fff81365-b1d5-4f30-a41a-3fcd0213ebd7">ENVIRONMENTAL DEGRADATION</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/24b9ea09-0514-4573-bd58-4bd785e7915f">ENVIRONMENTAL QUALITY</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/7afd12de-cbdc-4fb0-8e7b-18294c515ad7">FAMILIES</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/12ceb9b9-9d15-4962-828e-35f4fc10083c">GENDER</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/10ed2233-7048-4964-8285-93a8099a86a0">HOUSEHOLDS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/616272a6-b024-480f-892d-b31378aa0a82">HOUSING</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/de77333c-b254-41d5-b54a-37a60d3277ea">HUMAN SETTLEMENT</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/818b9280-52d0-4235-bdd5-f543055bf3ff">INCOME</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/b8ddb80c-04cf-478e-9211-810008812ceb">INDUSTRIAL NOISE</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/062b9d44-2ad6-4b5a-bd5a-7fb99e86f473">MOTOR VEHICLES</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/7578abc7-1f64-4201-9a75-de7b6d5f4eb4">NOISE MEASUREMENTS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/3d3e5f00-7d07-4679-b1ac-11c9f94f44bd">EXPOSURE TO NOISE</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/109136cf-0d85-40d0-96de-e2584bbc42ef">OCCUPATIONS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/0f4e1698-0d01-4e10-ac9a-15562a584a71">PEDESTRIANS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/1ab0f2ea-7087-4a58-bccf-3b540b45e13f">PLACE OF RESIDENCE</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/d595c553-9d88-4a2a-ab59-d1c2e602908e">POPULATION DENSITY</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/e8a7267a-a69c-4888-aa3d-b24df31d137c">QUALITY OF LIFE</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/615b6923-1ae4-48b6-91d4-524a1961044b">RAIL TRAFFIC NOISE</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/b435faa9-1db0-4a03-9574-62bd20af4bd1">RESIDENTIAL MOBILITY</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/f6ae8b66-5d15-4e88-b88e-bce331421704">ROAD SAFETY</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/70bfe83c-cde6-4a99-87e8-c89c9322d2bb">ROAD TRAFFIC</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/88ce9834-5e44-4734-8788-78114cfb7dcf">ROAD TRAFFIC NOISE</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/084e585e-c7ea-4a48-a6bc-3f97dd1f9e5e">ROAD USERS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/6ea11121-70f1-4a6f-bdba-68ed7f9271c2">ROAD VEHICLES</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/8810f687-d87a-4bd4-a48d-3841737f80dc">ROADS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/5cbac331-0d55-4ac6-9d0e-bd6c9f17b2c2">SATISFACTION</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/1f30e8ec-0172-4ad2-aaab-70dd669cd53e">SHOPS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/626b66d8-ca2f-4bad-a6b3-06bdbba29e90">SMELL</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/5b412bcd-4680-419c-9d27-6bba6f36b3bb">SOCIAL ENVIRONMENT</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/f703d8ac-baf6-4bd4-b4b9-296b4efe431e">SOCIO-ECONOMIC STATUS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/f9fb2933-ae21-4d50-ab04-74d85e02eb50">SOUND INSULATION</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/b3623dd9-fefe-4f46-9c24-160d9f606bb8">SPEED LIMITS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/95f115cc-3f3d-483f-ac7e-4eb8d1cbe23e">SPORTS FACILITIES</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/d6ad859e-efb9-4a1b-80b9-150b70da87e2">TELEVISION RECEIVERS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/5f92d319-f1ba-4022-aaeb-47796578f949">TRAFFIC</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/5e139e75-bee8-44e6-9987-1d146f99419d">TRAFFIC NOISE</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/47255200-b238-480f-95ab-27e871c96e76">TRAFFIC REGULATIONS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/23fb1d2c-f2eb-4759-a4b9-586a671fe169">TRANSPORT</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/b7254f2f-7452-4475-8624-cd2bf52c6be8">TRANSPORT INFRASTRUCTURE</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/2d0cd194-2a56-42c7-ab95-7773d0a2f8e7">TRAVELLING TIME</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/4f7cb09d-1edd-4ef7-a14a-90c858aefd23">TRUCKS</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/1736e013-29d2-487c-a568-479fb644700b">WALKING</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/09cc6639-7c13-4999-a335-e23b4e3f155d">HOURS OF WORK</keyword><keyword xml:lang="en" vocab="HASSET" vocabURI="https://hasset.ukdataservice.ac.uk/3b09501b-789c-493a-b4eb-5912635c3b25">FARM VEHICLES</keyword><keyword xml:lang="en" vocab="YEAR">1972</keyword><keyword xml:lang="en" vocab="GEO">England</keyword>
+								<topcClas xml:lang="en">Environment and conservation</topcClas>
+							</subject>
+							<abstract xml:lang="en">&lt;P&gt;Abstract copyright UK Data Service and data collection copyright owner.&lt;/P&gt;</abstract><abstract xml:lang="en">The aim of this study was to assess the amount of disturbance caused by road traffic.</abstract><abstract xml:lang="en">&lt;B&gt;Main Topics&lt;/B&gt;:&lt;BR&gt;</abstract><abstract xml:lang="en">Attitudinal/Behavioural Questions&lt;br&gt; Likes/dislikes about living in area, opinion of attractiveness, overall satisfaction/dissatisfaction, whether area is improving or deteriorating, strength of sense of belonging, satisfaction/dissatisfaction with house/ flat, whether would like to move and reasons. Agreement/disagreement with several statements about the area concerning, for example, bus services, shops, traffic noise, opinion of road on which respondent lives, how child travels to school, age at which it would be safe to allow children to go out alone, number of walks taken in area per week and purpose, whether any roads were difficult or dangerous to cross and degree of concern. Whether traffic caused annoyance in any other way (eg. noise/fumes), whether any other roads in area are dangerous, whether it is ever difficult to walk on any pavements because of traffic, degree of concern felt for self and others, amount of difficulty experienced with road on which respondent lives, which type of vehicle gives out the worst fumes and how this compares to any other fumes in the area, effects of traffic fumes on self and others, opinion of how fresh the air is. Whether noise and fumes have affected respondent's use of garden, whether visits any other area where these problems are worse. Which effects of road traffic cause the most problems in the area, whether ever complained to authorities, whether believes more could be done to remedy problem, whether traffic noise or fumes present the greatest problem to the country overall. Agreement/disagreement with several statements concerning cars and traffic (eg. that cars ought to be banned from town centres).&lt;br&gt; Background Variables&lt;br&gt; Length of residence in area/at particular address, number of different addresses in last ten years, number of school age children in household (sex and age of youngest), accommodation tenure, age and type of house/ flat, number of storeys and lowest storey occupied, position of kitchen/living room/bedroom as regards road, whether any double glazing, television ownership and position, health problems in past month, employment status and occupation (head of household and respondent), working hours, method of travel to work and time taken (head of household), age finished full-time education, age, sex, household composition, total household income. Whether house has garden/yard, vehicle ownership (household), whether holds driving licence and length of time.&lt;br&gt; OBSERVATION RECORD&lt;br&gt; Location of dwelling (in relation to roads/junctions/corners and bends/crossroads/roundabouts), whether road is cul-de-sac, whether building is level with road, whether road is built up or in a steep sided cutting, whether there is a fence/wall between road and dwelling and height, number of carriageways, speed limit, parking restrictions, bus route, gradient, type of road (residential/industrial), distance from pedestrian crossing place and traffic stopping place. Assessment of delay in crossing road and number of parked vehicles within fifty yards of address. Traffic counts.&lt;br&gt; TRAFFIC NOISE MEASUREMENTS&lt;br&gt; Date, position of microphone, frequency of recording, noise measurement results, traffic counts (total vehicles and proportional heavy vehicles), unusual features of site (eg. road works, pedestrian precinct, farm machinery).</abstract>
+							<sumDscr>
+								<collDate xml:lang="en" event="single"/><collDate xml:lang="en" date="1972-01-01T00:00:00Z" event="start"/>
+								<nation xml:lang="en">England</nation>
+								<anlyUnit xml:lang="en">Individuals<concept/></anlyUnit><anlyUnit xml:lang="en">Traffic<concept/></anlyUnit><anlyUnit xml:lang="en">National<concept/></anlyUnit><anlyUnit xml:lang="en">Adults<concept/></anlyUnit><anlyUnit xml:lang="en">Noise<concept/></anlyUnit>
+								<universe xml:lang="en" clusion="I">Adults resident in private households in England</universe>
+							</sumDscr>
+						</stdyInfo>
+						<method>
+							<dataColl>
+								<timeMeth xml:lang="en">Cross-sectional (one-time) study<concept/></timeMeth>
+								<sampProc xml:lang="en">Multi-stage stratified random sample<concept/></sampProc><sampProc xml:lang="en">main Sample: firstly, LAAs in England were stratified by region and by population density. 150 were then selected as PSUs with pps. Secondly, 2 wards (or parishes) were selected with pps and thirdly, 24 addresses were selected from the electoral registers again with pps. An eligible person from each household was selected by means of a numerical selection grid.&lt;br&gt; Sub-sample: 1,200 addresses were selected from within the main sample for TRRL measurements.&lt;br&gt; Special locations: one street in each of 46 LAAs was selected as having an abnormally high level of traffic disturbance by the Dept. of the Environment and OPCS' Sampling Branch . Ten addresses were then selected from each area.<concept/></sampProc>
+								<collMode xml:lang="en">Face-to-face interview<concept/></collMode><collMode xml:lang="en">Observation<concept/></collMode><collMode xml:lang="en">Noise measurements<concept/></collMode>
+							</dataColl>
+						</method>
+						<dataAccs>
+							<useStmt>
+								<restrctn xml:lang="en">&lt;p&gt;The Data Collection is available to UK Data Service registered users subject to the &lt;a href="https://ukdataservice.ac.uk/app/uploads/cd137-enduserlicence.pdf" target="_blank"&gt;End User Licence Agreement&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Commercial use of the data requires approval from the data owner or their nominee. The UK Data Service will contact you.&lt;/p&gt;</restrctn>
+								<conditions xml:lang="en">See &lt;restrctn&gt;</conditions>
+							</useStmt>
+						</dataAccs>
+						<othrStdyMat>
+							<relPubl xml:lang="en">
+								Hedges, B. (1973) &lt;i&gt;Road traffic and the environment: methodological report&lt;/i&gt; [Research report], London: Social and Community Planning Research.
+								<citation>
+									<titlStmt>
+										<titl xml:lang="en"/>
+										<IDNo xml:lang="en" agency="URN">Road traffic and the environment</IDNo>
+									</titlStmt>
+									<distStmt>
+										<distDate xml:lang="en"/>
+									</distStmt>
+									<holdings xml:lang="en" URI="Road traffic and the environment"/>
+								</citation>
+							</relPubl><relPubl xml:lang="en">
+							Fernando, E.,  Morton-Williams, J. and Hedges, B. (1978) &lt;i&gt;Road traffic and the environment&lt;/i&gt; [Research report], London: Social and Community Planning Research.
+							<citation>
+								<titlStmt>
+									<titl xml:lang="en"/>
+									<IDNo xml:lang="en" agency="URN">Road traffic and the environment</IDNo>
+								</titlStmt>
+								<distStmt>
+									<distDate xml:lang="en"/>
+								</distStmt>
+								<holdings xml:lang="en" URI="Road traffic and the environment"/>
+							</citation>
+						</relPubl>
+						</othrStdyMat>
+					</stdyDscr>
+					<fileDscr>
+					</fileDscr>
+				</codeBook>
+			</metadata>
+		</record>
+		<resumptionToken completeListSize="31984" cursor="0">cursor%3A0%26from%3ANone%26until%3A2025-04-04T12%3A38%3A29Z%26set%3ANone%26completeListSize%3A31984%26metadataPrefix%3Aoai_ddi25</resumptionToken>
+	</ListRecords>
+</OAI-PMH>

@@ -62,4 +62,36 @@ class ValidationEngineTest
 		assertThat( validationReport.schemaViolations() ).isNotEmpty();
 		assertThat( validationReport.constraintViolations() ).isNotEmpty();
 	}
+
+	@Test
+	void shouldValidateMultipleDocument() throws IOException, SAXException, NotDocumentException
+	{
+		// Init
+		var validatorFactory = new CessdaMetadataValidatorFactory();
+		var validatorEngine = new ValidatorEngine( validatorFactory );
+
+		// Get the document and the profile
+		var document = this.getClass().getResource( "/list-records-response.xml" );
+		var profileResource = this.getClass().getResource( "/static/profiles/cdc/ddi-2.5/1.0.4/profile.xml" );
+
+		// Assert that the profile and document are found
+		assertThat( profileResource ).isNotNull();
+		assertThat( document ).isNotNull();
+
+		// Validate
+		var profile = validatorFactory.newProfile( profileResource );
+		var documentResource = new UrlResource( document );
+		var report = validatorEngine.validate(
+			documentResource,
+			profile,
+			BASIC
+		);
+
+		// Schema and CMV violations should be found
+		assertThat( report ).allSatisfy( (k, v) -> {
+			assertThat( k.toString() ).contains( document.toString() );
+			assertThat( v.schemaViolations() ).isEmpty();
+			assertThat( v.constraintViolations() ).hasSize( 10 );
+		} );
+	}
 }

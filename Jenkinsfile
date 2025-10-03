@@ -8,7 +8,8 @@ pipeline {
     environment {
         productName = "cmv"
         componentName = "server"
-        IMAGE_TAG = "${DOCKER_ARTIFACT_REGISTRY}/${productName}-${componentName}:${env.BRANCH_NAME.toLowerCase().replaceAll('[^a-z0-9\\.\\_\\-]', '-')}-${env.BUILD_NUMBER}"
+		IMAGE_TAG = "${GIT_COMMIT}-${env.BUILD_NUMBER}"
+        DESTINATION_IMAGE = "${DOCKER_ARTIFACT_REGISTRY}/${productName}-${componentName}:${IMAGE_TAG}"
     }
 
     agent {
@@ -57,20 +58,19 @@ pipeline {
         }
 		stage('Build Docker image') {
 			steps {
-				sh "docker build -t ${IMAGE_TAG} ."
+				sh "docker build -t ${DESTINATION_IMAGE} ."
 			}
 		}
 		stage('Push Docker image') {
 			steps {
 				sh "gcloud auth configure-docker ${ARTIFACT_REGISTRY_HOST}"
-				sh "docker push ${IMAGE_TAG}"
-				sh "gcloud artifacts docker tags add ${IMAGE_TAG} ${DOCKER_ARTIFACT_REGISTRY}/${productName}-${componentName}:${env.BRANCH_NAME}-latest"
+				sh "docker push ${DESTINATION_IMAGE}"
 			}
 			when { branch 'main' }
 		}
         stage('Deploy CMV Server') {
             steps {
-                build job: 'cessda.cmv.deploy/main', parameters: [string(name: 'serverImageTag', value: "${env.BRANCH_NAME}-${env.BUILD_NUMBER}")], wait: false
+                build job: 'cessda.cmv.deploy/main', parameters: [string(name: 'serverImageTag', value: "${IMAGE_TAG}")], wait: false
             }
             when { branch 'main' }
         }
