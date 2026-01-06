@@ -4,7 +4,7 @@ package eu.cessda.cmv.server;
  * #%L
  * CESSDA Metadata Validator
  * %%
- * Copyright (C) 2020 - 2025 CESSDA ERIC
+ * Copyright (C) 2020 - 2026 CESSDA ERIC
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
