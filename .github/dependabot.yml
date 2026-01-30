@@ -12,3 +12,5 @@ updates:
     ignore:
         - dependency-name: "net.logstash.logback:logstash-logback-encoder"
           versions: ["[7.4,)"]
+        - dependency-name: "org.springframework.boot:spring-boot-starter-parent"
+          update-types: ["version-update:semver-major"]
