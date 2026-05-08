@@ -82,7 +82,7 @@ public class ValidationView extends VerticalLayout implements View
 	private final ProgressBar progressBar;
 
 	// Computation disposable
-	private Disposable subscription;
+	private Disposable subscription = null;
 
 	public ValidationView( @Autowired ValidatorEngine validationService,
 						   @Autowired List<Resource> demoDocuments,
@@ -288,7 +288,7 @@ public class ValidationView extends VerticalLayout implements View
 	/**
 	 * Run the validation using the currently selected profile and documents.
 	 *
-	 * @implNote This method is synchronized to ensure that only one validation can occur per UI instance.
+	 * @implNote This method is synchronised to ensure that only one validation can occur per UI instance.
 	 */
 	@SuppressWarnings( { "java:S3958" } )
 	private synchronized void validate()
@@ -410,7 +410,10 @@ public class ValidationView extends VerticalLayout implements View
 	public void detach()
 	{
 		// Terminate any running validations
-		subscription.dispose();
+		if (subscription != null)
+		{
+			subscription.dispose();
+		}
 		super.detach();
 	}
 }
