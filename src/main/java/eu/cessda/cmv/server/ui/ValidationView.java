@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -82,7 +82,7 @@ public class ValidationView extends VerticalLayout implements View
 	private final ProgressBar progressBar;
 
 	// Computation disposable
-	private Disposable subscription;
+	private Disposable subscription = null;
 
 	public ValidationView( @Autowired ValidatorEngine validationService,
 						   @Autowired List<Resource> demoDocuments,
@@ -288,7 +288,7 @@ public class ValidationView extends VerticalLayout implements View
 	/**
 	 * Run the validation using the currently selected profile and documents.
 	 *
-	 * @implNote This method is synchronized to ensure that only one validation can occur per UI instance.
+	 * @implNote This method is synchronised to ensure that only one validation can occur per UI instance.
 	 */
 	@SuppressWarnings( { "java:S3958" } )
 	private synchronized void validate()
@@ -331,9 +331,7 @@ public class ValidationView extends VerticalLayout implements View
 				try
 				{
 					// Attempt to split the document
-					Map<Resource, ValidationReport> reportMap;
-					reportMap = validationService.validate( documentResource, uiProfile.profile(), validationGate );
-
+					var reportMap = validationService.validate( documentResource, uiProfile.profile(), validationGate );
 					return Flux.fromIterable( reportMap.entrySet() );
 				}
 				catch ( IOException | SAXException | NotDocumentException e )
@@ -412,7 +410,10 @@ public class ValidationView extends VerticalLayout implements View
 	public void detach()
 	{
 		// Terminate any running validations
-		subscription.dispose();
+		if (subscription != null)
+		{
+			subscription.dispose();
+		}
 		super.detach();
 	}
 }
