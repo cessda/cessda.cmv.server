@@ -14,6 +14,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - *Fixed (for any bug fixes)*  
 - *Security (in case of vulnerabilities)*
 
+## [4.1.0] - 2026-06-05
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20523184.svg)](https://doi.org/10.5281/zenodo.20523184)
+
+### Added
+
+* Added a cancellation button to cancel long-running validations  ([#170](https://github.com/cessda/cessda.cmv.server/issues/170)
+* Added the Prometheus Micrometer registry to the POM ([PR-249](https://github.com/cessda/cessda.cmv.server/pull/249))
+* Added the ability to validate OAI-PMH ListRecords responses ([#250](https://github.com/cessda/cessda.cmv.server/issues/250))
+
+### Changed
+
+* Updated built-in metadata profiles ([#301](https://github.com/cessda/cessda.cmv.server/issues/301))
+
+### Build
+
+* Derive the image name from the source Git commit and the Jenkins build number (Part of [#273](https://github.com/cessda/cessda.cmv.server/issues/273))
+
 ## [4.0.1] - 2025-02-04
 
 ### Added
