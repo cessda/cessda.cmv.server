@@ -246,11 +246,11 @@ public class ValidationView extends VerticalLayout implements View
 			log.debug( "\"{}\" is a ListRecords response", documentResource );
 			return Optional.of( documentResource );
 		}
-		catch ( IllegalArgumentException e )
+		catch ( NotDocumentException e )
 		{
 			log.debug( NOT_LIST_RECORDS_RESPONSE, documentResource );
 		}
-		catch ( IOException | NotDocumentException e )
+		catch ( IOException e )
 		{
 			Notification.show( e.getMessage(), Notification.Type.WARNING_MESSAGE );
 			return Optional.empty();
