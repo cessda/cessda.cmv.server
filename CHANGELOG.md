@@ -14,13 +14,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - *Fixed (for any bug fixes)*  
 - *Security (in case of vulnerabilities)*
 
+## [4.1.3] - 2026-07-01
+
+### Fixed
+
+- Fixed not accepting uploaded XMLs that were not an OAI-PMH ListRecords response ([#307](https://github.com/cessda/cessda.cmv.server/issues/307))
+
 ## [4.1.0] - 2026-06-05
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20523184.svg)](https://doi.org/10.5281/zenodo.20523184)
 
 ### Added
 
-* Added a cancellation button to cancel long-running validations  ([#170](https://github.com/cessda/cessda.cmv.server/issues/170)
+* Added a cancellation button to cancel long-running validations  ([#170](https://github.com/cessda/cessda.cmv.server/issues/170))
 * Added the Prometheus Micrometer registry to the POM ([PR-249](https://github.com/cessda/cessda.cmv.server/pull/249))
 * Added the ability to validate OAI-PMH ListRecords responses ([#250](https://github.com/cessda/cessda.cmv.server/issues/250))
 
@@ -230,6 +236,8 @@ The built-in profiles have been updated with the necessary changes.
 - Show notification if DDI document recognition fails ([#19](https://github.com/cessda/cessda.cmv.server/issues/19))
 - Change endpoints urls to be consistent with other CESSDA products ([#18](https://github.com/cessda/cessda.cmv.server/issues/18))
 
+[4.1.3]: https://github.com/cessda/cessda.cmv.server/releases/tag/4.1.3
+[4.1.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/4.1.0
 [4.0.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/4.0.1
 [4.0.0]: https://github.com/cessda/cessda.cmv.server/releases/tag/4.0.0
 [3.0.1]: https://github.com/cessda/cessda.cmv.server/releases/tag/3.0.1
