@@ -99,18 +99,21 @@ public class Server extends SpringBootServletInitializer
 	{
 		log.info( "Loading built-in profiles" );
 
-		// Load CMV 4 compatible profiles only
-		var resources = new ArrayList<Resource>(8);
-		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-1.2.2/3.1.0/profile.xml" ) );
-		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-1.2.2/3.1.0/profile-mono.xml" ) );
-		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-2.5/3.1.0/profile.xml" ) );
-		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-2.5/3.1.0/profile-mono.xml" ) );
-		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-3.2/3.0.0/profile.xml" ) );
-		resources.add( applicationContext.getResource( "classpath:static/profiles/cdc/ddi-3.3/3.0.0/profile.xml" ) );
-		resources.add( applicationContext.getResource( "classpath:static/profiles/eqb/ddi-2.5/1.0.0/profile.xml" ) );
-		resources.add( applicationContext.getResource( "classpath:static/profiles/eqb/ddi-3.2/0.2.0/profile.xml" ) );
+		// Load latest version of CMV profiles, this helps keep the profile selector dropdown manageable
+		var resources = new Resource[] {
+		 	applicationContext.getResource( "classpath:static/profiles/cdc/ddi-1.2.2/3.1.0/profile.xml" ) ,
+			applicationContext.getResource( "classpath:static/profiles/cdc/ddi-1.2.2/3.1.0/profile-mono.xml" ),
+			applicationContext.getResource( "classpath:static/profiles/cdc/ddi-2.5/3.1.0/profile.xml" ),
+			applicationContext.getResource( "classpath:static/profiles/cdc/ddi-2.5/3.1.0/profile-mono.xml" ),
+			applicationContext.getResource( "classpath:static/profiles/cdc/ddi-2.6/2.1.0/profile.xml" ),
+			applicationContext.getResource( "classpath:static/profiles/cdc/ddi-2.6/2.1.0/profile-mono.xml" ),
+			applicationContext.getResource( "classpath:static/profiles/cdc/ddi-3.2/3.0.0/profile.xml" ),
+			applicationContext.getResource( "classpath:static/profiles/cdc/ddi-3.3/3.0.0/profile.xml" ),
+			applicationContext.getResource( "classpath:static/profiles/eqb/ddi-2.5/1.0.0/profile.xml" ),
+			applicationContext.getResource( "classpath:static/profiles/eqb/ddi-3.2/0.2.0/profile.xml" )
+		};
 
-		var profiles = new ArrayList<UIProfile>(resources.size());
+		var profiles = new ArrayList<UIProfile>(resources.length);
 		for ( var resource : resources )
 		{
 			log.debug( "Loading profile from \"{}\"", resource );
@@ -125,7 +128,7 @@ public class Server extends SpringBootServletInitializer
 			}
 		}
 
-		return profiles;
+		return List.copyOf( profiles );
 	}
 
 	@Bean
@@ -145,6 +148,7 @@ public class Server extends SpringBootServletInitializer
 	public List<Resource> demoDocuments() throws IOException
 	{
 		log.info( "Discovering built-in documents" );
+
 		var resources = applicationContext.getResources("classpath*:**/demo-documents/ddi-v25/*.xml");
 		var excludedResources = applicationContext.getResources( "classpath*:**/demo-documents/ddi-v25/*profile*.xml");
 
@@ -156,7 +160,7 @@ public class Server extends SpringBootServletInitializer
 			log.debug( "\"{}\" excluded", excluded );
 		}
 
-		return new ArrayList<>( includedResourcesSet );
+		return List.copyOf( includedResourcesSet );
 	}
 
 	@Bean
