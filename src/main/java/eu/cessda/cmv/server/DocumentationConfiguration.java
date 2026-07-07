@@ -39,7 +39,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Configures the web application to serve the documentation and metadata profiles.
@@ -128,10 +127,15 @@ public class DocumentationConfiguration implements WebMvcConfigurer
 		resolver.setCustomArgumentResolvers( defaultResolver.getCustomArgumentResolvers() );
 		resolver.setCustomReturnValueHandlers( defaultResolver.getCustomReturnValueHandlers() );
 		resolver.afterPropertiesSet();
-		resolver.setReturnValueHandlers( Objects.requireNonNull( defaultResolver.getReturnValueHandlers() )
-				.getHandlers() );
-		resolver.setArgumentResolvers( Objects.requireNonNull( defaultResolver.getArgumentResolvers() )
-				.getResolvers() );
+
+		var returnValueHandlers = defaultResolver.getReturnValueHandlers();
+		assert returnValueHandlers != null;
+		resolver.setReturnValueHandlers( returnValueHandlers.getHandlers() );
+
+		var argumentResolvers = defaultResolver.getArgumentResolvers();
+		assert argumentResolvers != null;
+		resolver.setArgumentResolvers( argumentResolvers.getResolvers() );
+
 		resolvers.add( resolver );
 	}
 
