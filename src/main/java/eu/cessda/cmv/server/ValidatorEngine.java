@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -55,7 +55,8 @@ public class ValidatorEngine
 
 		// Find the resources for the XML schemas
 		var schemaURLs = new URL[] {
-			this.getClass().getResource("/static/schemas/codebook/codebook.xsd"),
+			this.getClass().getResource("/static/schemas/codebook/2.5/codebook.xsd"),
+			this.getClass().getResource("/static/schemas/codebook/2.6/codebook.xsd"),
 			this.getClass().getResource("/static/schemas/lifecycle/3.2/instance.xsd"),
 			this.getClass().getResource("/static/schemas/lifecycle/3.3/instance.xsd"),
 			this.getClass().getResource("/static/schemas/nesstar/Version1-2-2.xsd"),
