@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,8 +19,8 @@
  */
 package eu.cessda.cmv.server.ui;
 
-import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.*;
+import com.vaadin.annotations.JavaScript;
 import com.vaadin.navigator.NavigationStateManager;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewProvider;
@@ -37,7 +37,7 @@ import java.util.Locale;
 
 @Title( "CESSDA Metadata Validator" )
 @StyleSheet( { "https://fonts.googleapis.com/css?family=Source+Sans+Pro:100,200,300,400,500,600,700,800,900" } )
-@JavaScript( { "https://code.jquery.com/jquery-3.6.0.min.js", "theme://helpdesk.js" } )
+@JavaScript( { "https://code.jquery.com/jquery-3.6.0.min.js", "theme://helpdesk.js", "theme://matomo.js" } )
 @Theme( "cmv" )
 @SpringUI
 @Push
@@ -49,8 +49,13 @@ public class UiView extends UI
 
 	public static final String CONTAINER = "container";
 
+	private final ViewProvider viewProvider;
+
 	@Autowired
-	private ViewProvider viewProvider;
+	public UiView( ViewProvider viewProvider )
+	{
+		this.viewProvider = viewProvider;
+	}
 
 	@Override
 	protected void init( VaadinRequest request )
