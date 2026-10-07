@@ -8,7 +8,7 @@ pipeline {
     environment {
         productName = "cmv"
         componentName = "server"
-		IMAGE_TAG = "${GIT_COMMIT}-${env.BUILD_NUMBER}"
+		IMAGE_TAG = "${GIT_COMMIT}"
         DESTINATION_IMAGE = "${DOCKER_ARTIFACT_REGISTRY}/${productName}-${componentName}:${IMAGE_TAG}"
     }
 

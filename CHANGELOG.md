@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - *Fixed (for any bug fixes)*  
 - *Security (in case of vulnerabilities)*
 
+## [4.1.6] - 2026-10-07
+
+### Changed
+
+* Changed Matomo endpoint to <https://analytics.cessda.eu> ([b7ad714](https://github.com/cessda/cessda.cmv.server/commit/b7ad714f160d3917dd27f8d7ccad88b8f5c2e612))
+
 ## [4.1.5] - 2026-07-07
 
 ### Added
@@ -248,6 +254,7 @@ The built-in profiles have been updated with the necessary changes.
 - Show notification if DDI document recognition fails ([#19](https://github.com/cessda/cessda.cmv.server/issues/19))
 - Change endpoints urls to be consistent with other CESSDA products ([#18](https://github.com/cessda/cessda.cmv.server/issues/18))
 
+[4.1.6]: https://github.com/cessda/cessda.cmv.server/releases/tag/4.1.6
 [4.1.5]: https://github.com/cessda/cessda.cmv.server/releases/tag/4.1.5
 [4.1.4]: https://github.com/cessda/cessda.cmv.server/releases/tag/4.1.4
 [4.1.3]: https://github.com/cessda/cessda.cmv.server/releases/tag/4.1.3
